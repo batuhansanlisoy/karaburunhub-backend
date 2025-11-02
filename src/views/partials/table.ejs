@@ -1,0 +1,24 @@
+<table class="table table-striped table-bordered table-hover mt-3">
+  <thead class="table-dark">
+    <tr>
+      <% headers.forEach(header => { %>
+        <th><%= header %></th>
+      <% }) %>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (rows.length === 0) { %>
+      <tr>
+        <td colspan="<%= headers.length %>" class="text-center">Veri yok</td>
+      </tr>
+    <% } else { %>
+      <% rows.forEach(row => { %>
+        <tr>
+          <% row.forEach(cell => { %>
+            <td><%= cell %></td>
+          <% }) %>
+        </tr>
+      <% }) %>
+    <% } %>
+  </tbody>
+</table>

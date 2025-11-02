@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | KaraburunHub</title>
+
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.css">
+</head>
+<body>
+<div class="d-flex">
+    <nav class="sidebar bg-dark text-white vh-100 p-3" style="width: 220px; position: fixed; top:0; left:0;">
+        <h3 class="text-center mb-4">KaraburunHub</h3>
+        <div class="nav flex-column">
+            <a href="/" class="nav-link text-white <%= activePage === 'home' ? 'active bg-primary' : '' %>">
+                <i class="bi bi-house"></i> Ana Sayfa
+            </a>
+            <a href="/dashboard" class="nav-link text-white <%= activePage === 'dashboard' ? 'active bg-primary' : '' %>">
+                <i class="bi bi-clipboard"></i> Dashboard
+            </a>
+            <a href="/organization/category" class="nav-link text-white <%= activePage === 'category' ? 'active bg-primary' : '' %>">
+                <i class="bi bi-buildings"></i> İşletme
+            </a>
+            <a href="/beach" class="nav-link text-white <%= activePage === 'beach' ? 'active bg-primary' : '' %>">
+                <i class="bi bi-sun"></i> Koy & Plaj
+            </a>
+            <a href="/users" class="nav-link text-white <%= activePage === 'users' ? 'active bg-primary' : '' %>">
+                <i class="bi bi-person"></i> Kullanıcılar
+            </a>
+        </div>
+    </nav>
+
+    <div class="main-content flex-grow-1">
+        <%- body %>
+    </div>
+</div>
+
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

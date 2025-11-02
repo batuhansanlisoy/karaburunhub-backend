@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KaraburunHub Admin Paneli</title>
+  <style>
+    /* Genel stiller */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 40px 50px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 0.7s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #2a4d8f;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      border-color: #2a4d8f;
+      box-shadow: 0 0 0 3px rgba(42, 77, 143, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      background-color: #2a4d8f;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: #1e3670;
+      transform: translateY(-1px);
+    }
+
+    .footer-text {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .footer-text a {
+      color: #2a4d8f;
+      text-decoration: none;
+    }
+
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">🌊 KaraburunHub Admin Paneli</div>
+    <form>
+      <div class="form-group">
+        <label for="email">E-posta</label>
+        <input type="email" id="email" placeholder="E-posta adresinizi girin" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <input type="password" id="password" placeholder="Şifrenizi girin" required>
+      </div>
+
+      <button type="submit" class="login-btn">Giriş Yap</button>
+
+      <p class="footer-text">
+        © <%= new Date().getFullYear() %> KaraburunHub | Tüm hakları saklıdır.
+      </p>
+    </form>
+  </div>
+</body>
+</html>

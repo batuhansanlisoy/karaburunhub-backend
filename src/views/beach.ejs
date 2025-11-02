@@ -1,0 +1,174 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-black-50 fw-bold">Plaj Listesi</h2>
+
+  <!-- Slideover açma butonu -->
+  <button id="openSlideover" class="btn btn-outline-secondary mb-3">Yeni Plaj Ekle</button>
+
+  <!-- Slideover -->
+  <div id="slideover" class="slideover">
+    
+    <div class="d-flex justify-content-between align-items-center fs-4 text-black-75 fw-semibold mb-3">
+        Koy/Plaj Ekle
+        <button id="closeSlideover" class="btn p-0 border-0 bg-transparent">
+            <i class="bi bi-x-circle text-danger fs-3"></i>
+        </button>
+    </div>
+
+    <form id="beachForm">
+      <div class="mb-2">
+        <label for="village_id">Köy/Mahalle</label>
+        <select class="form-select" name="village_id" id="village_id" required>
+          <option value="">Seçiniz</option>
+          <% villages.forEach(village => { %>
+            <option value="<%= village.id %>"><%= village.name %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label for="title">Başlık</label>
+        <input type="text" name="title" id="title" class="form-control" required>
+      </div>
+
+      <div class="mb-2">
+        <label for="subtitle">İkinci Başlık</label>
+        <input type="text" name="subtitle" id="subtitle" class="form-control">
+      </div>
+
+      <div class="mb-2">
+        <label for="address">Adres</label>
+        <input type="text" name="address" id="address" class="form-control" required>
+      </div>
+
+      <div class="mb-2">
+        <label for="url">Link</label>
+        <input type="text" name="url" id="url" class="form-control">
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-2">Kaydet</button>
+    </form>
+  </div>
+
+  <!-- Plaj Tablosu -->
+    <table class="table table-hover mt-3">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th></th>
+            <th>Village</th>
+            <th>Title</th>
+            <th>Subtitle</th>
+            <th>Address</th>
+            <th>URL</th>
+        </tr>
+        </thead>
+        <tbody id="beachTableBody">
+        <tr>
+            <td colspan="6" class="text-center">Yükleniyor...</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+.slideover {
+    position: fixed;
+    top: 0;
+    right: -550px; /* başta gizli */
+    width: 500px;
+    height: 100%;
+    background: #f8f9fa;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+    z-index: 1050;
+    overflow-y: auto;
+    padding: 1rem;
+    transition: right 0.3s ease-in-out;
+}
+
+.slideover.show {
+    right: 0;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const slideover = document.getElementById("slideover");
+  const openBtn = document.getElementById("openSlideover");
+  const closeBtn = document.getElementById("closeSlideover");
+  const tableBody = document.getElementById("beachTableBody");
+  const beachForm = document.getElementById("beachForm");
+
+  // Slideover aç/kapat
+  openBtn.addEventListener("click", () => slideover.classList.add("show"));
+  closeBtn.addEventListener("click", () => slideover.classList.remove("show"));
+
+  // Tabloyu doldurma
+  function loadBeachs() {
+    fetch('/beach/data')
+      .then(res => res.json())
+      .then(beachs => {
+        tableBody.innerHTML = '';
+        if (beachs.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="6" class="text-center">Henüz plaj kaydı bulunmuyor.</td></tr>`;
+          return;
+        }
+
+        beachs.forEach((b, index) => {
+          const content = typeof b.content === 'string' ? JSON.parse(b.content) : b.content;
+          tableBody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>
+                <button class="btn p-0 border-0 bg-transparent">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </td>
+              <td>${b.village_name || '-'}</td>
+              <td>${content?.title || '-'}</td>
+              <td>${content?.subtitle || '-'}</td>
+              <td>${content?.address || '-'}</td>
+              <td>${b.url ? `<a href="${b.url}" target="_blank">${b.url}</a>` : '-'}</td>
+            </tr>
+          `;
+        });
+      });
+  }
+
+  loadBeachs();
+
+  // Form submit
+  beachForm.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const formData = new FormData(beachForm);
+    const content = {
+      title: formData.get('content[title]'),
+      subtitle: formData.get('content[subtitle]'),
+      address: formData.get('content[address]')
+    };
+
+    const data = {
+      village_id: Number(formData.get("village_id")),
+      title: formData.get("title"),
+      subtitle: formData.get("subtitle"),
+      address: formData.get("address"),
+      url: formData.get("url")
+    };
+
+    fetch('/beach', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => {
+      if (res.ok) {
+        slideover.classList.remove("show");
+        beachForm.reset();
+        loadBeachs();
+      } else {
+        alert("Plaj eklenirken hata oluştu.");
+      }
+    });
+  });
+});
+</script>

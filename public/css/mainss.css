@@ -1,0 +1,12 @@
+.sidebar .nav-link {
+  width: 100%;       /* link sidebar boyunca uzansın */
+  border-radius: 0;  /* köşeler kalsın veya yuvarlak istersen kaldır */
+}
+
+.sidebar .nav-link:hover {
+  background-color: #0d6efd; /* Bootstrap primary hover */
+}
+
+.bok{
+    background-color: red;
+}

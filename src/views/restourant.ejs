@@ -1,0 +1,81 @@
+<div class="container mt-5">
+  <h2 class="mb-4">🍽️ Restoran Yönetimi</h2>
+
+  <!-- Form -->
+  <div class="card mb-5 shadow-sm">
+    <div class="card-body">
+      <h4 class="card-title mb-3">Yeni Restoran Ekle</h4>
+      <form action="/restourant/add" method="POST">
+        <div class="mb-3">
+          <label for="name" class="form-label">Restoran Adı</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Örn: Mavi Deniz Balık Evi" />
+        </div>
+
+        <div class="mb-3">
+          <label for="category" class="form-label">Kategori</label>
+          <select id="category" name="category" class="form-select">
+            <option value="">Seçiniz</option>
+            <option>Balık</option>
+            <option>Fast Food</option>
+            <option>Kahvaltı</option>
+            <option>Ev Yemekleri</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">Adres</label>
+          <textarea id="address" name="address" rows="3" class="form-control" placeholder="Restoran adresi..."></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="phone" class="form-label">Telefon</label>
+          <input type="text" id="phone" name="phone" class="form-control" placeholder="0 (232) 000 00 00" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tablo -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h4 class="card-title mb-3">Kayıtlı Restoranlar</h4>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Adı</th>
+              <th>Kategori</th>
+              <th>Telefon</th>
+              <th>Adres</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (restaurants && restaurants.length > 0) { %>
+              <% restaurants.forEach((r, i) => { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= r.name %></td>
+                  <td><%= r.category %></td>
+                  <td><%= r.phone %></td>
+                  <td><%= r.address %></td>
+                  <td>
+                    <button class="btn btn-sm btn-warning me-1">Düzenle</button>
+                    <button class="btn btn-sm btn-danger">Sil</button>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="6" class="text-center">Henüz restoran kaydı yok.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
