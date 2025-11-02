@@ -10,11 +10,20 @@ import placeRoutes from "./Routes/Place";
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "../public")));
+const isProd = process.env.NODE_ENV === "production";
 
-// EJS ayarları
+const viewsPath = isProd
+    ? path.join(__dirname, "../../src/views")   // build sonrası production
+    : path.join(__dirname, "views");            // ts-node dev
+
+const publicPath = isProd
+    ? path.join(__dirname, "../../public")
+    : path.join(__dirname, "../public");
+    
+app.set("views", viewsPath);
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+
+app.use(express.static(publicPath));
 
 // Express EJS Layouts
 app.use(expressLayouts);
