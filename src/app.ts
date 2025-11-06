@@ -43,7 +43,7 @@ app.use("/users", userRoutes);
 app.use("/beach", beachRoutes);
 app.use("/village", villageRoutes);
 app.use("/organization", organizationRoutes);
-app.use("/organization/category", organizationCategoryRoutes);
+// app.use("/organization/category", organizationCategoryRoutes);
 app.use("/place", placeRoutes);
 
 

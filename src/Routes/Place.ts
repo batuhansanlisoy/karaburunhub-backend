@@ -1,10 +1,11 @@
 // src/routes/User.ts
 import { Router } from "express";
-import { list, create} from "../Controller/Place";
+import { show, list, create} from "../Controller/Place";
 
 const router = Router();
 
-router.get("", list);
-router.post("", create);
+router.get("", show)
+router.get("/list", list);
+router.post("/create", create);
 
 export default router;

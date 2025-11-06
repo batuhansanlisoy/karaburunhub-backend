@@ -11,7 +11,7 @@ export const show = async (req: Request, res: Response) => {
 
     const villages: Village[] = await village_service.list();
 
-    res.render("beach", {
+    res.render("beach/index", {
     villages,
     title: "Plajlar",
     activePage: "beach",
@@ -20,6 +20,7 @@ export const show = async (req: Request, res: Response) => {
 };
 
 export const list = async (req: Request, res: Response) => {
+    console.log("batuhan");
     try {
         let beachs: Beach[] = await service.list();
         beachs = beachs.map((b: any) => ({

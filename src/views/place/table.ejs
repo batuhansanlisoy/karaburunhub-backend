@@ -1,0 +1,84 @@
+<div class="table-widget-container">
+  <div class="table-widget-header d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><%= title %></h4>
+  </div>
+  
+  <div class="table-widget-body table-responsive">
+    <table class="table table-dark table-striped table-hover align-middle text-center mb-0 rounded">
+      <thead class="table-secondary text-dark">
+        <tr id="dynamicTableHead"></tr>
+      </thead>
+      <tbody id="dynamicTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function renderTable(columns, data) {
+    const tableHead = document.getElementById('dynamicTableHead');
+    const tableBody = document.getElementById('dynamicTableBody');
+
+    // Head
+    tableHead.innerHTML = '';
+    columns.forEach(col => {
+      const th = document.createElement('th');
+      th.textContent = col.label;
+      th.classList.add('text-center', 'align-middle', 'py-2');
+      tableHead.appendChild(th);
+    });
+
+    // Body
+    tableBody.innerHTML = '';
+    data.forEach((row, index) => {
+      const tr = document.createElement('tr');
+      tr.classList.add('align-middle');
+      columns.forEach(col => {
+        const td = document.createElement('td');
+        td.classList.add('py-2');
+
+        let value = row[col.key] ?? '-';
+
+        if (col.key === 'url' && value) {
+          td.innerHTML = `<a href="${value}" target="_blank" class="text-info text-decoration-underline">${value}</a>`;
+        } else if (col.key === 'status') {
+          let badgeClass = 'bg-secondary';
+          if (value === 'Aktif') badgeClass = 'bg-success';
+          else if (value === 'Beklemede') badgeClass = 'bg-warning text-dark';
+          else if (value === 'Pasif') badgeClass = 'bg-danger';
+          td.innerHTML = `<span class="badge ${badgeClass} px-3 py-1 rounded-pill">${value}</span>`;
+        } else td.textContent = value;
+
+        tr.appendChild(td);
+      });
+      tableBody.appendChild(tr);
+    });
+  }
+</script>
+
+<style>
+  /* Modern hover effect */
+  .table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Smooth table rounding */
+  .table.rounded {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* Responsive scroll shadow effect */
+  .table-responsive {
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .table-responsive::-webkit-scrollbar {
+    width: 8px;
+  }
+  .table-responsive::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+  }
+</style>

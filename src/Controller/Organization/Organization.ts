@@ -24,7 +24,6 @@ export const list = async (req: Request, res: Response) => {
     }
 };
 
-
 // export const create = async (req: Request, res: Response) => {
 //     try {
 

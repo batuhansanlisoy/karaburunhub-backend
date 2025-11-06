@@ -6,6 +6,6 @@ const router = Router();
 
 router.get("/", show);
 router.get("/data", list);
-router.post("/", create);
+router.post("/create", create);
 
 export default router;

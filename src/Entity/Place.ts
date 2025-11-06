@@ -2,9 +2,9 @@ export interface Place {
     id: number,
     village_id: number,
     name: string,
-    content: Content,
+    content?: Content,
     logo_url?: string,
-    gallery: string[],
+    gallery?: string[],
     address: string,
     latitude?: string,
     longitude?: string

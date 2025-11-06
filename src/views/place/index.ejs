@@ -1,0 +1,97 @@
+<div class="container mt-4">
+  <h2 class="mb-4 fw-bold">Gezilecek Yerler</h2>
+
+  <!-- Slideover açma butonu -->
+  <button id="openSlideover" class="btn btn-secondary mb-3">
+    <i class="bi bi-plus-circle me-2"></i>Ekle
+  </button>
+
+  <!-- Slideover -->
+  <div id="slideover" class="slideover">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4>Yeni Yer Ekle</h4>
+      <button id="closeSlideover" class="btn-close-dark">
+        <i class="bi bi-x-circle"></i>
+      </button>
+    </div>
+    <!-- Form include -->
+    <%- include('./form.ejs') %>
+  </div>
+
+  <!-- Table widget include -->
+  <%- include('./table.ejs', { title: "Gezilecek Yerler" }) %>
+</div>
+
+<style>
+.slideover {
+    position: fixed;
+    top: 0;
+    right: -550px;
+    width: 500px;
+    height: 100%;
+    background: #1e1e1e;
+    color: #fff;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.5);
+    z-index: 1050;
+    overflow-y: auto;
+    padding: 1.5rem;
+    transition: right 0.3s ease-in-out;
+}
+
+.slideover.show {
+    right: 0;
+}
+
+.btn-close-dark {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #ff6b6b;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const slideover = document.getElementById("slideover");
+    const openBtn = document.getElementById("openSlideover");
+    const closeBtn = document.getElementById("closeSlideover");
+
+    // Slideover aç
+    openBtn.addEventListener("click", () => {
+        slideover.classList.add("show");
+        document.body.style.overflow = "hidden"; // sayfa scroll kapatma
+    });
+
+    // Slideover kapa
+    closeBtn.addEventListener("click", () => {
+        slideover.classList.remove("show");
+        document.body.style.overflow = "auto";
+    });
+
+    // Slideover dışında tıklayınca kapatma opsiyonu
+    document.addEventListener("click", (e) => {
+        if (!slideover.contains(e.target) && !openBtn.contains(e.target)) {
+            slideover.classList.remove("show");
+            document.body.style.overflow = "auto";
+        }
+    });
+
+    fetch('/place/list')
+    .then(res => res.json())
+    .then(data => {
+      if (!Array.isArray(data)) data = [];
+
+      const columns = [
+        { label: '#', key: 'id' },
+        { label: 'İsim', key: 'name' },
+        { label: 'Adres', key: 'address' },
+        { label: 'URL', key: 'url' },
+        { label: 'Durum', key: 'status' }
+      ];
+
+      // table.ejs içindeki fonksiyonu çağır
+      renderTable(columns, data);
+    })
+    .catch(err => console.error(err));
+});
+</script>

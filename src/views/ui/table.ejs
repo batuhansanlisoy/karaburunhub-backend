@@ -1,0 +1,69 @@
+<div class="table-widget-container">
+  <div class="table-widget-body table-responsive">
+    <table class="table table-dark table-striped table-hover align-middle text-center mb-0 rounded">
+      <thead class="table-secondary text-dark">
+        <tr id="dynamicTableHead"></tr>
+      </thead>
+      <tbody id="dynamicTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function capitalizeFirstLetter(str) {
+    if (!str || str === '-') return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function renderTable(columns, data) {
+    const tableHead = document.getElementById('dynamicTableHead');
+    const tableBody = document.getElementById('dynamicTableBody');
+
+    // Table Head
+    tableHead.innerHTML = '';
+    columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col.label;
+        th.classList.add('text-center', 'align-middle', 'py-2');
+        tableHead.appendChild(th);
+    });
+
+    // Table Body
+    tableBody.innerHTML = '';
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.classList.add('align-middle');
+
+        columns.forEach(col => {
+            const td = document.createElement('td');
+            td.classList.add('py-2');
+
+            let value = row[col.key] ?? '-';
+
+            // Type bazlı formatlama
+            if (col.type === 'phone' && value && value !== '-') {
+                const digits = value.replace(/\D/g, '');
+                value = digits.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                td.textContent = value;
+            } 
+            else if (col.type === 'date' && value && value !== '-') {
+                const date = new Date(value);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                td.textContent = `${day}/${month}/${year}`;
+            } 
+            else if (col.type === 'html' && value) {
+                td.innerHTML = value; // HTML olarak render
+            } 
+            else {
+                td.textContent = capitalizeFirstLetter(value); // Normal metin baş harf büyük
+            }
+
+            tr.appendChild(td);
+        });
+
+        tableBody.appendChild(tr);
+    });
+}
+</script>

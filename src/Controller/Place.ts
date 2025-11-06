@@ -4,6 +4,15 @@ import { Place } from "../Entity/Place";
 
 const service = new PlaceService();
 
+export const show = async (req: Request, res: Response) => {
+
+    res.render("place/index", {
+    title: "Gezilecek Yerler",
+    activePage: "place",
+    page: "place"
+    });
+};
+
 export const list = async (req: Request, res: Response) => {
     try {
         const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
@@ -15,12 +24,42 @@ export const list = async (req: Request, res: Response) => {
     }
 };
 
-    export const create = async (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
     try {
-        const place: Place = req.body;
+
+        const village_id  = Number(req.body.village_id);
+        const name        = req.body.name;
+        const explanation = req.body.explanation;
+        const detail      = req.body.detail;
+        const logo_url    = req.body.logo_url;
+        const gallery     = req.body.logo_url ?? null;
+        const address     = req.body.address;
+        const latitude    = req.body.latitude;
+        const longitude   = req.body.longitude;
+        
+
+        if (!village_id || !name || !address) {
+            return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
+        }
+
+        const place: Partial<Place> = {
+            village_id,
+            name,
+            content: {
+                explanation,
+                detail
+            },
+            logo_url,
+            gallery,
+            address,
+            latitude,
+            longitude
+        };
         await service.create(place);
-        res.status(201).json({ message: "User created" });
+
+        res.status(201).send("Place nesnesi oluşturuldu");
     } catch (err) {
-        res.status(500).json({ error: err });
+        console.error(err);
+        res.status(500).send("Place eklenirken hata oluştu");
     }
 };

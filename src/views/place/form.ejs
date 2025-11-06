@@ -1,0 +1,61 @@
+<form action="/place/create" method="POST">
+
+    <!-- Konum (village_id) -->
+    <div class="mb-3">
+        <label class="form-label">Konum (Village ID)</label>
+        <input type="number" name="village_id" class="form-control" required>
+    </div>
+
+    <!-- Yer Adı -->
+    <div class="mb-3">
+        <label class="form-label">Yer Adı</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+
+    <!-- Açıklama (explanation) -->
+    <div class="mb-3">
+        <label class="form-label">Kısa Açıklama</label>
+        <input type="text" name="explanation" class="form-control">
+    </div>
+
+    <!-- Detaylı Açıklama (detail) -->
+    <div class="mb-3">
+        <label class="form-label">Detaylı Açıklama</label>
+        <textarea name="detail" rows="3" class="form-control"></textarea>
+    </div>
+
+    <!-- Logo URL -->
+    <div class="mb-3">
+        <label class="form-label">Logo URL</label>
+        <input type="text" name="logo_url" class="form-control">
+    </div>
+
+    <!-- Galeri (opsiyonel - aynı logo_url kullanılıyorsa backend zaten ayarlıyor) -->
+    <!-- İstersen ayrıca input açabilirim -->
+
+    <!-- Adres -->
+    <div class="mb-3">
+        <label class="form-label">Adres</label>
+        <input type="text" name="address" class="form-control" required>
+    </div>
+
+    <!-- Harita Konumu -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Latitude</label>
+            <input type="text" name="latitude" class="form-control">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Longitude</label>
+            <input type="text" name="longitude" class="form-control">
+        </div>
+    </div>
+
+    <!-- Web URL -->
+    <div class="mb-3">
+        <label class="form-label">Web Sitesi / URL</label>
+        <input type="text" name="url" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>
+</form>

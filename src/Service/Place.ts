@@ -12,7 +12,7 @@ export class PlaceService {
         return this.repo.getAll();
     }
 
-    async create(place: Place): Promise<void> {
+    async create(place: Partial<Place>): Promise<void> {
         await this.repo.create(place);
     }
 }

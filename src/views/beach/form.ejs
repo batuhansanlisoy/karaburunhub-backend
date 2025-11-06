@@ -1,0 +1,38 @@
+<form id="beachForm" action="/beach/create" method="POST">
+    <!-- Köy / Mahalle -->
+    <div class="mb-3">
+        <label class="form-label" for="village_id">Köy / Mahalle</label>
+        <select class="form-select" name="village_id" id="village_id" required>
+            <option value="">Seçiniz</option>
+            <% villages.forEach(village => { %>
+                <option value="<%= village.id %>"><%= village.name %></option>
+            <% }) %>
+        </select>
+    </div>
+
+    <!-- Başlık -->
+    <div class="mb-3">
+        <label class="form-label" for="title">Başlık</label>
+        <input type="text" name="title" id="title" class="form-control" required>
+    </div>
+
+    <!-- İkinci Başlık -->
+    <div class="mb-3">
+        <label class="form-label" for="subtitle">İkinci Başlık</label>
+        <input type="text" name="subtitle" id="subtitle" class="form-control">
+    </div>
+
+    <!-- Adres -->
+    <div class="mb-3">
+        <label class="form-label" for="address">Adres</label>
+        <input type="text" name="address" id="address" class="form-control" required>
+    </div>
+
+    <!-- Web URL -->
+    <div class="mb-3">
+        <label class="form-label" for="url">Web Sitesi / URL</label>
+        <input type="text" name="url" id="url" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>
+</form>

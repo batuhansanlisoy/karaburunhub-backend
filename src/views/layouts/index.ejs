@@ -1,41 +1,104 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %> | KaraburunHub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | KaraburunHub</title>
 
-    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.css">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap & Icons -->
+  <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: white ;
+      color: #212121;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background-color: #1e1e1e;
+      min-height: 100vh;
+    }
+
+    .nav-link.active {
+      background-color: #0d6efd !important;
+      color: #fff !important;
+    }
+
+    .nav-link:hover {
+      background-color: #495057;
+      color: #fff !important;
+    }
+
+    /* Scroll bar ufak stil */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-<div class="d-flex">
-    <nav class="sidebar bg-dark text-white vh-100 p-3" style="width: 220px; position: fixed; top:0; left:0;">
-        <h3 class="text-center mb-4">KaraburunHub</h3>
-        <div class="nav flex-column">
-            <a href="/" class="nav-link text-white <%= activePage === 'home' ? 'active bg-primary' : '' %>">
-                <i class="bi bi-house"></i> Ana Sayfa
-            </a>
-            <a href="/dashboard" class="nav-link text-white <%= activePage === 'dashboard' ? 'active bg-primary' : '' %>">
-                <i class="bi bi-clipboard"></i> Dashboard
-            </a>
-            <a href="/organization/category" class="nav-link text-white <%= activePage === 'category' ? 'active bg-primary' : '' %>">
-                <i class="bi bi-buildings"></i> İşletme
-            </a>
-            <a href="/beach" class="nav-link text-white <%= activePage === 'beach' ? 'active bg-primary' : '' %>">
-                <i class="bi bi-sun"></i> Koy & Plaj
-            </a>
-            <a href="/users" class="nav-link text-white <%= activePage === 'users' ? 'active bg-primary' : '' %>">
-                <i class="bi bi-person"></i> Kullanıcılar
-            </a>
-        </div>
-    </nav>
+  <div class="container-fluid">
+    <div class="row">
 
-    <div class="main-content flex-grow-1">
+      <!-- Sidebar -->
+      <nav class="col-12 col-md-3 col-lg-2 sidebar d-flex flex-column p-3">
+        <h3 class="text-center mb-4 text-white">KaraburunHub</h3>
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a href="/" class="nav-link <%= activePage === 'home' ? 'active' : 'text-white' %>">
+              <i class="bi bi-house me-2"></i> Ana Sayfa
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/dashboard" class="nav-link <%= activePage === 'dashboard' ? 'active' : 'text-white' %>">
+              <i class="bi bi-clipboard me-2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/organization" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
+              <i class="bi bi-buildings me-2"></i> İşletme
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/beach" class="nav-link <%= activePage === 'beach' ? 'active' : 'text-white' %>">
+              <i class="bi bi-sun me-2"></i> Koy & Plaj
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/place" class="nav-link <%= activePage === 'place' ? 'active' : 'text-white' %>">
+              <i class="bi bi-camera me-2"></i> Place
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/users" class="nav-link <%= activePage === 'users' ? 'active' : 'text-white' %>">
+              <i class="bi bi-person me-2"></i> Kullanıcılar
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/exit" class="nav-link <%= activePage === 'exit' ? 'exit' : 'text-white' %>">
+              <i class="bi bi-box-arrow-right"></i> Çıkış Yap
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="col-12 col-md-9 col-lg-10 p-4">
         <%- body %>
-    </div>
-</div>
+      </main>
 
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    </div>
+  </div>
+
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

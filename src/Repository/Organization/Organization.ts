@@ -7,6 +7,7 @@ export class OrganizationRepository {
     async getAll(): Promise<Organization[]> {
         return db(this.tableName).select(
             "organization.id",
+            "organization.category_id",
             "organization.name",
             "organization.email",
             "organization.phone",
