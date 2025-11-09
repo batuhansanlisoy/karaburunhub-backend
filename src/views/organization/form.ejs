@@ -1,6 +1,15 @@
-<form action="/organization/create" method="POST" enctype="multipart/form-data">
+<form id="orgForm" action="/organization/create" method="POST" enctype="multipart/form-data">
+    
+    <div class="mb-3">
+        <label class="form-label" for="category_id">İşletme Türü</label>
+        <select class="form-select" name="category_id" id="category_id" required>
+            <option value="">Seçiniz</option>
+            <% categories.forEach(category => { %>
+                <option value="<%= category.id %>"><%= category.name %></option>
+            <% }) %>
+        </select>
+    </div>
 
-    <!-- İsim -->
     <div class="mb-3">
         <label class="form-label">İşletme Adı</label>
         <input type="text" name="name" class="form-control" required>
@@ -18,10 +27,10 @@
         <input type="text" name="phone" class="form-control">
     </div>
 
-    <!-- Açıklama (content) -->
+    <!-- Adres -->
     <div class="mb-3">
-        <label class="form-label">Açıklama</label>
-        <textarea name="content" class="form-control" rows="3"></textarea>
+        <label class="form-label">Adres</label>
+        <input type="text" name="address" class="form-control" required>
     </div>
 
     <!-- Website -->
@@ -30,32 +39,6 @@
         <input type="text" name="website" class="form-control">
     </div>
 
-    <!-- Kapak Fotoğrafı -->
-    <div class="mb-3">
-        <label class="form-label">Kapak Fotoğrafı</label>
-        <input type="file" name="cover_photo" accept="image/*" class="form-control">
-    </div>
-
-    <!-- Galeri -->
-    <div class="mb-3">
-        <label class="form-label">Galeri (birden fazla fotoğraf)</label>
-        <input type="file" name="gallery[]" accept="image/*" class="form-control" multiple>
-        <small class="text-muted">Ctrl / Command ile birden fazla fotoğraf seçebilirsiniz.</small>
-    </div>
-
-    <!-- Logo URL -->
-    <div class="mb-3">
-        <label class="form-label">Logo URL</label>
-        <input type="text" name="logo_url" class="form-control">
-    </div>
-
-    <!-- Adres -->
-    <div class="mb-3">
-        <label class="form-label">Adres</label>
-        <input type="text" name="address" class="form-control" required>
-    </div>
-
-    <!-- Koordinatlar -->
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">Latitude</label>
@@ -67,18 +50,12 @@
         </div>
     </div>
 
-    <!-- Kategori -->
+    <!-- Kapak Fotoğrafı -->
     <div class="mb-3">
-        <label class="form-label">Kategori</label>
-        <select name="category_name" class="form-select" required>
-            <option value="">Seçiniz</option>
-            <option value="restoran">Restoran</option>
-            <option value="cafe">Cafe</option>
-            <option value="otel">Otel</option>
-            <option value="plaj">Plaj</option>
-            <option value="kamp">Kamp</option>
-        </select>
+        <label class="form-label">Kapak Fotoğrafı</label>
+        <input type="file" name="logo_url" accept="image/*" class="form-control">
     </div>
+
 
     <!-- Gönder Butonu -->
     <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>

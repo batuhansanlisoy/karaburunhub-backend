@@ -51,7 +51,7 @@
 
       <!-- Sidebar -->
       <nav class="col-12 col-md-3 col-lg-2 sidebar d-flex flex-column p-3">
-        <h3 class="text-center mb-4 text-white">KaraburunHub</h3>
+        <h3 class="ps-3 mb-4 text-white">KaraburunHub</h3>
         <ul class="nav nav-pills flex-column">
           <li class="nav-item">
             <a href="/" class="nav-link <%= activePage === 'home' ? 'active' : 'text-white' %>">
@@ -60,7 +60,7 @@
           </li>
           <li class="nav-item">
             <a href="/dashboard" class="nav-link <%= activePage === 'dashboard' ? 'active' : 'text-white' %>">
-              <i class="bi bi-clipboard me-2"></i> Dashboard
+              <i class="bi bi-clipboard me-2"></i> Panel
             </a>
           </li>
           <li class="nav-item">
@@ -70,12 +70,17 @@
           </li>
           <li class="nav-item">
             <a href="/organization/category" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
-              <i class="bi bi-briefcase"></i> İşletme Kategorileri
+              <i class="bi bi-briefcase me-2"></i> İşletme Kategorileri
             </a>
           </li>
           <li class="nav-item">
             <a href="/beach" class="nav-link <%= activePage === 'beach' ? 'active' : 'text-white' %>">
               <i class="bi bi-sun me-2"></i> Koy & Plaj
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/event" class="nav-link <%= activePage === 'event' ? 'active' : 'text-white' %>">
+              <i class="bi bi-headphones me-2"></i> Etkinlikler
             </a>
           </li>
           <li class="nav-item">
@@ -85,19 +90,19 @@
           </li>
           <li class="nav-item">
             <a href="/village" class="nav-link <%= activePage === 'village' ? 'active' : 'text-white' %>">
-              <i class="bi bi-geo-alt"></i> Köyler
+              <i class="bi bi-geo-alt me-2"></i> Köyler
             </a>
           </li>
           <li class="nav-item">
             <a href="/exit" class="nav-link <%= activePage === 'exit' ? 'exit' : 'text-white' %>">
-              <i class="bi bi-box-arrow-right"></i> Çıkış Yap
+              <i class="bi bi-box-arrow-right me-2"></i> Çıkış Yap
             </a>
           </li>
         </ul>
       </nav>
 
       <!-- Main Content -->
-      <main class="col-12 col-md-9 col-lg-8 p-4">
+      <main class="col-12 col-md-9 col-lg-10 p-4">
         <%- body %>
       </main>
 

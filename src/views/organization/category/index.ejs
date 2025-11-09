@@ -2,7 +2,7 @@
     <h2 class="mb-4 fw-bold fs-4"><%= title %></h2>
 
     <!-- Slideover açma butonu -->
-    <button id="openSlideover" class="btn btn-secondary mb-3">
+    <button id="openSlideover" class="btn btn-dark mb-3 rounded-5">
         <i class="bi bi-plus-circle me-2"></i>Ekle
     </button>
 
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!Array.isArray(data)) data = [];
 
         const columns = [
-            { label: '', key: 'actions', type: 'html'},
+            { label: '', key: 'actions', type: 'html', width: '25px'},
             { label: "İşletme Türü", key: 'name'},
             { label: 'Katılma Tarihi', key: 'created_at', type: 'date'},
         ];

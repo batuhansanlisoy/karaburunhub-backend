@@ -2,7 +2,7 @@
   <h2 class="mb-4 fw-bold fs-4"><%= title%></h2>
 
   <!-- Slideover açma butonu -->
-  <button id="openSlideover" class="btn btn-secondary mb-3">
+  <button id="openSlideover" class="btn btn-dark mb-3 rounded-5">
     <i class="bi bi-plus-circle me-2"></i>Ekle
   </button>
 
@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
             { label: "İşletme Türü", key: 'category_name'},
             { label: 'Firma', key: 'name' },
             { label: 'Telefon', key: 'phone', type: 'phone'},
+            { label: 'E-mail', key: 'email',},
             { label: 'Adres', key: 'address' },
             { label: 'Web Site', key: 'website'},
             { label: 'Katılma Tarihi', key: 'created_at', type: 'date'},
@@ -96,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             category_name: item.category_name,
             name: item.name,
             phone: item.phone,
+            email: item.email,
             address: item.address,
             website: item.website,
             created_at: item.created_at,

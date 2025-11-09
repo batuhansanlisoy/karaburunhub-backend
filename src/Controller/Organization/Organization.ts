@@ -1,15 +1,22 @@
 // src/controllers/UserController.ts
 import { Request, Response } from "express";
 import { OrganizationService } from "../../Service/Organization/Organization";
+import { CategoryService } from "../../Service/Organization/Category";
 import { Organization } from "../../Entity/Organization/Organization";
+import { Category } from "../../Entity/Organization/Category";
 
 const service = new OrganizationService();
+const category_service = new CategoryService();
 
 export const show = async (req: Request, res: Response) => {
+
+    const categories: Category[] = await category_service.list();
+
     res.render("organization/index", {
-    title: "İşletmeler",
-    activePage: "organization",
-    page: "organization"
+        categories,
+        title: "İşletmeler",
+        activePage: "organization",
+        page: "organization"
     });
 };
 
@@ -25,36 +32,36 @@ export const list = async (req: Request, res: Response) => {
     }
 };
 
-// export const create = async (req: Request, res: Response) => {
-//     try {
+export const create = async (req: Request, res: Response) => {
+    try {
 
-//         const village_id = Number(req.body.village_id);
-//         const title = req.body.title;
-//         const subtitle = req.body.subtitle;
-//         const address = req.body.address;
-//         const url = req.body.url;
+        const category_id = req.body.category_id;
+        const name = req.body.name;
+        const email = req.body.email;
+        const phone = req.body.phone;
+        const address = req.body.address;
+        const website = req.body.website;
+        const latitude = req.body.latitude ? parseFloat(req.body.latitude) : null;
+        const longitude = req.body.longitude ? parseFloat(req.body.longitude) : null;
+        const logo_url = req.file ? `/uploads/organization/${req.file.filename}` : undefined;
 
-//         if (!village_id || !title || !address) {
-//             return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
-//         }
+        if (!name || !address) {
+            return res.status(400).send("Boş Alanlar var");
+        }
 
-//         const beach: Partial<Beach> = {
-//             village_id,
-//             content: {
-//                 title,
-//                 subtitle,
-//                 address
-//             },
-//             url
-//         };
-//         await service.create(beach);
+        const organization: Partial<Organization> = {
+            category_id, name, email, phone, address,
+            website, latitude, longitude, logo_url
+        };
 
-//         res.status(201).send(`Plaj '${title}' başarıyla eklendi`);
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).send("Plaj eklenirken hata oluştu");
-//     }
-// };
+        await service.create(organization);
+
+        res.status(201).send("Kayıt Başarıyla Eklendi");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Plaj eklenirken hata oluştu");
+    }
+};
 
 export const del = async (req: Request, res: Response) => {
     try {
