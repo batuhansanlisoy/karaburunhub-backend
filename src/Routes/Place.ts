@@ -1,4 +1,3 @@
-// src/routes/User.ts
 import { Router } from "express";
 import { show, list, create, del } from "../Controller/Place";
 

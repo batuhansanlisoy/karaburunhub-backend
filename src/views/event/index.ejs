@@ -13,10 +13,11 @@
         <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
     </div>
 
+
     <!-- Slideover -->
     <div id="slideover" class="slideover">
         <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Kategori Formu</h4>
+        <h4>Etkinlik Formu</h4>
         <button id="closeSlideover" class="btn-close-dark">
             <i class="bi bi-x-circle"></i>
         </button>
@@ -26,7 +27,7 @@
     </div>
 
     <!-- Table widget include -->
-    <%- include('../../ui/table.ejs', { title: "Plaj & Koy" }) %>
+    <%- include('../ui/table.ejs', { title: "Plaj & Koy" }) %>
 </div>
 
 
@@ -82,27 +83,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Verileri fetch edip renderTable'a göndermek
-    fetch('/organization/category/list')
+    fetch('/event/list')
     .then(res => res.json())
     .then(data => {
         if (!Array.isArray(data)) data = [];
 
         const columns = [
             { label: '', key: 'actions', type: 'html', width: '25px'},
-            { label: "İşletme Türü", key: 'name'},
-            { label: 'Katılma Tarihi', key: 'created_at', type: 'date'},
+            { label: "Etkinlik", key: 'name'},
+            { label: 'Başlangıç Tarihi', key: 'begin', type: 'date'},
+            { label: 'Bitiş Tarihi', key: 'end', type: 'date'},
         ];
 
         const rows = data.map((item, idx) => ({
             actions: `<button class="btn p-0 border-0 bg-transparent delete-btn" data-id="${item.id}">
                 <i class="bi bi-trash3 text-white"></i></button>`,
             name: item.name,
-            created_at: item.created_at,
+            begin: item.begin,
+            end: item.end,
         }));
 
         // table.ejs içindeki fonksiyonu çağır
-        renderTable(columns, rows, "/organization/category");
+        renderTable(columns, rows, "/event");
     })
     .catch(err => console.error(err));
 });
