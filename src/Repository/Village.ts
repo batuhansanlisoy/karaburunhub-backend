@@ -12,4 +12,8 @@ export class VillageRepository {
     async create(village: Partial<Village>): Promise<number[]> {
         return db(this.tableName).insert(village);
     }
+
+    async del(id: number): Promise<number[]> {
+        return db(this.tableName).where({id}).del();
+    }
 }

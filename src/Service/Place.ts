@@ -15,4 +15,8 @@ export class PlaceService {
     async create(place: Partial<Place>): Promise<void> {
         await this.repo.create(place);
     }
+
+    async del(id: number): Promise<void> {
+        await this.repo.del(id);
+    }
 }

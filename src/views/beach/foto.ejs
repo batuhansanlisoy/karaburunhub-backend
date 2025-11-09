@@ -1,0 +1,16 @@
+<h2>Plaj Fotoğrafları</h2>
+<div class="row">
+  <% beachs.forEach(beach => { %>
+    <% if(beach.logo_url) { %>
+      <div class="col-md-3 mb-3">
+        <div class="card">
+          <img src="<%= beach.logo_url %>" class="card-img-top" alt="<%= beach.name %>">
+          <div class="card-body">
+            <h5 class="card-title"><%= beach.name %></h5>
+            <p class="card-text"><%= beach.address %></p>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  <% }) %>
+</div>

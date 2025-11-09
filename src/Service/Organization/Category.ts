@@ -8,7 +8,11 @@ export class CategoryService {
         return this.repo.getAll();
     }
 
-    async create(category: Category): Promise<void> {
+    async create(category: Partial<Category>): Promise<void> {
         await this.repo.create(category);
+    }
+
+    async del(id: number): Promise<void> {
+        await this.repo.del(id);
     }
 }

@@ -10,6 +10,9 @@ import placeRoutes from "./Routes/Place";
 
 const app = express();
 
+const uploadPath = path.join(__dirname, "../upload");
+app.use("/uploads", express.static(uploadPath));
+
 const isProd = process.env.NODE_ENV === "production";
 
 const viewsPath = isProd
@@ -43,7 +46,7 @@ app.use("/users", userRoutes);
 app.use("/beach", beachRoutes);
 app.use("/village", villageRoutes);
 app.use("/organization", organizationRoutes);
-// app.use("/organization/category", organizationCategoryRoutes);
+app.use("/organization/category", organizationCategoryRoutes);
 app.use("/place", placeRoutes);
 
 

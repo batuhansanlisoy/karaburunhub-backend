@@ -9,7 +9,11 @@ export class CategoryRepository {
         return db(this.tableName).select("*");
     }
 
-    async create(category: Category): Promise<number[]> {
+    async create(category: Partial<Category>): Promise<number[]> {
         return db(this.tableName).insert(category);
+    }
+
+    async del(id: number): Promise<number[]> {
+        return db(this.tableName).where({ id }).del();
     }
 }

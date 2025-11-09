@@ -1,6 +1,6 @@
 <div class="table-widget-container">
   <div class="table-widget-body table-responsive">
-    <table class="table table-dark table-striped table-hover align-middle text-center mb-0 rounded">
+    <table class="table table-dark table-striped table-hover align-middle mb-0 rounded">
       <thead class="table-secondary text-dark">
         <tr id="dynamicTableHead"></tr>
       </thead>
@@ -15,7 +15,7 @@ function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function renderTable(columns, data) {
+function renderTable(columns, data, deleteUrl) {
     const tableHead = document.getElementById('dynamicTableHead');
     const tableBody = document.getElementById('dynamicTableBody');
 
@@ -24,7 +24,8 @@ function renderTable(columns, data) {
     columns.forEach(col => {
         const th = document.createElement('th');
         th.textContent = col.label;
-        th.classList.add('text-center', 'align-middle', 'py-2');
+        th.classList.add('align-middle', 'py-2', 'ps-4');
+        if (col.width) th.style.width = col.width; // 👈 width ekleme
         tableHead.appendChild(th);
     });
 
@@ -36,7 +37,8 @@ function renderTable(columns, data) {
 
         columns.forEach(col => {
             const td = document.createElement('td');
-            td.classList.add('py-2');
+            td.classList.add('py-2', 'ps-4');
+            if (col.width) td.style.width = col.width; // 👈 body hücrelerine de uygula
 
             let value = row[col.key] ?? '-';
 
@@ -54,16 +56,39 @@ function renderTable(columns, data) {
                 td.textContent = `${day}/${month}/${year}`;
             } 
             else if (col.type === 'html' && value) {
-                td.innerHTML = value; // HTML olarak render
+                td.innerHTML = value;
             } 
             else {
-                td.textContent = capitalizeFirstLetter(value); // Normal metin baş harf büyük
+                td.textContent = capitalizeFirstLetter(value);
             }
 
             tr.appendChild(td);
         });
 
         tableBody.appendChild(tr);
+    });
+
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const id = btn.dataset.id;
+            if (!id) return;
+
+            if (!confirm("Bu kaydı silmek istediğine emin misin?")) return;
+
+            try {
+                const res = await fetch(`${deleteUrl}/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    alert("Kayıt başarıyla silindi!");
+                    location.reload();
+                } else {
+                    const data = await res.json();
+                    alert("Silme işlemi başarısız: " + (data.error || "Bilinmeyen hata"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Silme sırasında hata oluştu");
+            }
+        });
     });
 }
 </script>

@@ -1,3 +1,4 @@
+// src/controllers/UserController.ts
 import { Request, Response } from "express";
 import { OrganizationService } from "../../Service/Organization/Organization";
 import { Organization } from "../../Entity/Organization/Organization";
@@ -5,7 +6,7 @@ import { Organization } from "../../Entity/Organization/Organization";
 const service = new OrganizationService();
 
 export const show = async (req: Request, res: Response) => {
-    res.render("organization", {
+    res.render("organization/index", {
     title: "İşletmeler",
     activePage: "organization",
     page: "organization"
@@ -54,3 +55,14 @@ export const list = async (req: Request, res: Response) => {
 //         res.status(500).send("Plaj eklenirken hata oluştu");
 //     }
 // };
+
+export const del = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const status = await service.del(id);
+        return res.json({ deletedRows: status });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
+    }
+};

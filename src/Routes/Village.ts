@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { list, create } from "../Controller/Village";
+import { show, list, create, del } from "../Controller/Village";
 
 const router = Router();
 
-router.get("/", list);
-router.post("/", create);
+router.get("", show)
+router.get("/list", list);
+router.post("/create", create);
+router.delete("/:id", del);
 
 export default router;

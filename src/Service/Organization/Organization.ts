@@ -17,4 +17,8 @@ export class OrganizationService {
 
         await this.repo.create(organization);
     }
+
+    async del(id: number): Promise<void> {
+        await this.repo.del(id);
+    }
 }

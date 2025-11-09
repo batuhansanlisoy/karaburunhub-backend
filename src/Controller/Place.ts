@@ -63,3 +63,14 @@ export const create = async (req: Request, res: Response) => {
         res.status(500).send("Place eklenirken hata oluştu");
     }
 };
+
+export const del = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const status = await service.del(id);
+        return res.json({ deletedRows: status });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
+    }
+};

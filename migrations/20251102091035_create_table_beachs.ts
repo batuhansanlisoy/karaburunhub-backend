@@ -12,9 +12,11 @@ export async function up(knex: Knex): Promise<void> {
             .inTable("villages")
             .onDelete("CASCADE")
             .onUpdate("CASCADE");
-
-        table.json("content").nullable();
-        table.string("url").nullable();
+        table.string("name").notNullable();
+        table.json("extra").nullable();
+        table.string("logo_url").nullable();
+        table.json("gallery").nullable();
+        table.string("address").notNullable();
         table.timestamp("created_at").defaultTo(knex.fn.now());
         table.timestamp("updated_at").defaultTo(knex.fn.now());
     });

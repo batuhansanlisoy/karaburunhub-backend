@@ -11,4 +11,8 @@ export class VillageService {
     async create(village: Partial<Village>): Promise<void> {
         await this.repo.create(village);
     }
+
+    async del(id: number): Promise<void> {
+        await this.repo.del(id);
+    }
 }

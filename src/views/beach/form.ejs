@@ -1,4 +1,4 @@
-<form id="beachForm" action="/beach/create" method="POST">
+<form id="beachForm" action="/beach/create" method="POST" enctype="multipart/form-data">
     <!-- Köy / Mahalle -->
     <div class="mb-3">
         <label class="form-label" for="village_id">Köy / Mahalle</label>
@@ -12,14 +12,8 @@
 
     <!-- Başlık -->
     <div class="mb-3">
-        <label class="form-label" for="title">Başlık</label>
-        <input type="text" name="title" id="title" class="form-control" required>
-    </div>
-
-    <!-- İkinci Başlık -->
-    <div class="mb-3">
-        <label class="form-label" for="subtitle">İkinci Başlık</label>
-        <input type="text" name="subtitle" id="subtitle" class="form-control">
+        <label class="form-label" for="name">Plaj Başlık</label>
+        <input type="text" name="name" id="name" class="form-control" required>
     </div>
 
     <!-- Adres -->
@@ -28,10 +22,9 @@
         <input type="text" name="address" id="address" class="form-control" required>
     </div>
 
-    <!-- Web URL -->
     <div class="mb-3">
-        <label class="form-label" for="url">Web Sitesi / URL</label>
-        <input type="text" name="url" id="url" class="form-control">
+        <label class="form-label">Kapak Fotoğrafı</label>
+        <input type="file" name="logo_url" accept="image/*" class="form-control">
     </div>
 
     <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>

@@ -19,6 +19,22 @@ export const show = async (req: Request, res: Response) => {
     });
 };
 
+export const single = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        if (!id) return res.status(400).send("Geçersiz plaj ID'si");
+
+        const beach = await service.single(id);
+
+        if (!beach) return res.status(404).send("Plaj bulunamadı");
+
+        res.json(beach);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Plaj fotoğrafları alınırken hata oluştu");
+    }
+};
+
 export const list = async (req: Request, res: Response) => {
     console.log("batuhan");
     try {
@@ -39,29 +55,37 @@ export const create = async (req: Request, res: Response) => {
     try {
 
         const village_id = Number(req.body.village_id);
-        const title = req.body.title;
-        const subtitle = req.body.subtitle;
+        const name = req.body.name;
         const address = req.body.address;
-        const url = req.body.url;
+        const logo_url = req.file ? `/uploads/beach/${req.file.filename}` : undefined;
 
-        if (!village_id || !title || !address) {
+        console.log(req.file);
+        if (!village_id || !name || !address) {
             return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
         }
 
         const beach: Partial<Beach> = {
             village_id,
-            content: {
-                title,
-                subtitle,
-                address
-            },
-            url
+            name,
+            logo_url,
+            address
         };
         await service.create(beach);
 
-        res.status(201).send(`Plaj '${title}' başarıyla eklendi`);
+        res.status(201).send(`Plaj '${name}' başarıyla eklendi`);
     } catch (err) {
         console.error(err);
         res.status(500).send("Plaj eklenirken hata oluştu");
+    }
+};
+
+export const del = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const status = await service.del(id);
+        return res.json({ deletedRows: status });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
     }
 };

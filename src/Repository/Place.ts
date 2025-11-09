@@ -16,4 +16,8 @@ export class PlaceRepository {
     async create(place: Partial<Place>): Promise<number[]> {
         return db(this.tableName).insert(place);
     }
+
+    async del(id: number): Promise<number[]> {
+        return db(this.tableName).where({ id }).del();
+    }
 }

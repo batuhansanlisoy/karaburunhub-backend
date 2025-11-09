@@ -15,11 +15,11 @@
       </button>
     </div>
     <!-- Form include -->
-    <%- include('./form.ejs') %>
+     <%- include('./form.ejs') %>
   </div>
 
   <!-- Table widget include -->
-  <%- include('../ui/table.ejs', { title: "Gezilecek Yerler" }) %>
+  <%- include('../ui/table.ejs', { title: "Plaj & Koy" }) %>
 </div>
 
 <style>
@@ -56,19 +56,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const openBtn = document.getElementById("openSlideover");
     const closeBtn = document.getElementById("closeSlideover");
 
-    // Slideover aç
+    // Slideover aç/kapat
     openBtn.addEventListener("click", () => {
         slideover.classList.add("show");
-        document.body.style.overflow = "hidden"; // sayfa scroll kapatma
+        document.body.style.overflow = "hidden";
     });
 
-    // Slideover kapa
     closeBtn.addEventListener("click", () => {
         slideover.classList.remove("show");
         document.body.style.overflow = "auto";
     });
 
-    // Slideover dışında tıklayınca kapatma opsiyonu
     document.addEventListener("click", (e) => {
         if (!slideover.contains(e.target) && !openBtn.contains(e.target)) {
             slideover.classList.remove("show");
@@ -76,27 +74,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-
-    fetch('/place/list')
+    fetch('/village/list')
     .then(res => res.json())
     .then(data => {
         if (!Array.isArray(data)) data = [];
 
         const columns = [
             { label: '', key: 'actions', type:"html", width: '25px'},
-            { label: 'İsim', key: 'name' },
-            { label: 'Adres', key: 'address' },
-            { label: 'Oluşturulma Tarihi', key: 'created_at', type: 'date'}
+            { label: 'Köy Adı', key: 'name' },
+            { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date" },
         ];
 
         const rows = data.map((item, idx) => ({
             actions: `<button class="btn p-0 border-0 bg-transparent delete-btn" data-id="${item.id}">
                         <i class="bi bi-trash3 text-white"></i></button>`,
             name: item.name,
-            address: item.address,
             created_at: item.created_at
         }));
-        renderTable(columns, rows, "/place");
+        renderTable(columns, rows, "/village");
     })
     .catch(err => console.error(err));
 });

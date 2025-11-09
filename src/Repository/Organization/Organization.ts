@@ -32,4 +32,8 @@ export class OrganizationRepository {
     async create(organization: Partial<Organization>): Promise<number[]> {
         return db(this.tableName).insert(organization);
     }
+
+    async del(id: number): Promise<number[]> {
+        return db(this.tableName).where({ id }).del();
+    }
 }
