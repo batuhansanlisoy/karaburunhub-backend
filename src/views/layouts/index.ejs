@@ -69,11 +69,6 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/organization/category" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
-              <i class="bi bi-briefcase me-2"></i> İşletme Kategorileri
-            </a>
-          </li>
-          <li class="nav-item">
             <a href="/beach" class="nav-link <%= activePage === 'beach' ? 'active' : 'text-white' %>">
               <i class="bi bi-sun me-2"></i> Koy & Plaj
             </a>
@@ -94,6 +89,11 @@
             </a>
           </li>
           <li class="nav-item">
+            <a href="/organization/category" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
+              <i class="bi bi-briefcase me-2"></i> İşletme Kategorileri
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="/exit" class="nav-link <%= activePage === 'exit' ? 'exit' : 'text-white' %>">
               <i class="bi bi-box-arrow-right me-2"></i> Çıkış Yap
             </a>
@@ -102,7 +102,7 @@
       </nav>
 
       <!-- Main Content -->
-      <main class="col-12 col-md-9 col-lg-10 p-4">
+      <main class="col-12 col-md-9 col-lg-10 p-4" style="background-color: #e6e6e69d;">
         <%- body %>
       </main>
 

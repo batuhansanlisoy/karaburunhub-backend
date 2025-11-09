@@ -1,25 +1,31 @@
 <div class="container">
-  <h2 class="mb-4 fw-bold fs-4"><%= title%></h2>
+    <h2 class="mb-4 fw-bold fs-4"><%= title%></h2>
 
-  <!-- Slideover açma butonu -->
-  <button id="openSlideover" class="btn btn-dark mb-3 rounded-5">
-    <i class="bi bi-plus-circle me-2"></i>Ekle
-  </button>
-
-  <!-- Slideover -->
-  <div id="slideover" class="slideover">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4>Yeni Yer Ekle</h4>
-      <button id="closeSlideover" class="btn-close-dark">
-        <i class="bi bi-x-circle"></i>
-      </button>
+    <!-- Slideover açma butonu -->
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <button id="openSlideover" class="btn btn-dark rounded-5">
+            <i class="bi bi-plus-circle me-2"></i>Ekle
+        </button>
+        <button id="openFilter" class="btn btn-dark rounded-5">
+            <i class="bi bi-filter me-2"></i>Filtre
+        </button>
+        <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
     </div>
-    <!-- Form include -->
-     <%- include('./form.ejs') %>
-  </div>
 
-  <!-- Table widget include -->
-  <%- include('../ui/table.ejs', { title: "Plaj & Koy" }) %>
+    <!-- Slideover -->
+    <div id="slideover" class="slideover">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Yeni Yer Ekle</h4>
+            <button id="closeSlideover" class="btn-close-dark">
+                <i class="bi bi-x-circle"></i>
+            </button>
+        </div>
+        <!-- Form include -->
+        <%- include('./form.ejs') %>
+    </div>
+
+    <!-- Table widget include -->
+    <%- include('../ui/table.ejs', { title: "Plaj & Koy" }) %>
 </div>
 
 <style>
@@ -75,24 +81,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     fetch('/village/list')
-    .then(res => res.json())
-    .then(data => {
-        if (!Array.isArray(data)) data = [];
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data)) data = [];
 
-        const columns = [
-            { label: '', key: 'actions', type:"html", width: '25px'},
-            { label: 'Köy Adı', key: 'name' },
-            { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date" },
-        ];
+            const columns = [
+                { label: '', key: 'actions', type:"html", width: '25px'},
+                { label: 'Köy Adı', key: 'name' },
+                { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date" },
+            ];
 
-        const rows = data.map((item, idx) => ({
-            actions: `<button class="btn p-0 border-0 bg-transparent delete-btn" data-id="${item.id}">
-                        <i class="bi bi-trash3 text-white"></i></button>`,
-            name: item.name,
-            created_at: item.created_at
-        }));
-        renderTable(columns, rows, "/village");
-    })
-    .catch(err => console.error(err));
+            const rows = data.map((item, idx) => ({
+                actions: `<button class="btn p-0 border-0 bg-transparent delete-btn" data-id="${item.id}">
+                            <i class="bi bi-trash3 text-white"></i></button>`,
+                name: item.name,
+                created_at: item.created_at
+            }));
+            renderTable(columns, rows, "/village");
+        })
+        .catch(err => console.error(err));
 });
 </script>

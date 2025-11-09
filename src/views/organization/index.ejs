@@ -2,9 +2,15 @@
   <h2 class="mb-4 fw-bold fs-4"><%= title%></h2>
 
   <!-- Slideover açma butonu -->
-  <button id="openSlideover" class="btn btn-dark mb-3 rounded-5">
-    <i class="bi bi-plus-circle me-2"></i>Ekle
-  </button>
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <button id="openSlideover" class="btn btn-dark rounded-5">
+            <i class="bi bi-plus-circle me-2"></i>Ekle
+        </button>
+        <button id="openFilter" class="btn btn-dark rounded-5">
+            <i class="bi bi-filter me-2"></i>Filtre
+        </button>
+        <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
+    </div>
 
   <!-- Slideover -->
   <div id="slideover" class="slideover">
