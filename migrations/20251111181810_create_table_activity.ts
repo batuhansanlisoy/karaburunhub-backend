@@ -2,7 +2,7 @@ import type { Knex } from "knex";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("event", (table) => {
+    return knex.schema.createTable("activity", (table) => {
         
         table.increments("id").primary();
         table.integer("village_id")
@@ -32,9 +32,9 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-    await knex.schema.alterTable("event", (table) => {
+    await knex.schema.alterTable("activity", (table) => {
         table.dropForeign(["village_id"]);
     });
-    return knex.schema.dropTable("event");
+    return knex.schema.dropTable("activity");
 }
 

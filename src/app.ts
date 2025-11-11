@@ -7,7 +7,7 @@ import villageRoutes from "./Routes/Village";
 import organizationRoutes from "./Routes/Organization/Organization";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import placeRoutes from "./Routes/Place";
-import eventRoutes from "./Routes/Event";
+import activityRoutes from "./Routes/Activity";
 
 const app = express();
 
@@ -49,7 +49,7 @@ app.use("/village", villageRoutes);
 app.use("/organization", organizationRoutes);
 app.use("/organization/category", organizationCategoryRoutes);
 app.use("/place", placeRoutes);
-app.use("/event", eventRoutes);
+app.use("/activity", activityRoutes);
 
 // Ana Sayfa
 app.get("/", (req, res) => {

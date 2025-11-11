@@ -1,4 +1,4 @@
-export interface Event {
+export interface Activity {
     id: number,
     village_id: number,
     name: string,
