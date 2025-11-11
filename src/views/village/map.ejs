@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Reverse Geocoding Örneği</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #map { height: 500px; width: 100%; margin-top: 10px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <h3>Haritaya Tıkla, Adresini Al</h3>
+  <div id="map"></div>
+  <p>Latitude: <span id="lat"></span></p>
+  <p>Longitude: <span id="lng"></span></p>
+  <p>Adres: <span id="address"></span></p>
+
+  <script>
+    const map = L.map('map').setView([38.6383, 26.5126], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 19
+    }).addTo(map);
+
+    let marker;
+
+    map.on('click', async function(e) {
+      const lat = e.latlng.lat.toFixed(6);
+      const lng = e.latlng.lng.toFixed(6);
+
+      document.getElementById('lat').innerText = lat;
+      document.getElementById('lng').innerText = lng;
+
+      if (marker) marker.setLatLng(e.latlng);
+      else marker = L.marker(e.latlng).addTo(map);
+
+      try {
+        // Nominatim reverse geocoding
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+        const data = await res.json();
+        document.getElementById('address').innerText = data.display_name || "Adres bulunamadı";
+      } catch (err) {
+        console.error(err);
+        document.getElementById('address').innerText = "Hata oluştu";
+      }
+    });
+  </script>
+</body>
+</html>

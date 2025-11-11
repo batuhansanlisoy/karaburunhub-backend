@@ -14,6 +14,16 @@ export const show = async (req: Request, res: Response) => {
     });
 };
 
+export const map = async (req: Request, res: Response) => {
+
+    res.render("village/map", {
+    title: "Köyler",
+    activePage: "village",
+    page: "village"
+    });
+};
+
+
 export const list = async (req: Request, res: Response) => {
     try {
         const villages: Village[] = await service.list();

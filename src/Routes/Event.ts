@@ -3,7 +3,7 @@ import { show, list, create, del } from "../Controller/Event";
 import { FileService } from "../Service/File";
 
 const router = Router();
-const upload = FileService.uploader("beach");
+const upload = FileService.uploader("event");
 
 router.get("", show)
 router.get("/list", list);

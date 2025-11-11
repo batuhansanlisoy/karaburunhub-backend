@@ -70,6 +70,15 @@ app.get("/dashboard", (req, res) => {
   });
 });
 
+app.get("/deneme", (req, res) => {
+  res.render("index", {
+    title: "login",
+    activePage: "login",
+    page: "login",
+    layout: false,
+  });
+});
+
 // Restoran Yönetimi
 app.get("/restourant", (req, res) => {
   const restaurants = [

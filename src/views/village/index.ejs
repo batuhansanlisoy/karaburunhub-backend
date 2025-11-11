@@ -62,8 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const slideover = document.getElementById("slideover");
     const openBtn = document.getElementById("openSlideover");
     const closeBtn = document.getElementById("closeSlideover");
+    const searchInput = document.getElementById("searchInput");
 
-    // Slideover aç/kapat
+    let tableData = [];
+
     openBtn.addEventListener("click", () => {
         slideover.classList.add("show");
         document.body.style.overflow = "hidden";
@@ -81,25 +83,37 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    const columns = [
+        { label: '', key: 'actions', type:"html", width: '25px'},
+        { label: 'Köy Adı', key: 'name' },
+        { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date" }
+    ];
+
     fetch('/village/list')
         .then(res => res.json())
         .then(data => {
             if (!Array.isArray(data)) data = [];
 
-            const columns = [
-                { label: '', key: 'actions', type:"html", width: '25px'},
-                { label: 'Köy Adı', key: 'name' },
-                { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date" },
-            ];
-
-            const rows = data.map((item, idx) => ({
+            tableData = data.map((item, idx) => ({
                 actions: `<button class="btn p-0 border-0 bg-transparent delete-btn" data-id="${item.id}">
                             <i class="bi bi-trash3 text-white"></i></button>`,
                 name: item.name,
                 created_at: item.created_at
             }));
-            renderTable(columns, rows, "/village");
+            console.log(tableData);
+            renderTable(columns, tableData, "/village");
         })
         .catch(err => console.error(err));
+
+    searchInput.addEventListener("input", (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+
+        const filteredData = tableData.filter(row => 
+            row.name.toLowerCase().includes(searchTerm)
+        );
+
+        renderTable(columns, filteredData, "/village");
+    });
 });
+
 </script>
