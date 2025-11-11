@@ -13,7 +13,11 @@ export class ActivityRepository {
     }
 
     async create(activity: Partial<Activity>): Promise<number[]> {
-        return db(this.tableName).insert(activity);
+        const dbActivity = {
+            ...activity,
+            gallery: activity.gallery ? JSON.stringify(activity.gallery) : null
+        };
+        return db(this.tableName).insert(dbActivity);
     }
 
     async del(id: number): Promise<number[]> {

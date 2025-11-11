@@ -33,7 +33,11 @@ export class BeachRepository {
     }
 
     async create(beach: Partial<Beach>): Promise<number[]> {
-        return db(this.tableName).insert(beach);
+        const dbBeach = {
+            ...beach,
+            gallery: beach.gallery ? JSON.stringify(beach.gallery) : null
+        }
+        return db(this.tableName).insert(dbBeach);
     }
 
     async del(id: number): Promise<number[]> {

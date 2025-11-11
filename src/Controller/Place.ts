@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
 import { PlaceService } from "../Service/Place";
 import { Place } from "../Entity/Place";
+import { VillageService } from "../Service/Village";
 
 const service = new PlaceService();
+const village_service = new VillageService();
 
 export const show = async (req: Request, res: Response) => {
-
+    
+    const villages = await village_service.list();
     res.render("place/index", {
+    villages,
     title: "Gezilecek Yerler",
     activePage: "place",
     page: "place"
@@ -26,17 +30,23 @@ export const list = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
     try {
+        const files: any = req.files;
 
         const village_id  = Number(req.body.village_id);
         const name        = req.body.name;
         const explanation = req.body.explanation;
         const detail      = req.body.detail;
-        const logo_url    = req.body.logo_url;
-        const gallery     = req.body.logo_url ?? null;
         const address     = req.body.address;
-        const latitude    = req.body.latitude;
-        const longitude   = req.body.longitude;
+        const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
+        const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
         
+        const logo_url = files?.logo_url?.[0]
+            ? `/upload/place/${files.logo_url[0].filename}`
+            : undefined;
+
+        const gallery: string[] | undefined = files?.['gallery[]']
+            ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
+            : undefined;
 
         if (!village_id || !name || !address) {
             return res.status(400).send("Village, Title ve Adress Alanları zorunludur");

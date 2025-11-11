@@ -6,10 +6,14 @@ export interface Beach {
     logo_url?: string;
     gallery?: string[];
     address: string;
+    latitude?: number | null;
+    longitude?: number | null;
     created_at: string;
     updated_at: string;
     village_name?: string;
 }
 
 export interface Extra {
+    explanation?: string;
+    detail?: string;
 }

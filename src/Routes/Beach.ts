@@ -9,7 +9,12 @@ const upload = FileService.uploader("beach");
 router.get("/", show);
 // router.get("/:id", single);
 router.get("/list", list);
-router.post("/create", upload.single("logo_url") ,create);
+router.post("/create", upload.fields([
+    { name: "logo_url", maxCount: 1 },
+    { name: "gallery[]", maxCount: 10 }
+    ]),
+    create
+);
 router.delete("/:id", del);
 
 export default router;

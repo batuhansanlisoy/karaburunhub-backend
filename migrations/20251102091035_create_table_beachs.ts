@@ -17,6 +17,8 @@ export async function up(knex: Knex): Promise<void> {
         table.string("logo_url").nullable();
         table.json("gallery").nullable();
         table.string("address").notNullable();
+        table.decimal("latitude", 10, 7).nullable();
+        table.decimal("longitude", 10, 7).nullable();
         table.timestamp("created_at").defaultTo(knex.fn.now());
         table.timestamp("updated_at").defaultTo(knex.fn.now());
     });

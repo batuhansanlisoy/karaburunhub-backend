@@ -54,12 +54,23 @@ export const list = async (req: Request, res: Response) => {
 export const create = async (req: Request, res: Response) => {
     try {
 
-        const village_id = Number(req.body.village_id);
-        const name = req.body.name;
-        const address = req.body.address;
-        const logo_url = req.file ? `/uploads/beach/${req.file.filename}` : undefined;
+        const files: any = req.files;
 
-        console.log(req.file);
+        const village_id  = Number(req.body.village_id);
+        const name        = req.body.name;
+        const explanation = req.body.explanation;
+        const address     = req.body.address;
+        const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
+        const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
+
+        const logo_url = files?.logo_url?.[0]
+            ? `/upload/place/${files.logo_url[0].filename}`
+            : undefined;
+
+        const gallery: string[] | undefined = files?.['gallery[]']
+            ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
+            : undefined;
+
         if (!village_id || !name || !address) {
             return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
         }
@@ -67,8 +78,14 @@ export const create = async (req: Request, res: Response) => {
         const beach: Partial<Beach> = {
             village_id,
             name,
+            extra: {
+                explanation
+            },
             logo_url,
-            address
+            gallery,
+            address,
+            latitude,
+            longitude
         };
         await service.create(beach);
 

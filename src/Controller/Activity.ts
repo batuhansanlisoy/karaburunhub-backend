@@ -32,17 +32,27 @@ export const list = async (req: Request, res: Response) => {
 export const create = async (req: Request, res: Response) => {
     try {
 
+        const files: any = req.files;
+
         const village_id  = Number(req.body.village_id);
         const name        = req.body.name;
         const begin       = req.body.begin;
         const end         = req.body.end;
         const explanation = req.body.explanation;
-        const gallery     = req.body.logo_url ?? null;
         const address     = req.body.address;
         const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
         const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
-        const logo_url    = req.file ? `/uploads/activity/${req.file.filename}` : undefined;
+        
 
+        const logo_url = files?.logo_url?.[0]
+            ? `/uploads/activity/${files.logo_url[0].filename}`
+            : undefined;
+
+        const gallery: string[] | undefined = files?.['gallery[]']
+            ? files['gallery[]'].map((f: any) => `/uploads/activity/${f.filename}`)
+            : undefined;
+
+            
         if (!village_id || !name || !address) {
             return res.status(400).send("Zorunlu alanları doldurunuz");
         }

@@ -14,7 +14,11 @@ export class PlaceRepository {
     }
 
     async create(place: Partial<Place>): Promise<number[]> {
-        return db(this.tableName).insert(place);
+        const dbPlace = {
+            ...place,
+            gallery: place.gallery ? JSON.stringify(place.gallery) : null
+        }
+        return db(this.tableName).insert(dbPlace);
     }
 
     async del(id: number): Promise<number[]> {
