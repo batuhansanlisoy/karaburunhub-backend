@@ -36,7 +36,6 @@ export const single = async (req: Request, res: Response) => {
 };
 
 export const list = async (req: Request, res: Response) => {
-    console.log("batuhan");
     try {
         let beachs: Beach[] = await service.list();
         beachs = beachs.map((b: any) => ({

@@ -6,7 +6,10 @@ export class PlaceRepository {
     private tableName = "place";
 
     async getAll(): Promise<Place[]> {
-        return db(this.tableName).select("*");
+        return db(this.tableName).select(
+            "place.*",
+            "villages.name as village_name")
+            .leftJoin("villages", "place.village_id", "villages.id");
     }
 
     async getByVillageId(village_id: number): Promise<Place[]> {
