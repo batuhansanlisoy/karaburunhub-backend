@@ -12,7 +12,7 @@ import activityRoutes from "./Routes/Activity";
 const app = express();
 
 const uploadPath = path.join(__dirname, "../upload");
-app.use("/uploads", express.static(uploadPath));
+app.use("/upload", express.static(uploadPath));
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -38,7 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  res.locals.title = "KaraburunHub";
+  res.locals.title = "KaraburunGO";
   res.locals.page = "";
   next();
 });

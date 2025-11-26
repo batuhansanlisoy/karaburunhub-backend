@@ -3,6 +3,7 @@ import { BeachService } from "../Service/Beach";
 import { Beach } from "../Entity/Beach";
 import { Village } from "../Entity/Village";
 import { VillageService } from "../Service/Village";
+import { BeachConverter } from "../Converter/Beach";
 
 const service = new BeachService();
 const village_service = new VillageService();
@@ -26,7 +27,11 @@ export const single = async (req: Request, res: Response) => {
 
         const beach = await service.single(id);
 
-        if (!beach) return res.status(404).send("Plaj bulunamadı");
+        if (!beach) {
+            return res.status(404).send("Plaj bulunamadı");
+        }
+
+        const response = BeachConverter.toResponse(beach);
 
         res.json(beach);
     } catch (err) {
@@ -37,13 +42,10 @@ export const single = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
     try {
-        let beachs: Beach[] = await service.list();
-        beachs = beachs.map((b: any) => ({
-        ...b,
-        content: typeof b.content === "string" ? JSON.parse(b.content) : b.content
-        }));
+        let   beaches: Beach[] = await service.list();
+        const response         = BeachConverter.toListResponse(beaches);
 
-        res.json(beachs);
+        res.json(response);
     } catch (err) {
         console.error(err);
         res.status(500).send("Plaj listesi alınırken hata oluştu");
@@ -63,7 +65,7 @@ export const create = async (req: Request, res: Response) => {
         const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
         const logo_url = files?.logo_url?.[0]
-            ? `/upload/place/${files.logo_url[0].filename}`
+            ? `/upload/beach/${files.logo_url[0].filename}`
             : undefined;
 
         const gallery: string[] | undefined = files?.['gallery[]']
