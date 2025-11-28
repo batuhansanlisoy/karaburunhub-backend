@@ -18,4 +18,15 @@ export class FileService {
     static uploader(folder: string) {
         return multer({ storage: FileService.storage(folder) });
     }
+
+    static delete(folder: string, fileName: string) {
+        const filePath = path.join(process.cwd(), "upload", folder, fileName);
+
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            return true;
+        }
+
+        return false;
+    }
 }

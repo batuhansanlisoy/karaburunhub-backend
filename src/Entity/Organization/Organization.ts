@@ -7,7 +7,7 @@ export interface Organization{
     content?: string,
     website?: string,
     logo_url?: string,
-    gallery?: string[],
+    gallery?: string[];
     address: string,
     latitude?: number | null;
     longitude?: number | null;

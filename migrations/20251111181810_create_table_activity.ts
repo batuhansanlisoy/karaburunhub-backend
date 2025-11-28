@@ -1,10 +1,18 @@
 import type { Knex } from "knex";
 
-
 export async function up(knex: Knex): Promise<void> {
     return knex.schema.createTable("activity", (table) => {
         
         table.increments("id").primary();
+        
+        table.integer("category_id")
+            .unsigned()
+            .notNullable()
+            .references("id")
+            .inTable("activity_category")
+            .onDelete("RESTRICT")
+            .onUpdate("CASCADE");
+
         table.integer("village_id")
             .unsigned()
             .notNullable()
@@ -34,6 +42,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.alterTable("activity", (table) => {
         table.dropForeign(["village_id"]);
+        table.dropForeign(["category_id"]);
     });
     return knex.schema.dropTable("activity");
 }

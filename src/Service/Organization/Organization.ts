@@ -1,8 +1,13 @@
 import { OrganizationRepository } from "../../Repository/Organization/Organization";
 import { Organization } from "../../Entity/Organization/Organization";
-
+import { FileService } from "../../Service/File";
 export class OrganizationService {
     private repo = new OrganizationRepository();
+
+    async single(id: number): Promise<Organization> {
+
+        return this.repo.single(id);
+    }
 
     async list(category_id?: number): Promise<Organization[]> {
         if (category_id) {
@@ -19,6 +24,7 @@ export class OrganizationService {
     }
 
     async del(id: number): Promise<void> {
+
         await this.repo.del(id);
     }
 }

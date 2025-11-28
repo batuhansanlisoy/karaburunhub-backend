@@ -4,6 +4,12 @@ import { Organization } from "../../Entity/Organization/Organization";
 export class OrganizationRepository {
     private tableName = "organization";
 
+    async single(id: number): Promise<Organization> {
+        return db(this.tableName)
+            .where({ id })
+            .first();
+    }
+
     async getAll(): Promise<Organization[]> {
         return db(this.tableName).select(
             "organization.id",

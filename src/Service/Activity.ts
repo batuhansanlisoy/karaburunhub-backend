@@ -4,12 +4,9 @@ import { Activity } from "../Entity/Activity";
 export class ActivityService {
     private repo = new ActivityRepository();
 
-    async list(village_id?: number): Promise<Activity[]> {
-        if (village_id) {
-            return this.repo.getByVillageId(village_id);
-        }
-
-        return this.repo.getAll();
+    async list(village_id?: number, category_id?: number): Promise<Activity[]> {
+        
+        return this.repo.getAll(village_id, category_id);
     }
 
     async create(activity: Partial<Activity>): Promise<void> {

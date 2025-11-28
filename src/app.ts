@@ -6,6 +6,7 @@ import beachRoutes from "./Routes/Beach";
 import villageRoutes from "./Routes/Village";
 import organizationRoutes from "./Routes/Organization/Organization";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
+import activityCategoryRoutes from "./Routes/Activity/Category";
 import placeRoutes from "./Routes/Place";
 import activityRoutes from "./Routes/Activity";
 
@@ -50,7 +51,7 @@ app.use("/organization", organizationRoutes);
 app.use("/organization/category", organizationCategoryRoutes);
 app.use("/place", placeRoutes);
 app.use("/activity", activityRoutes);
-
+app.use("/activity/category", activityCategoryRoutes);
 // Ana Sayfa
 app.get("/", (req, res) => {
   res.render("index", { 

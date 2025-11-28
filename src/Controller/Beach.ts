@@ -43,7 +43,7 @@ export const single = async (req: Request, res: Response) => {
 export const list = async (req: Request, res: Response) => {
     try {
         let   beaches: Beach[] = await service.list();
-        const response         = BeachConverter.toListResponse(beaches);
+        const response = BeachConverter.toListResponse(beaches);
 
         res.json(response);
     } catch (err) {

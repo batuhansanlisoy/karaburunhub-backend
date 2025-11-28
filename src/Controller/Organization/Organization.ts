@@ -35,6 +35,8 @@ export const list = async (req: Request, res: Response) => {
 export const create = async (req: Request, res: Response) => {
     try {
 
+        const files: any = req.files;
+
         const category_id = req.body.category_id;
         const name = req.body.name;
         const email = req.body.email;
@@ -43,7 +45,14 @@ export const create = async (req: Request, res: Response) => {
         const website = req.body.website;
         const latitude = req.body.latitude ? parseFloat(req.body.latitude) : null;
         const longitude = req.body.longitude ? parseFloat(req.body.longitude) : null;
-        const logo_url = req.file ? `/uploads/organization/${req.file.filename}` : undefined;
+        
+        const logo_url = files?.logo_url?.[0]
+            ? `/upload/organization/${files.logo_url[0].filename}`
+            : undefined;
+        
+        const gallery: string[] | undefined = files?.['gallery[]']
+            ? files['gallery[]'].map((f: any) => `/upload/organization/${f.filename}`)
+            : undefined;
 
         if (!name || !address) {
             return res.status(400).send("Boş Alanlar var");
@@ -51,7 +60,7 @@ export const create = async (req: Request, res: Response) => {
 
         const organization: Partial<Organization> = {
             category_id, name, email, phone, address,
-            website, latitude, longitude, logo_url
+            website, latitude, longitude, logo_url, gallery
         };
 
         await service.create(organization);

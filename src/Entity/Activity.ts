@@ -1,5 +1,6 @@
 export interface Activity {
     id: number,
+    category_id: number,
     village_id: number,
     name: string,
     content?: Content,

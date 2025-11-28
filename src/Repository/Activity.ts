@@ -4,12 +4,19 @@ import { Activity } from "../Entity/Activity";
 export class ActivityRepository {
     private tableName = "activity";
 
-    async getAll(): Promise<Activity[]> {
-        return db(this.tableName).select("*");
-    }
+    async getAll(village_id?: number, category_id?: number): Promise<Activity[]> {
 
-    async getByVillageId(village_id: number): Promise<Activity[]> {
-        return db(this.tableName).where("village_id", village_id);
+        let query = db(this.tableName).select("*");
+
+        if (village_id != null) {
+            query = query.where("village_id", village_id);
+        }
+
+        if (category_id != null) {
+            query = query.where("category_id", category_id);
+        }
+
+        return query;
     }
 
     async create(activity: Partial<Activity>): Promise<number[]> {
