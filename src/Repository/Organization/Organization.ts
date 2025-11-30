@@ -5,9 +5,11 @@ export class OrganizationRepository {
     private tableName = "organization";
 
     async single(id: number): Promise<Organization> {
-        return db(this.tableName)
-            .where({ id })
-            .first();
+        const org = await db(this.tableName).where({ id }).first();
+        if (org?.logo && typeof org.logo === "string") {
+            org.logo = JSON.parse(org.logo); // artık servis tarafında logo bir obje
+        }
+        return org;
     }
 
     async getAll(): Promise<Organization[]> {
@@ -19,7 +21,7 @@ export class OrganizationRepository {
             "organization.phone",
             "organization.content",
             "organization.website",
-            "organization.logo_url",
+            "organization.logo",
             "organization.gallery",
             "organization.address",
             "organization.latitude",
@@ -39,7 +41,10 @@ export class OrganizationRepository {
         return db(this.tableName).insert(organization);
     }
 
-    async del(id: number): Promise<number[]> {
+    async del(id: number, trx?: any): Promise<number[]> {
+        if (trx) {
+            return trx(this.tableName).where({ id }).del();
+        }
         return db(this.tableName).where({ id }).del();
     }
 }

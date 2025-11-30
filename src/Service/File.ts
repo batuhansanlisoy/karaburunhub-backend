@@ -19,8 +19,8 @@ export class FileService {
         return multer({ storage: FileService.storage(folder) });
     }
 
-    static delete(folder: string, fileName: string) {
-        const filePath = path.join(process.cwd(), "upload", folder, fileName);
+    static delete(url: string) {
+        const filePath = path.join(process.cwd(), url);
 
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);

@@ -36,7 +36,6 @@ export const create = async (req: Request, res: Response) => {
     try {
 
         const files: any = req.files;
-
         const category_id = req.body.category_id;
         const name = req.body.name;
         const email = req.body.email;
@@ -46,9 +45,17 @@ export const create = async (req: Request, res: Response) => {
         const latitude = req.body.latitude ? parseFloat(req.body.latitude) : null;
         const longitude = req.body.longitude ? parseFloat(req.body.longitude) : null;
         
-        const logo_url = files?.logo_url?.[0]
-            ? `/upload/organization/${files.logo_url[0].filename}`
-            : undefined;
+        let logo: { url: string, filename: string, path: string} | undefined = undefined;
+
+        if (files && files.logo && files.logo[0]) {
+            const file = files.logo[0];
+
+            logo = {
+                url: `/upload/organization/${file.filename}`,
+                filename: file.filename,
+                path: "/upload/organization"
+            };
+        }
         
         const gallery: string[] | undefined = files?.['gallery[]']
             ? files['gallery[]'].map((f: any) => `/upload/organization/${f.filename}`)
@@ -60,7 +67,7 @@ export const create = async (req: Request, res: Response) => {
 
         const organization: Partial<Organization> = {
             category_id, name, email, phone, address,
-            website, latitude, longitude, logo_url, gallery
+            website, latitude, longitude, logo, gallery
         };
 
         await service.create(organization);
@@ -73,8 +80,8 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const del = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
     try {
-        const id = Number(req.params.id);
         const status = await service.del(id);
         return res.json({ deletedRows: status });
     } catch (err: any) {

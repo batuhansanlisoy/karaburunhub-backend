@@ -6,7 +6,7 @@ export interface Organization{
     phone?: string,
     content?: string,
     website?: string,
-    logo_url?: string,
+    logo?: Logo,
     gallery?: string[];
     address: string,
     latitude?: number | null;
@@ -18,4 +18,10 @@ export interface Organization{
 export interface Content {
     explanation?: string,
     detail?: string
+}
+
+export interface Logo {
+    url: string,
+    filename: string
+    path: string
 }

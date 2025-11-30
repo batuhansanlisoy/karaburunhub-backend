@@ -1,6 +1,8 @@
+import db from "../../db/knex";
 import { OrganizationRepository } from "../../Repository/Organization/Organization";
 import { Organization } from "../../Entity/Organization/Organization";
 import { FileService } from "../../Service/File";
+
 export class OrganizationService {
     private repo = new OrganizationRepository();
 
@@ -25,6 +27,22 @@ export class OrganizationService {
 
     async del(id: number): Promise<void> {
 
-        await this.repo.del(id);
+        await db.transaction(async (trx) => {
+            const org = await this.repo.single(id);
+            console.log(org);
+            if (!org) throw new Error("Organizasyon buluanamadı");
+
+            await this.repo.del(id, trx);
+
+            try {
+                if (org.logo) {
+
+                    FileService.delete(org.logo.url);
+                }
+            } catch (error) {
+                throw new Error("dosya silme hatası" + (error as Error).message);
+            }
+        });
     }
+    
 }
