@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 
         table.string("name").notNullable();
         table.json("content").nullable();
-        table.string("logo_url").nullable();
+        table.string("cover").nullable();
         table.json("gallery").nullable();
 
         table.string("address").notNullable();

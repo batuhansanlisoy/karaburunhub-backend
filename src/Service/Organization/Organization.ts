@@ -35,9 +35,9 @@ export class OrganizationService {
             await this.repo.del(id, trx);
 
             try {
-                if (org.logo) {
+                if (org.cover) {
 
-                    FileService.delete(org.logo.url);
+                    FileService.delete(org.cover.url);
                 }
             } catch (error) {
                 throw new Error("dosya silme hatası" + (error as Error).message);

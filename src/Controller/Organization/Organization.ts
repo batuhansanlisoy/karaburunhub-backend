@@ -36,6 +36,7 @@ export const create = async (req: Request, res: Response) => {
     try {
 
         const files: any = req.files;
+
         const category_id = req.body.category_id;
         const name = req.body.name;
         const email = req.body.email;
@@ -45,12 +46,12 @@ export const create = async (req: Request, res: Response) => {
         const latitude = req.body.latitude ? parseFloat(req.body.latitude) : null;
         const longitude = req.body.longitude ? parseFloat(req.body.longitude) : null;
         
-        let logo: { url: string, filename: string, path: string} | undefined = undefined;
+        let cover: { url: string, filename: string, path: string} | undefined = undefined;
 
-        if (files && files.logo && files.logo[0]) {
-            const file = files.logo[0];
+        if (files && files.cover && files.cover[0]) {
+            const file = files.cover[0];
 
-            logo = {
+            cover = {
                 url: `/upload/organization/${file.filename}`,
                 filename: file.filename,
                 path: "/upload/organization"
@@ -67,7 +68,7 @@ export const create = async (req: Request, res: Response) => {
 
         const organization: Partial<Organization> = {
             category_id, name, email, phone, address,
-            website, latitude, longitude, logo, gallery
+            website, latitude, longitude, cover, gallery
         };
 
         await service.create(organization);

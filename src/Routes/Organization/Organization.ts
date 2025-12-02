@@ -10,7 +10,7 @@ const upload = FileService.uploader("organization");
 router.get("", show);
 router.get("/list", list);
 router.post("/create", upload.fields([
-    { name: "logo", maxCount: 1 },
+    { name: "cover", maxCount: 1 },
     { name: "gallery[]", maxCount: 10 }
     ]), create);
 router.delete("/:id", del);

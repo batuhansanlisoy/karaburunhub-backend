@@ -14,7 +14,7 @@ export async function up(knex: Knex): Promise<void> {
             .onUpdate("CASCADE");
         table.string("name").notNullable();
         table.json("extra").nullable();
-        table.string("logo_url").nullable();
+        table.string("cover").nullable();
         table.json("gallery").nullable();
         table.string("address").notNullable();
         table.decimal("latitude", 10, 7).nullable();

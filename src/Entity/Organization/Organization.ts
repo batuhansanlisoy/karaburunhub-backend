@@ -6,7 +6,7 @@ export interface Organization{
     phone?: string,
     content?: string,
     website?: string,
-    logo?: Logo,
+    cover?: Cover,
     gallery?: string[];
     address: string,
     latitude?: number | null;
@@ -20,7 +20,7 @@ export interface Content {
     detail?: string
 }
 
-export interface Logo {
+export interface Cover {
     url: string,
     filename: string
     path: string
