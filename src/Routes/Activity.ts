@@ -8,7 +8,7 @@ const upload = FileService.uploader("activity");
 router.get("", show)
 router.get("/list", list);
 router.post("/create", upload.fields([
-    { name: "logo_url", maxCount: 1 },
+    { name: "cover", maxCount: 1 },
     { name: "gallery[]", maxCount: 10 }
     ]),
     create

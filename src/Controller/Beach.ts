@@ -64,9 +64,17 @@ export const create = async (req: Request, res: Response) => {
         const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
         const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
-        const logo_url = files?.logo_url?.[0]
-            ? `/upload/beach/${files.logo_url[0].filename}`
-            : undefined;
+        let cover: {url: string, filename: string, path: string} | undefined;
+
+        if (files && files.cover && files.cover[0]) {
+            const file = files.cover[0];
+
+            cover = {
+                url: `/upload/beach/${file.filename}`,
+                filename: file.filename,
+                path: "/upload/beach"
+            };
+        }
 
         const gallery: string[] | undefined = files?.['gallery[]']
             ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
@@ -77,17 +85,10 @@ export const create = async (req: Request, res: Response) => {
         }
 
         const beach: Partial<Beach> = {
-            village_id,
-            name,
-            extra: {
-                explanation
-            },
-            logo_url,
-            gallery,
-            address,
-            latitude,
-            longitude
+            village_id, name, extra: { explanation }, cover,
+            gallery, address, latitude, longitude
         };
+
         await service.create(beach);
 
         res.status(201).send(`Plaj '${name}' başarıyla eklendi`);
@@ -98,8 +99,8 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const del = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
     try {
-        const id = Number(req.params.id);
         const status = await service.del(id);
         return res.json({ deletedRows: status });
     } catch (err: any) {

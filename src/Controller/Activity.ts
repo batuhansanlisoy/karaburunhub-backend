@@ -53,10 +53,17 @@ export const create = async (req: Request, res: Response) => {
         const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
         const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
         
+        let cover: {url: string, filename: string, path: string} | undefined;
 
-        const logo_url = files?.logo_url?.[0]
-            ? `/upload/activity/${files.logo_url[0].filename}`
-            : undefined;
+        if (files && files.cover && files.cover[0]) {
+            const file = files.cover[0];
+
+            cover = {
+                url: `/upload/activity/${file.filename}`,
+                filename: file.filename,
+                path: "/upload/activity"
+            };
+        }
 
         const gallery: string[] | undefined = files?.['gallery[]']
             ? files['gallery[]'].map((f: any) => `/upload/activity/${f.filename}`)
@@ -68,20 +75,10 @@ export const create = async (req: Request, res: Response) => {
         }
 
         const activity: Partial<Activity> = {
-            category_id,
-            village_id,
-            name,
-            begin,
-            end,
-            content: {
-                explanation,
-            },
-            logo_url,
-            gallery,
-            address,
-            latitude,
-            longitude
+            category_id, village_id, name, begin, end, content: { explanation },
+            cover, gallery, address, latitude, longitude
         };
+
         await service.create(activity);
 
         res.status(201).send("Activity Oluşturuldu");
@@ -92,8 +89,9 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const del = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    
     try {
-        const id = Number(req.params.id);
         const status = await service.del(id);
         return res.json({ deletedRows: status });
     } catch (err: any) {

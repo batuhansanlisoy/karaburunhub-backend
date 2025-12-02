@@ -1,7 +1,7 @@
 import db from "../../db/knex";
+import { FileService } from "../../Service/File";
 import { OrganizationRepository } from "../../Repository/Organization/Organization";
 import { Organization } from "../../Entity/Organization/Organization";
-import { FileService } from "../../Service/File";
 
 export class OrganizationService {
     private repo = new OrganizationRepository();

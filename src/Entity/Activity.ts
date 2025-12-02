@@ -4,7 +4,7 @@ export interface Activity {
     village_id: number,
     name: string,
     content?: Content,
-    logo_url?: string,
+    cover?: Cover,
     gallery?: string[],
     address: string,
     latitude?: number | null,
@@ -17,4 +17,10 @@ export interface Activity {
 
 export interface Content {
     explanation?: string
+}
+
+export interface Cover {
+    url: string,
+    filename: string
+    path: string
 }

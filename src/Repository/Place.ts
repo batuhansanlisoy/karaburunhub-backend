@@ -5,6 +5,16 @@ import { Place } from "../Entity/Place";
 export class PlaceRepository {
     private tableName = "place";
 
+    async single(id: number): Promise<Place> {
+        const place = await db(this.tableName).where({ id }).first();
+
+        if (place?.cover && typeof place.cover === "string") {
+            place.cover = JSON.parse(place.cover);
+        }
+
+        return place;
+    }
+
     async getAll(): Promise<Place[]> {
         return db(this.tableName).select(
             "place.*",
@@ -24,7 +34,11 @@ export class PlaceRepository {
         return db(this.tableName).insert(dbPlace);
     }
 
-    async del(id: number): Promise<number[]> {
-        return db(this.tableName).where({ id }).del();
+    async del(id: number, trx?: any): Promise<number[]> {
+        if (trx) {
+            return trx(this.tableName).where({ id }).del();
+        }
+        
+        return db(this.tableName).where({id}).del();
     }
 }

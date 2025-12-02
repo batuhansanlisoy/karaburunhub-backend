@@ -6,8 +6,8 @@ export class OrganizationRepository {
 
     async single(id: number): Promise<Organization> {
         const org = await db(this.tableName).where({ id }).first();
-        if (org?.logo && typeof org.logo === "string") {
-            org.logo = JSON.parse(org.logo); // artık servis tarafında logo bir obje
+        if (org?.cover && typeof org.cover === "string") {
+            org.cover = JSON.parse(org.cover); // artık servis tarafında cover bir obje
         }
         return org;
     }
@@ -21,7 +21,7 @@ export class OrganizationRepository {
             "organization.phone",
             "organization.content",
             "organization.website",
-            "organization.logo",
+            "organization.cover",
             "organization.gallery",
             "organization.address",
             "organization.latitude",
