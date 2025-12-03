@@ -3,42 +3,42 @@
     <div class="mb-3">
         <label class="form-label" for="category_id">İşletme Türü</label>
         <select class="form-select" name="category_id" id="category_id" required>
-            <option value="">Seçiniz</option>
+            <option value="" disabled selected hidden>İşletme türünü seçiniz</option>
             <% categories.forEach(category => { %>
                 <option value="<%= category.id %>"><%= category.name %></option>
             <% }) %>
         </select>
     </div>
 
+    <!-- ALT KATEGORİ MULTI-SELECT -->
+    <div class="mb-3">
+        <label class="form-label" for="item_id">Alt Kategori</label>
+        <select class="form-select" name="item_ids[]" id="item_id" multiple size="5" style="height:auto;">
+            <!-- İlk açılışta boş -->
+        </select>
+    </div>
+
+    <!-- Diğer alanlar aynı -->
     <div class="mb-3">
         <label class="form-label">İşletme Adı</label>
         <input type="text" name="name" class="form-control" required>
     </div>
-
-    <!-- Email -->
     <div class="mb-3">
         <label class="form-label">E-posta</label>
         <input type="email" name="email" class="form-control">
     </div>
-
-    <!-- Telefon -->
     <div class="mb-3">
         <label class="form-label">Telefon</label>
         <input type="text" name="phone" class="form-control">
     </div>
-
-    <!-- Adres -->
     <div class="mb-3">
         <label class="form-label">Adres</label>
         <input type="text" name="address" class="form-control" required>
     </div>
-
-    <!-- Website -->
     <div class="mb-3">
         <label class="form-label">Web Sitesi</label>
         <input type="text" name="website" class="form-control">
     </div>
-
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">Latitude</label>
@@ -49,14 +49,42 @@
             <input type="text" name="longitude" class="form-control">
         </div>
     </div>
-
-    <!-- Kapak Fotoğrafı -->
     <div class="mb-3">
         <label class="form-label">Kapak Fotoğrafı</label>
         <input type="file" name="cover" accept="image/*" class="form-control">
     </div>
 
-
-    <!-- Gönder Butonu -->
     <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>
 </form>
+
+<script>
+document.getElementById("category_id").addEventListener("change", function () {
+    const catId = this.value;
+    const itemSelect = document.getElementById("item_id");
+
+    // Her değişimde önce temizle
+    itemSelect.innerHTML = '';
+
+    if (!catId) return;
+
+    fetch(`/organization/category/item/orgCategory?id=${catId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data || data.length === 0) {
+                const opt = document.createElement("option");
+                opt.text = "Bu kategoriye ait alt tür yok";
+                opt.disabled = true;
+                itemSelect.add(opt);
+                return;
+            }
+
+            data.forEach(item => {
+                const opt = document.createElement("option");
+                opt.value = item.id;
+                opt.text = item.name;
+                itemSelect.add(opt);
+            });
+        })
+        .catch(err => console.error("Hata:", err));
+});
+</script>

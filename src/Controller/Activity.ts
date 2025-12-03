@@ -43,17 +43,26 @@ export const create = async (req: Request, res: Response) => {
 
         const files: any = req.files;
 
-        const category_id = Number(req.body.category_id);
-        const village_id  = Number(req.body.village_id);
-        const name        = req.body.name;
-        const begin       = req.body.begin;
-        const end         = req.body.end;
-        const explanation = req.body.explanation;
-        const address     = req.body.address;
-        const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
-        const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
-        
+        const category_id   = Number(req.body.category_id);
+        const village_id    = Number(req.body.village_id);
+        const name          = req.body.name;
+        const begin         = req.body.begin;
+        const end           = req.body.end;
+        const explanation   = req.body.explanation;
+        const address       = req.body.address;
+        const latitude      = req.body.latitude ? parseFloat(req.body.latitude) : null;
+        const longitude     = req.body.longitude ? parseFloat(req.body.longitude) : null;
+        const raw_timeline = req.body.timeline;
+
         let cover: {url: string, filename: string, path: string} | undefined;
+        let timeline: { date: string, events: { time: string, title: string}[] } [] = [];
+
+        if (raw_timeline) {
+            timeline = raw_timeline.map((item: any) => ({
+                date: item.date,
+                events: item.events ? item.events.map((e:any) => ({ time: e.time, title: e.title})) : []
+            }));
+        }
 
         if (files && files.cover && files.cover[0]) {
             const file = files.cover[0];
@@ -75,7 +84,7 @@ export const create = async (req: Request, res: Response) => {
         }
 
         const activity: Partial<Activity> = {
-            category_id, village_id, name, begin, end, content: { explanation },
+            category_id, village_id, name, begin, end, content: { explanation, timeline },
             cover, gallery, address, latitude, longitude
         };
 

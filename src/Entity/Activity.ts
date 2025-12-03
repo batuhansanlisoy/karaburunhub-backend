@@ -16,11 +16,23 @@ export interface Activity {
 }
 
 export interface Content {
-    explanation?: string
+    explanation?: string,
+    timeline?: DayTimeline[]
 }
 
 export interface Cover {
     url: string,
-    filename: string
+    filename: string,
     path: string
+}
+
+// Gün bazlı timeline
+export interface DayTimeline {
+    date: string,
+    events: TimeLine[]
+}
+
+export interface TimeLine {
+    time: string,
+    title: string
 }

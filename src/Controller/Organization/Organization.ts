@@ -1,9 +1,9 @@
 // src/controllers/UserController.ts
 import { Request, Response } from "express";
-import { OrganizationService } from "../../Service/Organization/Organization";
-import { CategoryService } from "../../Service/Organization/Category";
-import { Organization } from "../../Entity/Organization/Organization";
 import { Category } from "../../Entity/Organization/Category";
+import { Organization } from "../../Entity/Organization/Organization";
+import { CategoryService } from "../../Service/Organization/Category";
+import { OrganizationService } from "../../Service/Organization/Organization";
 
 const service = new OrganizationService();
 const category_service = new CategoryService();
@@ -38,14 +38,15 @@ export const create = async (req: Request, res: Response) => {
         const files: any = req.files;
 
         const category_id = req.body.category_id;
-        const name = req.body.name;
-        const email = req.body.email;
-        const phone = req.body.phone;
-        const address = req.body.address;
-        const website = req.body.website;
-        const latitude = req.body.latitude ? parseFloat(req.body.latitude) : null;
-        const longitude = req.body.longitude ? parseFloat(req.body.longitude) : null;
-        
+        const name        = req.body.name;
+        const email       = req.body.email;
+        const phone       = req.body.phone;
+        const address     = req.body.address;
+        const website     = req.body.website;
+        const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
+        const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
+        const items       = req.body.item_ids;
+
         let cover: { url: string, filename: string, path: string} | undefined = undefined;
 
         if (files && files.cover && files.cover[0]) {
@@ -57,6 +58,8 @@ export const create = async (req: Request, res: Response) => {
                 path: "/upload/organization"
             };
         }
+
+        console.log(cover);
         
         const gallery: string[] | undefined = files?.['gallery[]']
             ? files['gallery[]'].map((f: any) => `/upload/organization/${f.filename}`)
@@ -71,7 +74,7 @@ export const create = async (req: Request, res: Response) => {
             website, latitude, longitude, cover, gallery
         };
 
-        await service.create(organization);
+        await service.create(organization, items);
 
         res.status(201).send("Kayıt Başarıyla Eklendi");
     } catch (err) {

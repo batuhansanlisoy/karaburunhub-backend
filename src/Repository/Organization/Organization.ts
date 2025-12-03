@@ -1,4 +1,4 @@
-import db from "../../db/knex";
+import db, { Knex } from "../../db/knex";
 import { Organization } from "../../Entity/Organization/Organization";
 
 export class OrganizationRepository {
@@ -37,11 +37,12 @@ export class OrganizationRepository {
         return db(this.tableName).where("category_id", category_id);
     }
 
-    async create(organization: Partial<Organization>): Promise<number[]> {
-        return db(this.tableName).insert(organization);
+    async create(organization: Partial<Organization>, trx?: Knex.Transaction): Promise<number[]> {
+        const query = trx ? trx(this.tableName) : db(this.tableName);
+        return query.insert(organization);
     }
 
-    async del(id: number, trx?: any): Promise<number[]> {
+    async del(id: number, trx?:  Knex.Transaction): Promise<number[]> {
         if (trx) {
             return trx(this.tableName).where({ id }).del();
         }

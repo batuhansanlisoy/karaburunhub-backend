@@ -1,14 +1,15 @@
-import express from "express";
 import path from "path";
-import expressLayouts from "express-ejs-layouts";
+import express from "express";
 import userRoutes from "./Routes/User";
 import beachRoutes from "./Routes/Beach";
+import placeRoutes from "./Routes/Place";
 import villageRoutes from "./Routes/Village";
+import activityRoutes from "./Routes/Activity";
 import organizationRoutes from "./Routes/Organization/Organization";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
+import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
-import placeRoutes from "./Routes/Place";
-import activityRoutes from "./Routes/Activity";
+import expressLayouts from "express-ejs-layouts";
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use("/beach", beachRoutes);
 app.use("/village", villageRoutes);
 app.use("/organization", organizationRoutes);
 app.use("/organization/category", organizationCategoryRoutes);
+app.use("/organization/category/item", organizationCategoryItemRoutes);
 app.use("/place", placeRoutes);
 app.use("/activity", activityRoutes);
 app.use("/activity/category", activityCategoryRoutes);
