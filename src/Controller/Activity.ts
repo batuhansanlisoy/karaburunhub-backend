@@ -8,7 +8,6 @@ import { ActivityConverter } from "../Converter/Activity";
 const service = new ActivityService();
 const village_service = new VillageService();
 const category_service = new CategoryService();
-const activity_converter = new ActivityConverter();
 
 export const show = async (req: Request, res: Response) => {
 

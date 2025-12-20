@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { PlaceService } from "../Service/Place";
 import { Place } from "../Entity/Place";
 import { VillageService } from "../Service/Village";
+import { PlaceConverter } from "../Converter/Place";
 
 const service = new PlaceService();
 const village_service = new VillageService();
@@ -22,7 +23,9 @@ export const list = async (req: Request, res: Response) => {
         const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
 
         const places: Place[] = await service.list(village_id);
-        res.json(places);
+        const response = PlaceConverter.toListResponse(places);
+
+        res.json(response);
     } catch (err) {
         res.status(500).json({ error: err });
     }
