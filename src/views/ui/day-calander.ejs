@@ -1,0 +1,155 @@
+<!-- Day Calendar Component -->
+<div class="day-calendar-container modal fade" id="dayCalendarModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <!-- Header -->
+      <div class="modal-header bg-dark text-white">
+        <h5 class="mb-0">Günlük Program</h5>
+        <button type="button" class="btn-close btn-close-white" id="close-calendar-btn"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <form id="day-calendar-form">
+          <div id="day-calendar-wrapper"></div>
+          <button type="button" class="btn btn-primary mt-2" id="add-day-calendar-btn">
+            <i class="bi bi-plus-circle me-1"></i> Gün Ekle
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="close-calendar-footer-btn">Kapat</button>
+        <button type="button" class="btn btn-success" id="save-calendar-btn">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const wrapperId = "day-calendar-wrapper";
+let dayCalendarCount = 0;
+let currentActivityId = null;
+
+// Gün ve saat ekleme fonksiyonları
+function addHour(dayIndex) {
+    const hoursWrapper = document.getElementById(`hours-wrapper-${dayIndex}`);
+    if(!hoursWrapper) return;
+
+    const hourIndex = hoursWrapper.childElementCount;
+    const div = document.createElement('div');
+    div.className = 'hour-item mb-2 p-2 border rounded bg-light d-flex gap-2 align-items-center';
+    div.innerHTML = `
+        <input type="text" name="timeline[${dayIndex}][events][${hourIndex}][time]" class="form-control form-control-sm" placeholder="Saat:Dakika" required>
+        <input type="text" name="timeline[${dayIndex}][events][${hourIndex}][title]" class="form-control form-control-sm" placeholder="Etkinlik başlığı" required>
+        <button type="button" class="btn btn-danger  btn-sm remove-hour-btn">&times;</button>
+    `;
+    div.querySelector('.remove-hour-btn').addEventListener('click', () => hoursWrapper.removeChild(div));
+    hoursWrapper.appendChild(div);
+}
+
+function addDayCalendar() {
+    const wrapper = document.getElementById(wrapperId);
+    if(!wrapper) return;
+
+    const currentDayIndex = dayCalendarCount;
+    const div = document.createElement('div');
+    div.className = 'day-section mb-3 p-3 border rounded shadow-sm bg-white';
+    div.id = `day-calendar-${currentDayIndex}`;
+
+    div.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="mb-0 fw-bold">Gün Tarihi:</label>
+            <button type="button" class="btn btn-danger btn-sm remove-day-btn">&times;</button>
+        </div>
+        <input type="date" name="timeline[${currentDayIndex}][date]" class="form-control mb-2" required>
+        <div id="hours-wrapper-${currentDayIndex}" class="mb-2"></div>
+        <button type="button" class="btn btn-secondary btn-sm add-hour-btn mb-1">
+            <i class="bi bi-plus-circle me-1"></i> Saat Ekle
+        </button>
+    `;
+
+    wrapper.appendChild(div);
+
+    div.querySelector('.remove-day-btn').addEventListener('click', () => wrapper.removeChild(div));
+    div.querySelector('.add-hour-btn').addEventListener('click', () => addHour(currentDayIndex));
+    addHour(currentDayIndex);
+    dayCalendarCount++;
+}
+
+function getTimelineData() {
+    const wrapper = document.getElementById(wrapperId);
+    const timelineData = [];
+
+    wrapper.querySelectorAll('.day-section').forEach((dayDiv, dayIndex) => {
+        const dateInput = dayDiv.querySelector(`input[name="timeline[${dayIndex}][date]"]`);
+        const dayObj = { date: dateInput.value, events: [] };
+
+        dayDiv.querySelectorAll('.hour-item').forEach((hourDiv, hourIndex) => {
+            const timeInput = hourDiv.querySelector(`input[name="timeline[${dayIndex}][events][${hourIndex}][time]"]`);
+            const titleInput = hourDiv.querySelector(`input[name="timeline[${dayIndex}][events][${hourIndex}][title]"]`);
+            if(timeInput && titleInput) dayObj.events.push({ time: timeInput.value, title: titleInput.value });
+        });
+
+        timelineData.push(dayObj);
+    });
+
+    return timelineData;
+}
+
+// Eventler
+document.getElementById('add-day-calendar-btn').addEventListener('click', addDayCalendar);
+
+document.getElementById('close-calendar-btn').addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById("dayCalendarModal")).hide();
+});
+document.getElementById('close-calendar-footer-btn').addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById("dayCalendarModal")).hide();
+});
+
+document.getElementById('save-calendar-btn').addEventListener('click', async () => {
+    const timeline = getTimelineData(); // [{ date, events: [...] }, ...]
+    
+    if(!currentActivityId) return alert("Activity ID yok!");
+
+    try {
+        const res = await fetch(`/activity/timeline/${currentActivityId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ timeline }) // sadece timeline gönderiyoruz
+        });
+        const data = await res.json();
+        console.log("Sunucudan gelen veri:", data);
+        if(res.ok) {
+            alert("Kaydedildi!");
+            bootstrap.Modal.getInstance(document.getElementById("dayCalendarModal")).hide();
+        } else {
+            alert("Kaydedilemedi!");
+        }
+    } catch(err) {
+        console.error(err);
+        alert("Sunucu hatası!");
+    }
+});
+
+
+// Tablodaki Program Oluştur butonu
+document.addEventListener("click", (e) => {
+    const dayBtn = e.target.closest(".day-calender");
+    if(dayBtn) {
+        currentActivityId = dayBtn.dataset.id;
+
+        // Modal aç
+        const modalEl = document.getElementById("dayCalendarModal");
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+
+        // Formu resetle
+        document.getElementById(wrapperId).innerHTML = '';
+        dayCalendarCount = 0;
+
+        addDayCalendar();
+    }
+});
+</script>

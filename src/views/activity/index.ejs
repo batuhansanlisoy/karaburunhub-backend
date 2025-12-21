@@ -13,21 +13,22 @@
         <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
     </div>
 
-
     <!-- Slideover -->
     <div id="slideover" class="slideover">
         <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Etkinlik Formu</h4>
-        <button id="closeSlideover" class="btn-close-dark">
-            <i class="bi bi-x-circle"></i>
-        </button>
+            <h4 id="slideover-title">Etkinlik</h4>
+            <button id="closeSlideover" class="btn-close-dark">
+                <i class="bi bi-x-circle"></i>
+            </button>
         </div>
-        <!-- Form include -->
-        <%- include('./form.ejs') %>
+
+        <div id="slideover-content"></div>
     </div>
 
     <!-- Table widget include -->
     <%- include('../ui/table.ejs', { title: "Plaj & Koy" }) %>
+
+    <%- include('../ui/day-calander.ejs') %>
 </div>
 
 
@@ -60,52 +61,221 @@
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const slideover = document.getElementById("slideover");
-    const openBtn = document.getElementById("openSlideover");
-    const closeBtn = document.getElementById("closeSlideover");
 
-    // Slideover aç/kapat
-    openBtn.addEventListener("click", () => {
-        slideover.classList.add("show");
-        document.body.style.overflow = "hidden";
-    });
-
-    closeBtn.addEventListener("click", () => {
-        slideover.classList.remove("show");
-        document.body.style.overflow = "auto";
-    });
-
-    document.addEventListener("click", (e) => {
-        if (!slideover.contains(e.target) && !openBtn.contains(e.target)) {
-            slideover.classList.remove("show");
-            document.body.style.overflow = "auto";
-        }
-    });
-
-    fetch('/activity/list')
-    .then(res => res.json())
-    .then(data => {
+async function refreshTable() {
+    try {
+        const res = await fetch("/activity/list");
+        let data = await res.json();
         if (!Array.isArray(data)) data = [];
 
         const columns = [
-            { label: '', key: 'actions', type: 'html', width: '25px'},
-            { label: "Etkinlik", key: 'name'},
-            { label: 'Başlangıç Tarihi', key: 'begin', type: 'date'},
-            { label: 'Bitiş Tarihi', key: 'end', type: 'date'},
+            { label: "", key: "actions", type: "html", width: "25px" },
+            { label: "Etkinlik", key: "name" },
+            { label: "Başlangıç Tarihi", key: "begin", type: "date" },
+            { label: "Bitiş Tarihi", key: "end", type: "date" },
         ];
 
-        const rows = data.map((item, idx) => ({
-            actions: `<button class="btn p-0 border-0 bg-transparent delete-btn" data-id="${item.id}">
-                <i class="bi bi-trash3 text-white"></i></button>`,
+        const rows = data.map(item => ({
+            actions: `
+                <div class="d-flex">
+                    <button class="btn btn-dark btn-sm rounded-circle delete-btn"
+                        title="Sil"
+                        data-id="${item.id}">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+
+                    <button class="btn btn-dark btn-sm rounded-circle ms-2 edit-btn"
+                        title="Düzenle"
+                        data-id="${item.id}">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <button class="btn btn-dark btn-sm rounded-circle ms-2 upload-btn"
+                        title="Dosya Yükle"
+                        data-id="${item.id}">
+                        <i class="bi bi-upload"></i>
+                    </button>
+                    <button class="btn btn-dark btn-sm rounded-circle ms-2 day-calender"
+                        title="Program Oluştur"
+                        data-id="${item.id}">
+                        <i class="bi bi-calendar-plus"></i>
+                    </button>
+                </div>
+            `,
             name: item.name,
             begin: item.begin,
             end: item.end,
         }));
 
-        // table.ejs içindeki fonksiyonu çağır
         renderTable(columns, rows, "/activity");
-    })
-    .catch(err => console.error(err));
+    } catch (err) {
+        console.error("Table refresh hatası:", err);
+    }
+}
+
+async function loadForm(url, title) {
+    const slideover = document.getElementById("slideover");
+    const content = document.getElementById("slideover-content");
+    const header = document.getElementById("slideover-title");
+
+    header.textContent = title;
+    content.innerHTML = `<div class="text-center py-5">Yükleniyor...</div>`;
+
+    try {
+        const res = await fetch(url);
+        const html = await res.text();
+        content.innerHTML = html;
+    } catch (err) {
+        content.innerHTML = `<div class="text-danger">Form yüklenemedi</div>`;
+        console.error(err);
+    }
+
+    slideover.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+function closeSlideover() {
+    const slideover = document.getElementById("slideover");
+    slideover.classList.remove("show");
+    document.body.style.overflow = "auto";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const slideover = document.getElementById("slideover");
+    const openBtn = document.getElementById("openSlideover");
+    const closeBtn = document.getElementById("closeSlideover");
+
+    openBtn.addEventListener("click", () => loadForm("/activity/form/create", "Yeni Etkinlik"));
+
+    closeBtn.addEventListener("click", closeSlideover);
+
+    document.addEventListener("click", async (e) => {
+        const editBtn = e.target.closest(".edit-btn");
+        const uploadBtn = e.target.closest(".upload-btn");
+
+        if (editBtn) {
+            await loadForm(`/activity/form/edit/${editBtn.dataset.id}`, "Etkinliği Düzenle");
+            return;
+        }
+
+        if (uploadBtn) {
+            await loadForm(`/activity/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
+            return;
+        }
+
+        if (slideover.classList.contains("show") &&
+            !slideover.contains(e.target) &&
+            !openBtn.contains(e.target)
+        ) {
+            closeSlideover();
+        }
+    });
+    // esc ye basınca kapatma
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && slideover.classList.contains("show")) {
+            closeSlideover();
+        }
+    });
+
+    refreshTable();
+
+    document.getElementById('slideover-content').addEventListener('submit', async (e) => {
+    const form = e.target;
+    
+    if (!form) return;
+    
+    if (form.id === 'edit-form') {
+        e.preventDefault();
+        const name = form.querySelector('input[name="name"]').value;
+        const activityID = form.dataset.activityId;
+
+        try {
+            const res = await fetch(`/activity/${activityID}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+
+            const result = await res.json();
+
+            if (res.ok) {
+                alert('Başlık güncellendi!');
+                closeSlideover();
+                refreshTable(); // table refresh
+            } else {
+                alert('Hata: ' + (result.message || 'Güncellenemedi'));
+            }
+        } catch(err) {
+            console.error("Form submit hatası:", err);
+            alert('Sunucu hatası');
+        }
+    }
+
+    else if (form.id === 'upload-form') {
+        e.preventDefault();
+        const activityID = form.dataset.activityId;
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch(`/activity/upload/${activityID}`, {
+                method: 'PUT',
+                body: formData
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(errorText || 'Upload başarısız');
+            }
+
+            alert('Fotoğraflar başarıyla yüklendi!');
+            closeSlideover();
+            refreshTable();
+        } catch (err) {
+            console.error("Upload hatası:", err);
+            alert('Fotoğraf yüklenirken bir hata oluştu: ' + err.message);
+        }
+    }
+
+    else if (form.id === 'create-form') {
+        e.preventDefault();
+
+        const payload = {
+            category_id: form.category_id.value,
+            village_id: form.village_id.value,
+            name: form.name.value,
+            begin: form.begin.value,
+            end: form.end.value,
+            explanation: form.explanation.value,
+            address: form.address.value,
+            latitude: form.latitude.value || null,
+            longitude: form.longitude.value || null
+        };
+
+        try {
+            const res = await fetch(`/activity/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                alert('Kayıt Başarıyla Eklendi');
+                form.reset();
+                closeSlideover();
+                refreshTable();
+            } else {
+                alert('Hata: ' + (data.message || 'Activity Oluşturulamadı'));
+            }
+        } catch (err) {
+            console.error("Create hatası:", err);
+            alert('Etkinlik oluşturulurken bir hata meydana geldi: ' + err.message);
+        }
+    }
+
+
+    });
+
 });
 </script>

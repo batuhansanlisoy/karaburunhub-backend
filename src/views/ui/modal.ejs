@@ -1,0 +1,35 @@
+<!-- ui/modal.ejs -->
+<div class="modal fade" id="<%= id %>" tabindex="-1" aria-labelledby="<%= id %>Label" aria-hidden="true">
+  <div class="modal-dialog <%= typeof size !== 'undefined' ? size : 'modal-lg' %> modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header <%= typeof headerClass !== 'undefined' ? headerClass : 'bg-dark text-white' %>">
+        <h5 class="modal-title" id="<%= id %>Label"><%= title %></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+      </div>
+
+      <div class="modal-body">
+        <% if (typeof body !== 'undefined') { %>
+          <%= body %>
+        <% } else { %>
+          <form id="<%= formId %>">
+            <div id="<%= wrapperId %>"></div>
+            <% if (typeof addButton !== 'undefined') { %>
+              <button type="button" class="btn btn-secondary btn-sm mt-2" id="<%= addButton.id %>">
+                <%= addButton.label %>
+              </button>
+            <% } %>
+          </form>
+        <% } %>
+      </div>
+
+      <div class="modal-footer">
+        <% if (typeof footer !== 'undefined') { %>
+          <%= footer %>
+        <% } else { %>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+          <button type="submit" form="<%= formId %>" class="btn btn-primary">Kaydet</button>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

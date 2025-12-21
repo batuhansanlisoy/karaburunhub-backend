@@ -1,0 +1,96 @@
+<form id="create-form">
+
+  <!-- Kategori, Bölge, Başlık vs. (mevcut alanlar) -->
+  <div class="mb-3">
+      <label class="form-label" for="category_id">Etkinlik Türü</label>
+      <select class="form-select" name="category_id" id="category_id" required>
+          <option value="">Seçiniz</option>
+          <% categories.forEach(category => { %>
+              <option value="<%= category.id %>"><%= category.name %></option>
+          <% }) %>
+      </select>
+  </div>
+
+  <div class="mb-3">
+      <label class="form-label" for="village_id">Bölge</label>
+      <select class="form-select" name="village_id" id="village_id" required>
+          <option value="">Seçiniz</option>
+          <% villages.forEach(village => { %>
+              <option value="<%= village.id %>"><%= village.name %></option>
+          <% }) %>
+      </select>
+  </div>
+
+  <div class="mb-3">
+      <label class="form-label">Etkinlik Başlığı</label>
+      <input type="text" name="name" class="form-control" required>
+  </div>
+
+  <div class="row">
+      <div class="col-md-6 mb-3">
+          <label class="form-label">Başlangıç Tarihi</label>
+          <input type="date" name="begin" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+          <label class="form-label">Bitiş Tarihi</label>
+          <input type="date" name="end" class="form-control" required>
+      </div>
+  </div>
+
+  <div class="mb-3">
+      <label class="form-label">Etkinlik Metni</label>
+      <textarea name="explanation" class="form-control" rows="5" placeholder="Etkinlik hakkında detaylı bilgi girin..."></textarea>
+  </div>
+
+  <!-- Adres -->
+  <div class="mb-3">
+      <label class="form-label">Adres</label>
+      <input type="text" name="address" class="form-control" required>
+  </div>
+
+  <div class="row">
+      <div class="col-md-6 mb-3">
+          <label class="form-label">Latitude</label>
+          <input type="text" name="latitude" class="form-control">
+      </div>
+      <div class="col-md-6 mb-3">
+          <label class="form-label">Longitude</label>
+          <input type="text" name="longitude" class="form-control">
+      </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("activity-form");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Sayfanın reload olmasını engelle
+
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch(form.action, {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("Etkinlik başarıyla kaydedildi!");
+                form.reset();
+                closeSlideover(); // Eğer slideover içinde form varsa
+                refreshTable();    // Table'ı güncelle
+            } else {
+                alert("Hata: " + (data.message || "Kaydedilemedi"));
+            }
+        } catch (err) {
+            console.error("Form submit hatası:", err);
+            alert("Sunucu hatası: " + err.message);
+        }
+    });
+});
+</script>

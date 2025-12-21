@@ -3,7 +3,7 @@ export interface Activity {
     category_id: number,
     village_id: number,
     name: string,
-    content?: Content,
+    content?: Content | string,
     cover?: Cover,
     gallery?: string[],
     address: string,

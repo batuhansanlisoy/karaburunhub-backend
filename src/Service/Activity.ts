@@ -19,6 +19,10 @@ export class ActivityService {
         await this.repo.create(activity);
     }
 
+    async update(id: number, activity: Partial<Activity>): Promise<void> {
+        await this.repo.update(id, activity);
+    }
+
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
