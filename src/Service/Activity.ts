@@ -26,21 +26,19 @@ export class ActivityService {
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const beach = await this.repo.single(id);
-            
-            if (!beach) throw new Error("Beach nesenesi bulunamadı");
+            const activity = await this.repo.single(id);
+
+            if (!activity) {
+                throw new Error("Activity bulunamadı");
+            }
 
             await this.repo.del(id, trx);
-
-            try {
-                if (beach.cover) {
-                    FileService.delete(beach.cover.url);
-                }
-
-            } catch (error) {
-                throw new Error("dosya silme işlemi hatası" + (error as Error).message);
-            }
         });
-        await this.repo.del(id);
+
+        try {
+            FileService.deleteFolder(`upload/activity/${id}`);
+        } catch (error) {
+            console.error("Dosya silme hatası:", error);
+        }
     }
 }

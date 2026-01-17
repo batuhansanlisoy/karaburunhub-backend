@@ -71,6 +71,7 @@ async function refreshTable() {
         const columns = [
             { label: "", key: "actions", type: "html", width: "25px" },
             { label: "Etkinlik", key: "name" },
+            { label: "Adres", key:"address", type: "string"},
             { label: "Başlangıç Tarihi", key: "begin", type: "date" },
             { label: "Bitiş Tarihi", key: "end", type: "date" },
         ];
@@ -103,6 +104,7 @@ async function refreshTable() {
                 </div>
             `,
             name: item.name,
+            address: item.address,
             begin: item.begin,
             end: item.end,
         }));

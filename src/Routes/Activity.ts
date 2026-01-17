@@ -6,7 +6,7 @@ import { FileService } from "../Service/File";
 const router = Router();
 
 // 🔥 Activity için memory uploader kullanıyoruz
-const upload = FileService.uploader("activity");
+const upload = FileService.uploader("activity", (req) => req.params.id);
 
 router.get("", show);
 router.get("/form/create", createForm);

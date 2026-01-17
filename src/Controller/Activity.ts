@@ -95,14 +95,14 @@ export const uploadPhoto = async (req: Request, res: Response) => {
         const file = files.cover[0];
 
         cover = {
-            url: `/upload/activity/${file.filename}`,
+            url: `/upload/activity/${id}/${file.filename}`,
             filename: file.filename,
-            path: "/upload/activity"
+            path: `/upload/activity/${id}`
         };
     }
 
     const gallery: string[] | undefined = files?.['gallery[]']
-        ? files['gallery[]'].map((f: any) => `/upload/activity/${f.filename}`)
+        ? files['gallery[]'].map((f: any) => `/upload/activity/${id}/${f.filename}`)
         : undefined;
     
     const activity: Partial<Activity> = { cover, gallery };
