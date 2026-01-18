@@ -28,28 +28,27 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
+    const category_id = Number(req.body.category_id);
+    const village_id  = Number(req.body.village_id);
+    const name        = req.body.name;
+    const begin       = req.body.begin;
+    const end         = req.body.end;
+    const explanation = req.body.explanation;
+    const address     = req.body.address;
+    const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
+    const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
+        
+    if (!village_id || !name || !address) {
+        return res.status(400).json({ success: false, message: "Zorunlu alanları doldurunuz" });
+    }
+
+    const activity: Partial<Activity> = {
+        category_id, village_id, name, begin, end, content: { explanation },
+        address, latitude, longitude
+    };
+
     try {
-        const category_id   = Number(req.body.category_id);
-        const village_id    = Number(req.body.village_id);
-        const name          = req.body.name;
-        const begin         = req.body.begin;
-        const end           = req.body.end;
-        const explanation   = req.body.explanation;
-        const address       = req.body.address;
-        const latitude      = req.body.latitude ? parseFloat(req.body.latitude) : null;
-        const longitude     = req.body.longitude ? parseFloat(req.body.longitude) : null;
-            
-        if (!village_id || !name || !address) {
-            return res.status(400).json({ success: false, message: "Zorunlu alanları doldurunuz" });
-        }
-
-        const activity: Partial<Activity> = {
-            category_id, village_id, name, begin, end, content: { explanation },
-            address, latitude, longitude
-        };
-
         const result = await service.create(activity);
-
         res.status(201).json({ success: true, message: "Activity Oluşturuldu", result });
     } catch (err: any) {
         console.error(err);
