@@ -4,8 +4,8 @@ import { DistanceActivityOrganizationRepo } from "../../Repository/Distance/Acti
 export class DistanceActivityOrganizationService {
     private repo = new DistanceActivityOrganizationRepo();
 
-    async create(payload: Partial<DistanceActivityOrganization>): Promise<number[]> {
+    async create(payload: Partial<DistanceActivityOrganization>): Promise<void> {
 
-        return await this.repo.create(payload);
+        await this.repo.create(payload);
     }
 }

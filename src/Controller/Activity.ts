@@ -49,10 +49,10 @@ export const create = async (req: Request, res: Response) => {
 
     try {
         const result = await service.create(activity);
-        res.status(201).json({ success: true, message: "Activity Oluşturuldu", result });
+        res.status(201).json({ success: true, message: "Activity Created", result });
     } catch (err: any) {
         console.error(err);
-        res.status(500).json({ success: false, message: err.message || "Activity Oluşturulamadı" });
+        res.status(500).json({ success: false, message: err.message || "Activity could not be created" });
     }
 };
 

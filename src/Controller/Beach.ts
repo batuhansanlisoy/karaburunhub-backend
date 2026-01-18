@@ -53,48 +53,46 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-    try {
+    const files: any = req.files;
 
-        const files: any = req.files;
+    const village_id  = Number(req.body.village_id);
+    const name        = req.body.name;
+    const explanation = req.body.explanation;
+    const address     = req.body.address;
+    const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
+    const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
-        const village_id  = Number(req.body.village_id);
-        const name        = req.body.name;
-        const explanation = req.body.explanation;
-        const address     = req.body.address;
-        const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
-        const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
+    let cover: { url: string, filename: string, path: string } | undefined;
 
-        let cover: {url: string, filename: string, path: string} | undefined;
+    if (files && files.cover && files.cover[0]) {
+        const file = files.cover[0];
 
-        if (files && files.cover && files.cover[0]) {
-            const file = files.cover[0];
-
-            cover = {
-                url: `/upload/beach/${file.filename}`,
-                filename: file.filename,
-                path: "/upload/beach"
-            };
-        }
-
-        const gallery: string[] | undefined = files?.['gallery[]']
-            ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
-            : undefined;
-
-        if (!village_id || !name || !address) {
-            return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
-        }
-
-        const beach: Partial<Beach> = {
-            village_id, name, extra: { explanation }, cover,
-            gallery, address, latitude, longitude
+        cover = {
+            url: `/upload/beach/${file.filename}`,
+            filename: file.filename,
+            path: "/upload/beach"
         };
+    }
 
-        await service.create(beach);
+    const gallery: string[] | undefined = files?.['gallery[]']
+        ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
+        : undefined;
 
-        res.status(201).send(`Plaj '${name}' başarıyla eklendi`);
-    } catch (err) {
+    if (!village_id || !name || !address) {
+        return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
+    }
+
+    const beach: Partial<Beach> = {
+        village_id, name, extra: { explanation }, cover,
+        gallery, address, latitude, longitude
+    };
+
+    try {
+        const result = await service.create(beach);
+        res.status(201).json({ success: true, message: "Beach Created", result });
+    } catch (err: any) {
         console.error(err);
-        res.status(500).send("Plaj eklenirken hata oluştu");
+        res.status(500).json({ success: false, message: err.message || "Beach could not be created" });
     }
 };
 

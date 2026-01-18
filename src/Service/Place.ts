@@ -2,9 +2,11 @@ import db from "../db/knex";
 import { FileService } from "./File";
 import { Place } from "../Entity/Place";
 import { PlaceRepository } from "../Repository/Place";
+import { LocationDistanceOrchestrator } from "./Distance";
 
 export class PlaceService {
     private repo = new PlaceRepository();
+    private distanceService = new LocationDistanceOrchestrator
 
     async single(id: number): Promise<Place> {
         return this.repo.single(id);
@@ -18,8 +20,16 @@ export class PlaceService {
         return this.repo.getAll();
     }
 
-    async create(place: Partial<Place>): Promise<void> {
-        await this.repo.create(place);
+    async create(place: Partial<Place>): Promise<number[]> {
+
+        const placeIds = await this.repo.create(place);
+        const placeId = placeIds[0];
+
+        if (place.latitude != null || place.longitude) {
+            this.distanceService.onPlaceCreated(placeId, place.latitude!, place.longitude!);
+        }
+
+        return placeIds;
     }
 
     async del(id: number): Promise<void> {
@@ -40,6 +50,6 @@ export class PlaceService {
                 throw new Error("dosya silme işlemi hatası" + (error as Error).message);
             }
         });
-        await this.repo.del(id);
+        await this.repo.del(id); // bunda bi saçmalık var her yerde düzelt
     }
 }

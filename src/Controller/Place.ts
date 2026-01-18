@@ -32,47 +32,47 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-    try {
-        const files: any = req.files;
+    const files: any = req.files;
 
-        const village_id  = Number(req.body.village_id);
-        const name        = req.body.name;
-        const explanation = req.body.explanation;
-        const detail      = req.body.detail;
-        const address     = req.body.address;
-        const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
-        const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
-        
-        let cover: {url: string, filename: string, path: string} | undefined;
+    const village_id  = Number(req.body.village_id);
+    const name        = req.body.name;
+    const explanation = req.body.explanation;
+    const detail      = req.body.detail;
+    const address     = req.body.address;
+    const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
+    const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
+    
+    let cover: {url: string, filename: string, path: string} | undefined;
 
-        if (files && files.cover && files.cover[0]) {
-            const file = files.cover[0];
+    if (files && files.cover && files.cover[0]) {
+        const file = files.cover[0];
 
-            cover = {
-                url: `/upload/place/${file.filename}`,
-                filename: file.filename,
-                path: "/upload/place"
-            };
-        }
-
-        const gallery: string[] | undefined = files?.['gallery[]']
-            ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
-            : undefined;
-
-        if (!village_id || !name || !address) {
-            return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
-        }
-
-        const place: Partial<Place> = {
-            village_id, name, content: { explanation, detail },
-            cover, gallery, address, latitude, longitude
+        cover = {
+            url: `/upload/place/${file.filename}`,
+            filename: file.filename,
+            path: "/upload/place"
         };
-        await service.create(place);
+    }
 
-        res.status(201).send("Place nesnesi oluşturuldu");
-    } catch (err) {
+    const gallery: string[] | undefined = files?.['gallery[]']
+        ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
+        : undefined;
+
+    if (!village_id || !name || !address) {
+        return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
+    }
+
+    const place: Partial<Place> = {
+        village_id, name, content: { explanation, detail },
+        cover, gallery, address, latitude, longitude
+    };
+
+    try {
+        const result = await service.create(place);
+        res.status(201).json({ success: true, message: "Place Created", result });
+    } catch (err: any) {
         console.error(err);
-        res.status(500).send("Place eklenirken hata oluştu");
+        res.status(500).json({ success: false, message: err.message || "Place could not be created" });
     }
 };
 

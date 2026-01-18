@@ -4,8 +4,8 @@ import { DistanceActivityPlaceRepo } from "../../Repository/Distance/ActivityPla
 export class DistanceActivityPlaceService {
     private repo = new DistanceActivityPlaceRepo();
 
-    async create(payload: Partial<DistanceActivityPlace>): Promise<number[]> {
+    async create(payload: Partial<DistanceActivityPlace>): Promise<void> {
 
-        return await this.repo.create(payload);
+        await this.repo.create(payload);
     }
 }
