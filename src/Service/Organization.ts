@@ -38,24 +38,27 @@ export class OrganizationService {
         });
     }
 
+    async update(id: number, payload: Partial<Organization>): Promise<void> {
+        await this.repo.update(id, payload);
+    }
+
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
             const org = await this.repo.single(id);
-            console.log(org);
-            if (!org) throw new Error("Organizasyon buluanamadı");
+
+            if (!org) { 
+                throw new Error("Organizasyon buluanamadı");
+            }
 
             await this.repo.del(id, trx);
-
-            try {
-                if (org.cover) {
-
-                    FileService.delete(org.cover.url);
-                }
-            } catch (error) {
-                throw new Error("dosya silme hatası" + (error as Error).message);
-            }
         });
+
+        try {
+            FileService.deleteFolder(`upload/organization/${id}`);
+        } catch (error) {
+            console.error("Dosya silme hatası:", error);
+        }
     }
     
 }

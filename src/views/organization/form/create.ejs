@@ -1,0 +1,52 @@
+<form id="create-form">
+    <div class="mb-3">
+        <label class="form-label" for="category_id">İşletme Türü</label>
+        <select class="form-select" name="category_id" id="category_id" required>
+            <option value="" disabled selected hidden>İşletme türünü seçiniz</option>
+            <% categories.forEach(category => { %>
+                <option value="<%= category.id %>"><%= category.name %></option>
+            <% }) %>
+        </select>
+    </div>
+
+    <!-- ALT KATEGORİ MULTI-SELECT -->
+    <div class="mb-3">
+        <label class="form-label" for="item_id">Alt Kategori</label>
+        <select class="form-select" name="item_ids[]" id="item_id" multiple size="5" style="height:auto;">
+            <!-- İlk açılışta boş -->
+        </select>
+    </div>
+
+    <!-- Diğer alanlar aynı -->
+    <div class="mb-3">
+        <label class="form-label">İşletme Adı</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">E-posta</label>
+        <input type="email" name="email" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Telefon</label>
+        <input type="text" name="phone" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Adres</label>
+        <input type="text" name="address" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Web Sitesi</label>
+        <input type="text" name="website" class="form-control">
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Latitude</label>
+            <input type="text" name="latitude" class="form-control">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Longitude</label>
+            <input type="text" name="longitude" class="form-control">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>
+</form>

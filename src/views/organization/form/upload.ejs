@@ -1,0 +1,11 @@
+<form id="upload-form" data-organization-id="<%= organizationId %>" enctype="multipart/form-data">
+    <h5 class="mb-3">Kapak Fotoğrafı</h5>
+    <div class="mb-3">
+        <input type="file" name="cover" accept="image/*" class="form-control">
+    </div>
+    <h5 class="mb-3">Galeri Fotoğrafları</h5>
+    <div class="mb-3">
+        <input type="file" name="gallery[]" accept="image/*" multiple class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary w-100 mt-3">Yükle</button>
+</form>

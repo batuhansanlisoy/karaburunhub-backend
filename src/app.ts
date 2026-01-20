@@ -5,7 +5,7 @@ import beachRoutes from "./Routes/Beach";
 import placeRoutes from "./Routes/Place";
 import villageRoutes from "./Routes/Village";
 import activityRoutes from "./Routes/Activity";
-import organizationRoutes from "./Routes/Organization/Organization";
+import organizationRoutes from "./Routes/Organization";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
