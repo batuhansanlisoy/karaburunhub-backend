@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { show, list, create, del, update, uploadPhoto, timeline} from "../Controller/Activity";
 import { createForm, editForm, uploadForm } from "../Controller/Activity/Form";
 import { FileService } from "../Service/File";
+import { 
+    show, list, create, del, update, uploadPhoto, timeline,
+    nearestBeaches, nearestOrganizations, nearestPlaces
+} from "../Controller/Activity";
 
 const router = Router();
-
-// 🔥 Activity için memory uploader kullanıyoruz
 const upload = FileService.uploader("activity", (req) => req.params.id);
 
 router.get("", show);
@@ -13,6 +14,9 @@ router.get("/form/create", createForm);
 router.get("/form/edit/:id", editForm);
 router.get("/form/upload/:id", uploadForm);
 router.get("/list", list);
+router.get("/:id/nearest-beaches", nearestBeaches);
+router.get("/:id/nearest-places", nearestPlaces);
+router.get("/:id/nearest-organizations", nearestOrganizations);
 
 router.post("/create",create);
 

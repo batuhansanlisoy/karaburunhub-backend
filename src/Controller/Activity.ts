@@ -2,8 +2,14 @@ import { Request, Response } from "express";
 import { ActivityService } from "../Service/Activity";
 import { Activity } from "../Entity/Activity";
 import { ActivityConverter } from "../Converter/Activity";
+import { DistanceActivityBeachService } from "../Service/Distance/ActivityBeach";
+import { DistanceActivityPlaceService } from "../Service/Distance/ActivityPlace";
+import { DistanceActivityOrganizationService } from "../Service/Distance/ActivityOrganization";
 
 const service = new ActivityService();
+const serviceBeachDistance = new DistanceActivityBeachService();
+const servicePlaceDistance = new DistanceActivityPlaceService();
+const serviceOrganizationDistance = new DistanceActivityOrganizationService();
 
 export const show = async (req: Request, res: Response) => {
     res.render("activity/index", {
@@ -126,3 +132,39 @@ export const del = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
     }
 };
+
+export const nearestBeaches = async (req: Request, res: Response) => {
+    const activityId = Number(req.params.id);
+
+    try {
+        const distances = await serviceBeachDistance.list(activityId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const nearestPlaces = async (req: Request, res: Response) => {
+    const activityId = Number(req.params.id);
+
+    try {
+        const distances = await servicePlaceDistance.list(activityId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const nearestOrganizations = async (req: Request, res: Response) => {
+    const activityId = Number(req.params.id);
+
+    try {
+        const distances = await serviceOrganizationDistance.list(activityId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}

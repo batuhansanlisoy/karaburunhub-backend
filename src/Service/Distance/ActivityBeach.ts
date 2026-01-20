@@ -4,6 +4,10 @@ import { DistanceActivityBeachRepo } from "../../Repository/Distance/ActivityBea
 export class DistanceActivityBeachService {
     private repo = new DistanceActivityBeachRepo();
 
+    async list(activity_id?: number, beach_id?: number): Promise<DistanceActivityBeach[]> {
+        return await this.repo.list(activity_id, beach_id);
+    }
+
     async create(payload: Partial<DistanceActivityBeach>): Promise<void> {
 
         await this.repo.create(payload);
