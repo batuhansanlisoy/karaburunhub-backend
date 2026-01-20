@@ -1,17 +1,12 @@
 import { Request, Response } from "express";
 import { PlaceService } from "../Service/Place";
 import { Place } from "../Entity/Place";
-import { VillageService } from "../Service/Village";
 import { PlaceConverter } from "../Converter/Place";
 
 const service = new PlaceService();
-const village_service = new VillageService();
 
 export const show = async (req: Request, res: Response) => {
-    
-    const villages = await village_service.list();
     res.render("place/index", {
-    villages,
     title: "Gezilecek Yerler",
     activePage: "place",
     page: "place"
@@ -32,8 +27,6 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-    const files: any = req.files;
-
     const village_id  = Number(req.body.village_id);
     const name        = req.body.name;
     const explanation = req.body.explanation;
@@ -41,22 +34,6 @@ export const create = async (req: Request, res: Response) => {
     const address     = req.body.address;
     const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
     const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
-    
-    let cover: {url: string, filename: string, path: string} | undefined;
-
-    if (files && files.cover && files.cover[0]) {
-        const file = files.cover[0];
-
-        cover = {
-            url: `/upload/place/${file.filename}`,
-            filename: file.filename,
-            path: "/upload/place"
-        };
-    }
-
-    const gallery: string[] | undefined = files?.['gallery[]']
-        ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
-        : undefined;
 
     if (!village_id || !name || !address) {
         return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
@@ -64,7 +41,7 @@ export const create = async (req: Request, res: Response) => {
 
     const place: Partial<Place> = {
         village_id, name, content: { explanation, detail },
-        cover, gallery, address, latitude, longitude
+        address, latitude, longitude
     };
 
     try {
@@ -75,6 +52,52 @@ export const create = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: err.message || "Place could not be created" });
     }
 };
+
+export const update = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const name = req.body.name;
+
+    const place: Partial<Place> = { name };
+
+    try {
+        const result = await service.update(id, place);
+        return res.json({ result });
+    } catch(err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+    }
+}
+
+export const uploadPhoto = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    
+    const files: any = req.files;
+    let cover: {url: string, filename: string, path: string} | undefined;
+
+    if (files && files.cover && files.cover[0]) {
+        const file = files.cover[0];
+
+        cover = {
+            url: `/upload/place/${id}/${file.filename}`,
+            filename: file.filename,
+            path: `/upload/place/${id}`
+        };
+    }
+
+    const gallery: string[] | undefined = files?.['gallery[]']
+        ? files['gallery[]'].map((f: any) => `/upload/place/${id}/${f.filename}`)
+        : undefined;
+    
+    const activity: Partial<Place> = { cover, gallery };
+
+    try {
+        const result = await service.update(id, activity);
+        return res.json({ result });
+    } catch(err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+    }
+}
 
 export const del = async (req: Request, res: Response) => {
     const id = Number(req.params.id);

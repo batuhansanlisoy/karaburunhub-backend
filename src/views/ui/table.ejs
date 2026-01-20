@@ -28,6 +28,7 @@ function renderTable(columns, data, deleteUrl) {
         if (col.width) th.style.width = col.width;
         tableHead.appendChild(th);
     });
+    
 
     // Table Body
     tableBody.innerHTML = '';
@@ -46,8 +47,7 @@ function renderTable(columns, data, deleteUrl) {
                 const digits = value.replace(/\D/g, '');
                 value = digits.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
                 td.textContent = value;
-            } 
-            else if (col.type === 'date' && value && value !== '-') {
+            } else if (col.type === 'date' && value && value !== '-') {
                 const date = new Date(value);
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0');

@@ -26,30 +26,33 @@ export class PlaceService {
         const placeId = placeIds[0];
 
         if (place.latitude != null || place.longitude) {
+
             this.distanceService.onPlaceCreated(placeId, place.latitude!, place.longitude!);
         }
 
         return placeIds;
     }
 
+    async update(id: number, payload: Partial<Place>): Promise<void> {
+        await this.repo.update(id, payload);
+    }
+
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const beach = await this.repo.single(id);
+            const place = await this.repo.single(id);
             
-            if (!beach) throw new Error("Beach nesenesi bulunamadı");
+            if (!place) {
+                throw new Error("place nesenesi bulunamadı");
+            }
 
             await this.repo.del(id, trx);
-
-            try {
-                if (beach.cover) {
-                    FileService.delete(beach.cover.url);
-                }
-
-            } catch (error) {
-                throw new Error("dosya silme işlemi hatası" + (error as Error).message);
-            }
         });
-        await this.repo.del(id); // bunda bi saçmalık var her yerde düzelt
+
+        try {
+            FileService.deleteFolder(`upload/place/${id}`);
+        } catch (error) {
+            console.error("Dosya silme hatası:", error);
+        }
     }
 }

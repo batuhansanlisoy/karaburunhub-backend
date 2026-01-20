@@ -19,9 +19,9 @@ router.get("/:id/nearest-places", nearestPlaces);
 router.get("/:id/nearest-organizations", nearestOrganizations);
 
 router.post("/create",create);
-
 router.put("/:id", update);
 router.put("/timeline/:id", timeline);
+
 router.put("/upload/:id", upload.fields([
     { name: "cover", maxCount: 1 },
     { name: "gallery[]", maxCount: 10 }

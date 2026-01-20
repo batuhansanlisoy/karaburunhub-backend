@@ -4,9 +4,7 @@ import { Village } from "../Entity/Village";
 
 const service = new VillageService();
 
-
 export const show = async (req: Request, res: Response) => {
-
     res.render("village/index", {
     title: "Köyler",
     activePage: "village",
@@ -22,7 +20,6 @@ export const map = async (req: Request, res: Response) => {
     page: "village"
     });
 };
-
 
 export const list = async (req: Request, res: Response) => {
     try {

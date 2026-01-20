@@ -1,15 +1,5 @@
 <form id="create-form">
     <div class="mb-3">
-        <label class="form-label" for="category_id">Etkinlik Türü</label>
-        <select class="form-select" name="category_id" id="category_id" required>
-            <option value="">Seçiniz</option>
-            <% categories.forEach(category => { %>
-                <option value="<%= category.id %>"><%= category.name %></option>
-            <% }) %>
-        </select>
-    </div>
-
-    <div class="mb-3">
         <label class="form-label" for="village_id">Bölge</label>
         <select class="form-select" name="village_id" id="village_id" required>
             <option value="">Seçiniz</option>
@@ -18,34 +8,22 @@
             <% }) %>
         </select>
     </div>
-
     <div class="mb-3">
-        <label class="form-label">Etkinlik Başlığı</label>
+        <label class="form-label">Yer Adı</label>
         <input type="text" name="name" class="form-control" required>
     </div>
-
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Başlangıç Tarihi</label>
-            <input type="date" name="begin" class="form-control" required>
-        </div>
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Bitiş Tarihi</label>
-            <input type="date" name="end" class="form-control" required>
-        </div>
-    </div>
-
     <div class="mb-3">
-        <label class="form-label">Etkinlik Metni</label>
-        <textarea name="explanation" class="form-control" rows="5" placeholder="Etkinlik hakkında detaylı bilgi girin..."></textarea>
+        <label class="form-label">Kısa Açıklama</label>
+        <input type="text" name="explanation" class="form-control">
     </div>
-
-    <!-- Adres -->
+    <div class="mb-3">
+        <label class="form-label">Detaylı Açıklama</label>
+        <textarea name="detail" rows="3" class="form-control"></textarea>
+    </div>
     <div class="mb-3">
         <label class="form-label">Adres</label>
         <input type="text" name="address" class="form-control" required>
     </div>
-
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">Latitude</label>
@@ -56,6 +34,5 @@
             <input type="text" name="longitude" class="form-control">
         </div>
     </div>
-
     <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>
 </form>

@@ -54,7 +54,7 @@ app.use("/organization/category/item", organizationCategoryItemRoutes);
 app.use("/place", placeRoutes);
 app.use("/activity", activityRoutes);
 app.use("/activity/category", activityCategoryRoutes);
-// Ana Sayfa
+
 app.get("/", (req, res) => {
   res.render("index", { 
     title: "Karaburun Hub", 

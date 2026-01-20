@@ -1,19 +1,12 @@
 import { Request, Response } from "express";
 import { BeachService } from "../Service/Beach";
 import { Beach } from "../Entity/Beach";
-import { Village } from "../Entity/Village";
-import { VillageService } from "../Service/Village";
 import { BeachConverter } from "../Converter/Beach";
 
 const service = new BeachService();
-const village_service = new VillageService();
 
 export const show = async (req: Request, res: Response) => {
-
-    const villages: Village[] = await village_service.list();
-
     res.render("beach/index", {
-    villages,
     title: "Plajlar",
     activePage: "beach",
     page: "beach"
@@ -53,8 +46,6 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-    const files: any = req.files;
-
     const village_id  = Number(req.body.village_id);
     const name        = req.body.name;
     const explanation = req.body.explanation;
@@ -62,29 +53,12 @@ export const create = async (req: Request, res: Response) => {
     const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
     const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
-    let cover: { url: string, filename: string, path: string } | undefined;
-
-    if (files && files.cover && files.cover[0]) {
-        const file = files.cover[0];
-
-        cover = {
-            url: `/upload/beach/${file.filename}`,
-            filename: file.filename,
-            path: "/upload/beach"
-        };
-    }
-
-    const gallery: string[] | undefined = files?.['gallery[]']
-        ? files['gallery[]'].map((f: any) => `/upload/place/${f.filename}`)
-        : undefined;
-
     if (!village_id || !name || !address) {
         return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
     }
 
     const beach: Partial<Beach> = {
-        village_id, name, extra: { explanation }, cover,
-        gallery, address, latitude, longitude
+        village_id, name, extra: { explanation }, address, latitude, longitude
     };
 
     try {
@@ -95,6 +69,52 @@ export const create = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: err.message || "Beach could not be created" });
     }
 };
+
+export const update = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const name = req.body.name;
+
+    const beach: Partial<Beach> = { name };
+
+    try {
+        const result = await service.update(id, beach);
+        return res.json({ result });
+    } catch(err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+    }
+}
+
+export const uploadPhoto = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    
+    const files: any = req.files;
+    let cover: {url: string, filename: string, path: string} | undefined;
+
+    if (files && files.cover && files.cover[0]) {
+        const file = files.cover[0];
+
+        cover = {
+            url: `/upload/beach/${id}/${file.filename}`,
+            filename: file.filename,
+            path: `/upload/beach/${id}`
+        };
+    }
+
+    const gallery: string[] | undefined = files?.['gallery[]']
+        ? files['gallery[]'].map((f: any) => `/upload/beach/${id}/${f.filename}`)
+        : undefined;
+    
+    const beach: Partial<Beach> = { cover, gallery };
+
+    try {
+        const result = await service.update(id, beach);
+        return res.json({ result });
+    } catch(err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+    }
+}
 
 export const del = async (req: Request, res: Response) => {
     const id = Number(req.params.id);

@@ -3,71 +3,23 @@
         <div class="p-2 bg-primary text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
             <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
         </div>
-        
-        <button id="openSlideover" class="btn btn-dark rounded-5">
+        <button onclick="Slideover.show('/activity/form/create', 'Yeni Etkinlik')" class="btn btn-dark rounded-5 so-trigger">
             <i class="bi bi-plus-circle me-2"></i>Ekle
         </button>
-        <button id="openFilter" class="btn btn-dark rounded-5">
-            <i class="bi bi-filter me-2"></i>Filtre
-        </button>
+        <button id="openFilter" class="btn btn-dark rounded-5"><i class="bi bi-filter me-2"></i>Filtre</button>
         <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
     </div>
 
-    <!-- Slideover -->
-    <div id="slideover" class="slideover">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 id="slideover-title">Etkinlik</h4>
-            <button id="closeSlideover" class="btn-close-dark">
-                <i class="bi bi-x-circle"></i>
-            </button>
-        </div>
-
-        <div id="slideover-content"></div>
-    </div>
-
-    <!-- Table widget include -->
+    <%- include('../ui/slideover.ejs') %>
     <%- include('../ui/table.ejs', { title: "Plaj & Koy" }) %>
-
     <%- include('../ui/day-calander.ejs') %>
 </div>
 
-
-<style>
-.slideover {
-    position: fixed;
-    top: 0;
-    right: -550px;
-    width: 500px;
-    height: 100%;
-    background: #3d3d3d;
-    color: #fff;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.5);
-    z-index: 1050;
-    overflow-y: auto;
-    padding: 1.5rem;
-    transition: right 0.3s ease-in-out;
-}
-
-.slideover.show {
-    right: 0;
-}
-
-.btn-close-dark {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #ff6b6b;
-}
-</style>
-
 <script>
-
 async function refreshTable() {
     try {
         const res = await fetch("/activity/list");
         let data = await res.json();
-        if (!Array.isArray(data)) data = [];
-
         const columns = [
             { label: "", key: "actions", type: "html", width: "25px" },
             { label: "Etkinlik", key: "name" },
@@ -79,205 +31,73 @@ async function refreshTable() {
         const rows = data.map(item => ({
             actions: `
                 <div class="d-flex">
-                    <button class="btn btn-dark btn-sm rounded-circle delete-btn"
-                        title="Sil"
-                        data-id="${item.id}">
-                        <i class="bi bi-trash3"></i>
-                    </button>
-
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 edit-btn"
-                        title="Düzenle"
-                        data-id="${item.id}">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 upload-btn"
-                        title="Dosya Yükle"
-                        data-id="${item.id}">
-                        <i class="bi bi-upload"></i>
-                    </button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 day-calender"
-                        title="Program Oluştur"
-                        data-id="${item.id}">
-                        <i class="bi bi-calendar-plus"></i>
-                    </button>
+                    <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
+                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                    <button class="btn btn-dark btn-sm rounded-circle ms-2 day-calender" data-id="${item.id}"><i class="bi bi-calendar-plus"></i></button>
                 </div>
             `,
-            name: item.name,
-            address: item.address,
-            begin: item.begin,
-            end: item.end,
+            name: item.name, address: item.address, begin: item.begin, end: item.end,
         }));
-
         renderTable(columns, rows, "/activity");
-    } catch (err) {
-        console.error("Table refresh hatası:", err);
-    }
-}
-
-async function loadForm(url, title) {
-    const slideover = document.getElementById("slideover");
-    const content = document.getElementById("slideover-content");
-    const header = document.getElementById("slideover-title");
-
-    header.textContent = title;
-    content.innerHTML = `<div class="text-center py-5">Yükleniyor...</div>`;
-
-    try {
-        const res = await fetch(url);
-        const html = await res.text();
-        content.innerHTML = html;
-    } catch (err) {
-        content.innerHTML = `<div class="text-danger">Form yüklenemedi</div>`;
-        console.error(err);
-    }
-
-    slideover.classList.add("show");
-    document.body.style.overflow = "hidden";
-}
-
-function closeSlideover() {
-    const slideover = document.getElementById("slideover");
-    slideover.classList.remove("show");
-    document.body.style.overflow = "auto";
+    } catch (err) { console.error(err); }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const slideover = document.getElementById("slideover");
-    const openBtn = document.getElementById("openSlideover");
-    const closeBtn = document.getElementById("closeSlideover");
+    refreshTable();
 
-    openBtn.addEventListener("click", () => loadForm("/activity/form/create", "Yeni Etkinlik"));
-
-    closeBtn.addEventListener("click", closeSlideover);
-
+    // Tıklama Yakalayıcı (Event Delegation)
     document.addEventListener("click", async (e) => {
         const editBtn = e.target.closest(".edit-btn");
         const uploadBtn = e.target.closest(".upload-btn");
+        const calendarBtn = e.target.closest(".day-calender");
 
-        if (editBtn) {
-            await loadForm(`/activity/form/edit/${editBtn.dataset.id}`, "Etkinliği Düzenle");
-            return;
-        }
-
-        if (uploadBtn) {
-            await loadForm(`/activity/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
-            return;
-        }
-
-        if (slideover.classList.contains("show") &&
-            !slideover.contains(e.target) &&
-            !openBtn.contains(e.target)
-        ) {
-            closeSlideover();
-        }
-    });
-    // esc ye basınca kapatma
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && slideover.classList.contains("show")) {
-            closeSlideover();
+        if (editBtn) Slideover.show(`/activity/form/edit/${editBtn.dataset.id}`, "Etkinliği Düzenle");
+        if (uploadBtn) Slideover.show(`/activity/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
+        
+        // Takvim butonuna basılınca yapılacak işlem (Buraya takvim açma kodunu yazabilirsin)
+        if (calendarBtn) {
+            console.log("Takvim açılıyor, ID:", calendarBtn.dataset.id);
+            // Eğer day-calander.ejs içinde bir fonksiyon varsa onu çağır:
+            // openCalendar(calendarBtn.dataset.id); 
         }
     });
 
-    refreshTable();
-
+    // Slideover içindeki formların submit yönetimi
     document.getElementById('slideover-content').addEventListener('submit', async (e) => {
-    const form = e.target;
-    
-    if (!form) return;
-    
-    if (form.id === 'edit-form') {
         e.preventDefault();
-        const name = form.querySelector('input[name="name"]').value;
-        const activityID = form.dataset.activityId;
+        const form = e.target;
+        let url = '';
+        let config = { method: 'POST' };
 
-        try {
-            const res = await fetch(`/activity/${activityID}`, {
-                method: 'PUT',
+        if (form.id === 'edit-form') {
+            url = `/activity/${form.dataset.activityId}`;
+            config = { 
+                method: 'PUT', 
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name })
-            });
-
-            const result = await res.json();
-
-            if (res.ok) {
-                alert('Başlık güncellendi!');
-                closeSlideover();
-                refreshTable(); // table refresh
-            } else {
-                alert('Hata: ' + (result.message || 'Güncellenemedi'));
-            }
-        } catch(err) {
-            console.error("Form submit hatası:", err);
-            alert('Sunucu hatası');
-        }
-    }
-
-    else if (form.id === 'upload-form') {
-        e.preventDefault();
-        const activityID = form.dataset.activityId;
-        const formData = new FormData(form);
-
-        try {
-            const res = await fetch(`/activity/upload/${activityID}`, {
-                method: 'PUT',
-                body: formData
-            });
-
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(errorText || 'Upload başarısız');
-            }
-
-            alert('Fotoğraflar başarıyla yüklendi!');
-            closeSlideover();
-            refreshTable();
-        } catch (err) {
-            console.error("Upload hatası:", err);
-            alert('Fotoğraf yüklenirken bir hata oluştu: ' + err.message);
-        }
-    }
-
-    else if (form.id === 'create-form') {
-        e.preventDefault();
-
-        const payload = {
-            category_id: form.category_id.value,
-            village_id: form.village_id.value,
-            name: form.name.value,
-            begin: form.begin.value,
-            end: form.end.value,
-            explanation: form.explanation.value,
-            address: form.address.value,
-            latitude: form.latitude.value || null,
-            longitude: form.longitude.value || null
-        };
-
-        try {
-            const res = await fetch(`/activity/create`, {
-                method: 'POST',
+                body: JSON.stringify({ name: form.name.value }) 
+            };
+        } else if (form.id === 'upload-form') {
+            url = `/activity/upload/${form.dataset.activityId}`;
+            config = { method: 'PUT', body: new FormData(form) };
+        } else if (form.id === 'create-form') {
+            url = `/activity/create`;
+            const payload = Object.fromEntries(new FormData(form));
+            config = { 
+                method: 'POST', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            });
-
-            const data = await res.json();
-
-            if (res.ok && data.success) {
-                alert('Kayıt Başarıyla Eklendi');
-                form.reset();
-                closeSlideover();
-                refreshTable();
-            } else {
-                alert('Hata: ' + (data.message || 'Activity Oluşturulamadı'));
-            }
-        } catch (err) {
-            console.error("Create hatası:", err);
-            alert('Etkinlik oluşturulurken bir hata meydana geldi: ' + err.message);
+            };
         }
-    }
 
-
+        const res = await fetch(url, config);
+        if (res.ok) {
+            alert('Başarılı!');
+            Slideover.hide();
+            refreshTable();
+        } else {
+            alert('Hata oluştu!');
+        }
     });
-
 });
 </script>

@@ -1,5 +1,4 @@
-<form id="beach-form" action="/beach/create" method="POST" enctype="multipart/form-data">
-    <!-- Köy / Mahalle -->
+<form id="create-form">
     <div class="mb-3">
         <label class="form-label" for="village_id">Köy / Mahalle</label>
         <select class="form-select" name="village_id" id="village_id" required>
@@ -9,23 +8,18 @@
             <% }) %>
         </select>
     </div>
-
-    <!-- Başlık -->
     <div class="mb-3">
         <label class="form-label" for="name">Plaj Başlık</label>
         <input type="text" name="name" id="name" class="form-control" required>
     </div>
-
     <div class="mb-3">
         <label class="form-label">Açıklama</label>
         <textarea name="explanation" class="form-control" rows="5" placeholder="Açıklama Metni Giriniz..."></textarea>
     </div>
-
     <div class="mb-3">
         <label class="form-label" for="address">Adres</label>
         <input type="text" name="address" id="address" class="form-control" required>
     </div>
-
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">Latitude</label>
@@ -36,16 +30,5 @@
             <input type="text" name="longitude" class="form-control">
         </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Kapak Fotoğrafı</label>
-        <input type="file" name="cover" accept="image/*" class="form-control">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Galeri Fotoğrafları</label>
-        <input type="file" name="gallery[]" accept="image/*" multiple class="form-control">
-    </div>
-
     <button type="submit" class="btn btn-primary w-100 mt-3">Kaydet</button>
 </form>

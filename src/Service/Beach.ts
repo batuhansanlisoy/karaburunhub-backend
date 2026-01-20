@@ -29,24 +29,26 @@ export class BeachService {
         return beachIds;
     }
 
+    async update(id: number, payload: Partial<Beach>): Promise<void> {
+        await this.repo.update(id, payload);
+    }
+
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
             const beach = await this.repo.single(id);
             
-            if (!beach) throw new Error("Beach nesenesi bulunamadı");
+            if (!beach) {
+                throw new Error("Beach nesenesi bulunamadı");
+            }
 
             await this.repo.del(id, trx);
 
-            try {
-                if (beach.cover) {
-                    FileService.delete(beach.cover.url);
-                }
-
-            } catch (error) {
-                throw new Error("dosya silme işlemi hatası" + (error as Error).message);
-            }
         });
-        await this.repo.del(id);
+        try {
+            FileService.deleteFolder(`upload/beach/${id}`);
+        } catch (error) {
+            console.error("Dosya silme hatası:", error);
+        }
     }
 }

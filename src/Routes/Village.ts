@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { show, list, create, del, map } from "../Controller/Village";
+import { createForm } from "../Controller/Village/Form";
 
 const router = Router();
 
 router.get("", show)
+router.get("/form/create", createForm);
 router.get("/map", map)
 router.get("/list", list);
 router.post("/create", create);
