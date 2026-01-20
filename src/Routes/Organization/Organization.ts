@@ -1,6 +1,6 @@
 // src/routes/User.ts
 import { Router } from "express";
-import { show, list, create, del } from "../../Controller/Organization/Organization";
+import { show, list, create, del } from "../../Controller/Organization";
 import { FileService } from "../../Service/File";
 
 const router = Router();

@@ -3,7 +3,7 @@ import { getDistance } from "../shared/geo/distance";
 import { ActivityRepository } from "../Repository/Activity";
 import { BeachRepository } from "../Repository/Beach";
 import { PlaceRepository } from "../Repository/Place";
-import { OrganizationRepository } from "../Repository/Organization/Organization";
+import { OrganizationRepository } from "../Repository/Organization";
 
 import { DistanceActivityBeachService } from "./Distance/ActivityBeach";
 import { DistanceActivityPlaceService } from "./Distance/ActivityPlace";
