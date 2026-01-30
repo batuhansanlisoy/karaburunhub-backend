@@ -2,8 +2,14 @@ import { Request, Response } from "express";
 import { PlaceService } from "../Service/Place";
 import { Place } from "../Entity/Place";
 import { PlaceConverter } from "../Converter/Place";
+import { DistanceActivityPlaceService } from "../Service/Distance/ActivityPlace";
+import { DistanceBeachPlaceService } from "../Service/Distance/BeachPlace";
+import { DistancePlaceOrganizationService } from "../Service/Distance/PlaceOrganization";
 
 const service = new PlaceService();
+const serviceActivityDistance = new DistanceActivityPlaceService();
+const serviceBeachDistance = new DistanceBeachPlaceService();
+const serviceOrganizationDistance = new DistancePlaceOrganizationService();
 
 export const show = async (req: Request, res: Response) => {
     res.render("place/index", {
@@ -110,3 +116,39 @@ export const del = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
     }
 };
+
+export const nearestActivity = async (req: Request, res: Response) => {
+    const placeId = Number(req.params.id);
+
+    try {
+        const distances = await serviceActivityDistance.list(undefined, placeId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const nearestBeaches = async (req: Request, res: Response) => {
+    const placeId = Number(req.params.id);
+
+    try {
+        const distances = await serviceBeachDistance.list(undefined, placeId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const nearestOrganizations = async (req: Request, res: Response) => {
+    const placeId = Number(req.params.id);
+
+    try {
+        const distances = await serviceOrganizationDistance.list(undefined, placeId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}

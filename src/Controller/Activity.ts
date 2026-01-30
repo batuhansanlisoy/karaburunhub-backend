@@ -137,7 +137,7 @@ export const nearestBeaches = async (req: Request, res: Response) => {
     const activityId = Number(req.params.id);
 
     try {
-        const distances = await serviceBeachDistance.list(activityId);
+        const distances = await serviceBeachDistance.list(activityId, undefined);
         res.status(200).json({ distances });
     } catch (err: any) {
         console.error(err);
@@ -149,7 +149,7 @@ export const nearestPlaces = async (req: Request, res: Response) => {
     const activityId = Number(req.params.id);
 
     try {
-        const distances = await servicePlaceDistance.list(activityId);
+        const distances = await servicePlaceDistance.list(activityId, undefined);
         res.status(200).json({ distances });
     } catch (err: any) {
         console.error(err);
@@ -161,7 +161,7 @@ export const nearestOrganizations = async (req: Request, res: Response) => {
     const activityId = Number(req.params.id);
 
     try {
-        const distances = await serviceOrganizationDistance.list(activityId);
+        const distances = await serviceOrganizationDistance.list(activityId, undefined);
         res.status(200).json({ distances });
     } catch (err: any) {
         console.error(err);

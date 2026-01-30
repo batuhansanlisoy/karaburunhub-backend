@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src/server.ts",
+        "dev": "ts-node-dev -r tsconfig-paths/register --respawn src/server.ts",
         "build": "tsc && tsc-alias && cp -r src/views dist/src && cp -r public dist",
         "start": "node dist/src/server.js"
     },

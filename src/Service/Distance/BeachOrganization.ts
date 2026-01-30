@@ -4,6 +4,10 @@ import { DistanceBeachOrganizationRepo } from "../../Repository/Distance/BeachOr
 export class DistanceBeachOrganizationService {
     private repo = new DistanceBeachOrganizationRepo();
 
+    async list(beach_id?: number, organization_id?: number): Promise<DistanceBeachOrganization[]> {
+        return await this.repo.list(beach_id, organization_id);
+    }
+
     async create(payload: Partial<DistanceBeachOrganization>): Promise<void> {
 
         await this.repo.create(payload);

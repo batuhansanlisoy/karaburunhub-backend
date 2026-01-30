@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
         "target": "ES2020",
         "module": "CommonJS",
         "rootDir": ".",
@@ -14,5 +16,4 @@
     },
     "include": ["src/**/*", "knexfile.ts"],
     "exclude": ["node_modules"]
-
 }

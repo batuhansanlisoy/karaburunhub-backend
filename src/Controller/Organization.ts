@@ -2,8 +2,14 @@
 import { Request, Response } from "express";
 import { Organization } from "../Entity/Organization";
 import { OrganizationService } from "../Service/Organization";
+import { DistanceActivityOrganizationService } from "../Service/Distance/ActivityOrganization";
+import { DistanceBeachOrganizationService } from "../Service/Distance/BeachOrganization";
+import { DistancePlaceOrganizationService } from "../Service/Distance/PlaceOrganization";
 
 const service = new OrganizationService();
+const serviceActivityDistance = new DistanceActivityOrganizationService();
+const serviceBeachDistance = new DistanceBeachOrganizationService();
+const servicePlaceDistance = new DistancePlaceOrganizationService();
 
 export const show = async (req: Request, res: Response) => {
     res.render("organization/index", {
@@ -110,3 +116,39 @@ export const del = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
     }
 };
+
+export const nearestActivity = async (req: Request, res: Response) => {
+    const organizationId = Number(req.params.id);
+
+    try {
+        const distances = await serviceActivityDistance.list(undefined, organizationId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const nearestBeaches = async (req: Request, res: Response) => {
+    const organizationId = Number(req.params.id);
+
+    try {
+        const distances = await serviceBeachDistance.list(undefined, organizationId);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const nearestPlaces = async (req: Request, res: Response) => {
+    const organizationId = Number(req.params.id);
+
+    try {
+        const distances = await servicePlaceDistance.list(organizationId, undefined);
+        res.status(200).json({ distances });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || err });
+    }
+}
