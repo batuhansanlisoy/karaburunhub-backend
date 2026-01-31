@@ -40,8 +40,9 @@ export const single = async (req: Request, res: Response) => {
 };
 
 export const list = async (req: Request, res: Response) => {
+    const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
     try {
-        let   beaches: Beach[] = await service.list();
+        const beaches: Beach[] = await service.list(village_id);
         const response = BeachConverter.toListResponse(beaches);
 
         res.json(response);

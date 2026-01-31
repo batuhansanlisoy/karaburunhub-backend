@@ -12,8 +12,9 @@ export class BeachService {
         return this.repo.getById(id);
     }
 
-    async list(): Promise<Beach[]> {
-        return this.repo.getAll();
+    async list(village_id?: number): Promise<Beach[]> {
+        
+        return this.repo.getAll(village_id);
     }
 
     async create(beach: Partial<Beach>): Promise<number[]> {

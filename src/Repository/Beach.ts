@@ -12,11 +12,21 @@ export class BeachRepository {
         return beach;
     }
 
-    async getAll(): Promise<Beach[]> {
-        return db(this.tableName).select(
-            "beachs.*",
-            "villages.name as village_name")
-            .leftJoin("villages", "beachs.village_id", "villages.id");
+    // async getAll(): Promise<Beach[]> {
+    //     return db(this.tableName).select(
+    //         "beachs.*",
+    //         "villages.name as village_name")
+    //         .leftJoin("villages", "beachs.village_id", "villages.id");
+    // }
+
+    async getAll(village_id?: number): Promise<Beach[]> {
+        let query = db(this.tableName).select("*");
+
+        if (village_id != null) {
+            query = query.where("village_id", village_id);
+        }
+
+        return query;
     }
 
     async getById(id: number): Promise<Beach> {
