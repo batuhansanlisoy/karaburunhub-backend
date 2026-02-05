@@ -12,29 +12,17 @@ export class OrganizationRepository {
         return org;
     }
 
-    async getAll(): Promise<Organization[]> {
-        return db(this.tableName).select(
-            "organization.id",
-            "organization.category_id",
-            "organization.name",
-            "organization.email",
-            "organization.phone",
-            "organization.content",
-            "organization.website",
-            "organization.cover",
-            "organization.gallery",
-            "organization.address",
-            "organization.latitude",
-            "organization.longitude",
-            "organization.created_at",
-            "organization.updated_at",
-            "organization_category.name as category_name"
-        )
-        .leftJoin("organization_category", "organization.category_id", "organization_category.id");
-    }
+    async getAll(category_id?: number): Promise<Organization[]> {
+        let query = db(this.tableName).select("organization.*");
 
-    async getByCategoryId(category_id: number): Promise<Organization[]> {
-        return db(this.tableName).where("category_id", category_id);
+        if (category_id) {
+            query = query
+                .select("organization_category.name as category_name")
+                .leftJoin("organization_category", "organization.category_id", "organization_category.id") // Join yap
+                .where("organization.category_id", category_id);
+        }
+
+        return query;
     }
 
     async create(organization: Partial<Organization>, trx?: Knex.Transaction): Promise<number[]> {

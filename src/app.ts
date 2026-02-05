@@ -9,6 +9,7 @@ import organizationRoutes from "./Routes/Organization";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
+import mobileRoutes from "./Routes/Mobile";
 import expressLayouts from "express-ejs-layouts";
 
 const app = express();
@@ -54,6 +55,7 @@ app.use("/organization/category/item", organizationCategoryItemRoutes);
 app.use("/place", placeRoutes);
 app.use("/activity", activityRoutes);
 app.use("/activity/category", activityCategoryRoutes);
+app.use("/mobile", mobileRoutes)
 
 app.get("/", (req, res) => {
   res.render("index", { 

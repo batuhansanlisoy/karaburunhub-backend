@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaraburunGO | Mobil Reklam Yönetimi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; color: #1e293b; }
+        .card { border: none; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .phone-mockup {
+            width: 280px; height: 550px; border: 12px solid #1e293b;
+            border-radius: 40px; margin: 0 auto; position: relative;
+            background: #fff; overflow: hidden;
+        }
+        .phone-screen { height: 100%; background: #f8fafc; position: relative; }
+        .ad-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .ad-content {
+            width: 100%; height: 60%; background: #fff; border-radius: 15px;
+            position: relative; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+        }
+        .close-btn { position: absolute; top: 10px; right: 10px; color: #ef4444; z-index: 10; }
+        .stat-card { transition: transform 0.2s; cursor: pointer; }
+        .stat-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-800 mb-1">Reklam Yönetimi</h1>
+            <p class="text-secondary">Uygulama açılış ekranındaki öne çıkan içerikleri yönetin.</p>
+        </div>
+        <span class="badge bg-primary px-3 py-2 rounded-pill">Sistem Aktif</span>
+    </div>
+
+    <div class="row g-3 mb-5">
+        <div class="col-md-3">
+            <div class="card p-3 stat-card text-center">
+                <div class="text-primary mb-2"><i data-lucide="eye"></i></div>
+                <h4 class="fw-bold mb-0">1,240</h4>
+                <small class="text-muted">Bugünkü Gösterim</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 stat-card text-center">
+                <div class="text-success mb-2"><i data-lucide="mouse-pointer-2"></i></div>
+                <h4 class="fw-bold mb-0">342</h4>
+                <small class="text-muted">Bugünkü Tıklama</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 stat-card text-center text-white bg-primary">
+                <div class="mb-2"><i data-lucide="trending-up"></i></div>
+                <h4 class="fw-bold mb-0">%27</h4>
+                <small class="opacity-75">Dönüşüm Oranı</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 stat-card text-center">
+                <div class="text-warning mb-2"><i data-lucide="calendar"></i></div>
+                <h4 class="fw-bold mb-0">12</h4>
+                <small class="text-muted">Kalan Gün Sayısı</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <div class="card p-4 h-100">
+                <h5 class="fw-bold mb-4 border-bottom pb-3">Kampanya Ayarları</h5>
+                
+                <form action="#" method="POST">
+                    <div class="mb-4">
+                        <label class="form-label fw-600">Öne Çıkacak İşletmeyi Seç</label>
+                        <select name="organization_id" class="form-select form-select-lg border-2">
+                            <option value="1">Mavi Koy Restaurant</option>
+                            <option value="2">Karaburun Otel</option>
+                            <option value="3">Dalış Okulu - Ege</option>
+                        </select>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-600">Başlangıç Tarihi</label>
+                            <input type="date" class="form-control" value="2024-05-20">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-600">Bitiş Tarihi</label>
+                            <input type="date" class="form-control" value="2024-06-20">
+                        </div>
+                    </div>
+
+                    <div class="bg-light p-3 rounded-4 mb-4 d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-bold">Anlık Olarak Yayına Al</p>
+                            <small class="text-muted">Kapalıyken uygulama reklamı göstermez.</small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" checked style="width: 2.5em; height: 1.25em;">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3">
+                        <i data-lucide="upload-cloud" class="me-2"></i> Reklamı Güncelle & Yayınla
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="text-center mb-3">
+                <span class="badge bg-dark text-uppercase">Canlı Uygulama Önizlemesi</span>
+            </div>
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500" class="w-100 h-100" style="object-fit: cover; opacity: 0.3;">
+                    
+                    <div class="ad-overlay">
+                        <div class="ad-content">
+                            <div class="close-btn"><i data-lucide="x-circle"></i></div>
+                            <img src="https://images.unsplash.com/photo-1544124499-58912cbddaad?w=500" id="previewImg" class="w-100 h-100" style="object-fit: cover;">
+                            <div class="position-absolute bottom-0 w-100 p-2 bg-white bg-opacity-75">
+                                <small class="fw-bold d-block text-center" id="previewName">Mavi Koy Restaurant</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    const select = document.querySelector('select[name="organization_id"]');
+    select.addEventListener('change', (e) => {
+        document.getElementById('previewName').innerText = e.target.options[e.target.selectedIndex].text;
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

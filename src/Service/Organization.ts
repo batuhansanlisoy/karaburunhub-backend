@@ -15,12 +15,7 @@ export class OrganizationService {
     }
 
     async list(category_id?: number): Promise<Organization[]> {
-        if (category_id) {
-
-            return this.repo.getByCategoryId(category_id);
-        }
-
-        return this.repo.getAll();
+        return this.repo.getAll(category_id);
     }
 
     async create(organization: Partial<Organization>, items: number[]): Promise<void> {

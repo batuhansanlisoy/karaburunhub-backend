@@ -2,9 +2,11 @@
 import { Request, Response } from "express";
 import { Organization } from "../Entity/Organization";
 import { OrganizationService } from "../Service/Organization";
+import { Organization as Converter } from "../Converter/Organization";
 import { DistanceActivityOrganizationService } from "../Service/Distance/ActivityOrganization";
 import { DistanceBeachOrganizationService } from "../Service/Distance/BeachOrganization";
 import { DistancePlaceOrganizationService } from "../Service/Distance/PlaceOrganization";
+
 
 const service = new OrganizationService();
 const serviceActivityDistance = new DistanceActivityOrganizationService();
@@ -20,11 +22,12 @@ export const show = async (req: Request, res: Response) => {
 };
 
 export const list = async (req: Request, res: Response) => {
+    const category_id = req.query.category_id ? Number(req.query.category_id) : undefined;
     try {
-        const category_id = req.query.category_id ? Number(req.query.category_id) : undefined;
-
         const organizations: Organization[] = await service.list(category_id);
-        res.json(organizations);
+        const responce = Converter.toListResponse(organizations);
+
+        res.json(responce);
     } catch (err) {
         console.error(err);
         res.status(500).send("Organizasyon listesi alınamadı");

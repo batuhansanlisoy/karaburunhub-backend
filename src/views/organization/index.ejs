@@ -43,6 +43,24 @@ async function loadSubCategories(catId) {
         console.error("Alt kategori yükleme hatası:", err);
     }
 }
+async function promoteOrganization(orgId) {
+    try {
+        const res = await fetch(`/organization/feature`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ organization_id: orgId })
+        });
+
+        if (res.ok) {
+            alert('İşletme başarıyla öne çıkarıldı! Artık mobil açılışta görünecek.');
+        } else {
+            alert('Bir hata oluştu, belki zaten öne çıkarılmıştır?');
+        }
+    } catch (err) {
+        console.error("Öne çıkarma hatası:", err);
+    }
+}
+
 async function refreshTable() {
     try {
         const res = await fetch("/organization/list");
@@ -65,6 +83,7 @@ async function refreshTable() {
                     <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
                     <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger feature-btn" data-id="${item.id}"><i class="bi bi-lightning"></i></button>
                 </div>
             `,
             category_name: item.category_name,
@@ -93,9 +112,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", async (e) => {
         const editBtn = e.target.closest(".edit-btn");
         const uploadBtn = e.target.closest(".upload-btn");
+        const featureBtn = e.target.closest(".feature-btn");
 
         if (editBtn) Slideover.show(`/organization/form/edit/${editBtn.dataset.id}`, "Turistik Bölgeyi Düzenle");
         if (uploadBtn) Slideover.show(`/organization/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
+        if (featureBtn) {
+            const orgId = featureBtn.dataset.id;
+            if (confirm("Bu işletmeyi mobil uygulamada öne çıkarmak istediğinize emin misiniz?")) {
+                promoteOrganization(orgId);
+            }
+        }
     });
 
     document.getElementById('slideover-content').addEventListener('submit', async (e) => {

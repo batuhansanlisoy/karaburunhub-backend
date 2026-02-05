@@ -6,6 +6,7 @@ import {
     show, list, create, del, update, uploadPhoto,
     nearestActivity, nearestBeaches, nearestPlaces
 } from "~/Controller/Organization";
+import { create as feature, list as featuredList } from "~/Controller/FeaturedOrganization";
 
 const router = Router();
 const upload = FileService.uploader("organization", (req) => req.params.id);
@@ -19,7 +20,10 @@ router.get("/:id/nearest-activity", nearestActivity);
 router.get("/:id/nearest-places", nearestPlaces);
 router.get("/:id/nearest-beaches", nearestBeaches);
 
-router.post("/create",create);
+router.get("/featured", featuredList)
+router.post("/create", create);
+
+router.post("/feature", feature);
 router.put("/:id", update);
 
 router.put("/upload/:id", upload.fields([
