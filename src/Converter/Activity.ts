@@ -6,6 +6,8 @@ export class ActivityConverter {
             ...activity,
             content: typeof activity.content === "string" ? JSON.parse(activity.content) : activity.content,
             gallery: typeof activity.gallery === "string" ? JSON.parse(activity.gallery) : activity.gallery,
+            begin: activity.begin ? new Date(activity.begin).toISOString().split('T')[0] : null,
+            end: activity.end ? new Date(activity.end).toISOString().split('T')[0] : null,
         };
     }
 
