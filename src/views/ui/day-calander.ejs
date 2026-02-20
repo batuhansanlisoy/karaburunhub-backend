@@ -120,7 +120,6 @@ document.getElementById('save-calendar-btn').addEventListener('click', async () 
             body: JSON.stringify({ timeline }) // sadece timeline gönderiyoruz
         });
         const data = await res.json();
-        console.log("Sunucudan gelen veri:", data);
         if(res.ok) {
             alert("Kaydedildi!");
             bootstrap.Modal.getInstance(document.getElementById("dayCalendarModal")).hide();

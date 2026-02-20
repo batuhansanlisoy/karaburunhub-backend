@@ -55,11 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (editBtn) Slideover.show(`/activity/form/edit/${editBtn.dataset.id}`, "Etkinliği Düzenle");
         if (uploadBtn) Slideover.show(`/activity/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
         
-        // Takvim butonuna basılınca yapılacak işlem (Buraya takvim açma kodunu yazabilirsin)
         if (calendarBtn) {
-            console.log("Takvim açılıyor, ID:", calendarBtn.dataset.id);
-            // Eğer day-calander.ejs içinde bir fonksiyon varsa onu çağır:
-            // openCalendar(calendarBtn.dataset.id); 
+            return;
         }
     });
 

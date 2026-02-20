@@ -21,8 +21,6 @@ export class FeaturedOrganizationRepository {
 
         const results = await query;
 
-        console.log(results);
-
         return results.map(row => {
             if (!orgInfo) return row;
 
