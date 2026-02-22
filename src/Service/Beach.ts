@@ -12,9 +12,9 @@ export class BeachService {
         return this.repo.getById(id);
     }
 
-    async list(village_id?: number): Promise<Beach[]> {
+    async list(village_id?: number, highlight?: boolean): Promise<Beach[]> {
         
-        return this.repo.getAll(village_id);
+        return this.repo.getAll(village_id, highlight);
     }
 
     async create(beach: Partial<Beach>): Promise<number[]> {
@@ -32,6 +32,10 @@ export class BeachService {
 
     async update(id: number, payload: Partial<Beach>): Promise<void> {
         await this.repo.update(id, payload);
+    }
+
+    async patch(id: number, field: string, value: any): Promise<number> {
+        return await this.repo.patch(id, field, value);
     }
 
     async del(id: number): Promise<void> {

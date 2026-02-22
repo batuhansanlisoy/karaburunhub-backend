@@ -43,6 +43,7 @@ async function loadSubCategories(catId) {
         console.error("Alt kategori yükleme hatası:", err);
     }
 }
+
 async function promoteOrganization(orgId) {
     try {
         const res = await fetch(`/organization/feature`, {

@@ -29,21 +29,54 @@ async function refreshTable() {
             { label: 'Adres', key: 'address' },
         ];
 
-        const rows = data.map((item, idx) => ({
-            actions: `
-                <div class="d-flex">
-                    <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
-                </div>
-            `,
-            village_name: item.village_name,
-            name: item.name,
-            address: item.address,
-        }));
+        const rows = data.map((item, idx) => {
+    // Öne çıkarılma durumuna göre renk belirle
+    // Eğer true ise 'text-warning' (sarı) değilse 'text-white' veya 'btn-dark' kalsın
+        const highlightClass = item.highlight ? 'text-warning' : 'text-secondary';
+        const highlightTitle = item.highlight ? 'Öne Çıkarılmış' : 'Öne Çıkarılmamış';
+
+    return {
+        actions: `
+            <div class="d-flex">
+                <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
+                <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                
+                <button class="btn btn-dark btn-sm rounded-circle ms-2 highlight-btn ${highlightClass}" 
+                        data-id="${item.id}" 
+                        data-status="${item.highlight}"
+                        title="${highlightTitle}">
+                    <i class="bi bi-lightning-fill"></i>
+                </button>
+            </div>
+        `,
+        village_name: item.village_name,
+        name: item.name,
+        address: item.address,
+    };
+});
 
         renderTable(columns, rows, "/beach");
     } catch (err) { console.error(err); }
+}
+
+async function highlight(beachId, isHighlighted) {
+    try {
+        const res = await fetch(`/beach/${beachId}/highlight`, { // Başındaki slash'a dikkat /beach...
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ value: isHighlighted })
+        });
+
+        if (res.ok) {
+            // alert('Güncellendi!'); // Her seferinde alert yormasın dersen kaldırabilirsin
+            refreshTable(); // Listeyi yeniden çek ki renk değişsin
+        } else {
+            alert('Bir hata oluştu!');
+        }
+    } catch (err) {
+        console.error("Hata:", err);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -52,9 +85,29 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", async (e) => {
         const editBtn = e.target.closest(".edit-btn");
         const uploadBtn = e.target.closest(".upload-btn");
+        const highlightBtn = e.target.closest(".highlight-btn");
 
         if (editBtn) Slideover.show(`/beach/form/edit/${editBtn.dataset.id}`, "Koyu Düzenle");
         if (uploadBtn) Slideover.show(`/beach/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
+        if (highlightBtn) {
+            const beachId = highlightBtn.dataset.id;
+            
+            // Status'ü string'den boolean'a çeviriyoruz
+            // Eğer "true" metni gelirse veya 1 gelirse true olur
+            const currentStatus = highlightBtn.dataset.status === "true" || highlightBtn.dataset.status === "1";
+            
+            // ŞİMDİ TERSİNE ÇEVİRİYORUZ (1 ise 0, 0 ise 1 yapıyoruz)
+            const nextStatus = !currentStatus; 
+
+            const msg = nextStatus 
+                ? "Bu işletmeyi mobil uygulamada öne çıkarmak istediğinize emin misiniz?" 
+                : "Bu işletmeyi öne çıkarılanlardan kaldırmak istiyor musunuz?"; 
+
+            if (confirm(msg)) {
+                // Fonksiyona TERSİNE ÇEVRİLMİŞ halini gönderiyoruz
+                highlight(beachId, nextStatus);
+            }
+        }
     });
 
     document.getElementById('slideover-content').addEventListener('submit', async (e) => {

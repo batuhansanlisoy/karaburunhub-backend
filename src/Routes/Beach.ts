@@ -2,7 +2,7 @@ import { Router } from "express";
 import { createForm, editForm, uploadForm } from "~/Controller/Beach/Form";
 import { FileService } from "../Service/File";
 import {
-    show, list, create, update, uploadPhoto, del,
+    show, list, create, update, uploadPhoto, del, highligt,
     nearestActivity, nearestOrganizations, nearestPlaces
 } from "../Controller/Beach";
 
@@ -17,6 +17,8 @@ router.get("/list", list);
 router.get("/:id/nearest-activity", nearestActivity);
 router.get("/:id/nearest-places", nearestPlaces);
 router.get("/:id/nearest-organizations", nearestOrganizations);
+
+router.patch("/:id/highlight", highligt);
 
 router.post("/create",create);
 router.put("/:id", update);

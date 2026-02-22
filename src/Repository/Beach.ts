@@ -19,11 +19,15 @@ export class BeachRepository {
     //         .leftJoin("villages", "beachs.village_id", "villages.id");
     // }
 
-    async getAll(village_id?: number): Promise<Beach[]> {
+    async getAll(village_id?: number, highlight?: boolean): Promise<Beach[]> {
         let query = db(this.tableName).select("*");
 
         if (village_id != null) {
             query = query.where("village_id", village_id);
+        }
+
+        if (highlight !== undefined) {
+            query = query.where("highlight", highlight);
         }
 
         return query;
@@ -44,6 +48,14 @@ export class BeachRepository {
             gallery: beach.gallery ? JSON.stringify(beach.gallery) : null
         }
         return db(this.tableName).insert(dbBeach);
+    }
+
+    async patch(id: number, field: string, value: any): Promise<number> {
+        return db(this.tableName)
+            .where({ id: id })
+            .update({
+                [field]: value
+        });
     }
 
     async update(id: number, payload: Partial<Beach>): Promise<number> {

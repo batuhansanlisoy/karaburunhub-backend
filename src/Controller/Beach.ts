@@ -41,8 +41,10 @@ export const single = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
     const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
+    const highlight = req.query.highlight !== undefined ? req.query.highlight === 'true' : undefined;
+
     try {
-        const beaches: Beach[] = await service.list(village_id);
+        const beaches: Beach[] = await service.list(village_id, highlight);
         const response = BeachConverter.toListResponse(beaches);
 
         res.json(response);
@@ -167,5 +169,33 @@ export const nearestOrganizations = async (req: Request, res: Response) => {
     } catch (err: any) {
         console.error(err);
         res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const highligt = async (req: Request, res: Response) => {
+    const beachId = Number(req.params.id);
+    const value = req.body.value;
+
+    try {
+        const result = await service.patch(beachId, "highlight", value);
+
+        if (result === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Plaj bulunamadı." 
+            });
+        }
+
+        const beach = await service.single(beachId);
+
+        return res.status(200).json({ 
+            success: true, 
+            message: "Öne çıkarma durumu güncellendi.",
+            data: beach
+        });
+
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || "Highlight error"})
     }
 }
