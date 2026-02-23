@@ -110,15 +110,23 @@
 <body>
   <div class="login-container">
     <div class="logo">🌊 KaraburunHub Admin Paneli</div>
-    <form>
+
+    <form action="/login" method="POST">
+      
+      <% if (typeof error !== 'undefined') { %>
+        <div style="background-color: #ffebee; color: #c62828; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+          <%= error %>
+        </div>
+      <% } %>
+
       <div class="form-group">
         <label for="email">E-posta</label>
-        <input type="email" id="email" placeholder="E-posta adresinizi girin" required>
+        <input type="email" id="email" name="email" placeholder="E-posta adresinizi girin" required>
       </div>
 
       <div class="form-group">
         <label for="password">Şifre</label>
-        <input type="password" id="password" placeholder="Şifrenizi girin" required>
+        <input type="password" id="password" name="password" placeholder="Şifrenizi girin" required>
       </div>
 
       <button type="submit" class="login-btn">Giriş Yap</button>

@@ -1,5 +1,10 @@
 import path from "path";
 import express from "express";
+import session from 'express-session';
+import dotenv from 'dotenv';
+import expressLayouts from "express-ejs-layouts";
+import apiRoutes from "./Routes/Api";
+import authRoutes from "./Routes/Auth";
 import userRoutes from "./Routes/User";
 import beachRoutes from "./Routes/Beach";
 import placeRoutes from "./Routes/Place";
@@ -10,18 +15,37 @@ import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
 import mobileRoutes from "./Routes/Mobile";
-import expressLayouts from "express-ejs-layouts";
 
+dotenv.config();
 const app = express();
 
+// --- 1. SESSION YAPILANDIRMASI (Middleware'lerden önce gelmeli) ---
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'karaburun-gizli-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    maxAge: 1000 * 60 * 60 * 24, // 1 gün
+    httpOnly: true 
+  }
+}));
+
+// --- 2. AUTH MIDDLEWARE ---
+const requireAuth = (req: any, res: any, next: any) => {
+  if (req.session && req.session.isLoggedIn) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
+
+const isProd = process.env.NODE_ENV === "production";
 const uploadPath = path.join(__dirname, "../upload");
 app.use("/upload", express.static(uploadPath));
 
-const isProd = process.env.NODE_ENV === "production";
-
 const viewsPath = isProd
-    ? path.join(__dirname, "../../src/views")   // build sonrası production
-    : path.join(__dirname, "views");            // ts-node dev
+    ? path.join(__dirname, "../../src/views")
+    : path.join(__dirname, "views");
 
 const publicPath = isProd
     ? path.join(__dirname, "../../public")
@@ -29,75 +53,33 @@ const publicPath = isProd
     
 app.set("views", viewsPath);
 app.set("view engine", "ejs");
-
 app.use(express.static(publicPath));
 
-// Express EJS Layouts
 app.use(expressLayouts);
 app.set("layout", "layouts/index");
 
 app.use(express.json());
-// URL-encoded body parse
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   res.locals.title = "KaraburunGO";
   res.locals.page = "";
+  res.locals.isLoggedIn = (req.session as any).isLoggedIn || false;
   next();
 });
 
-app.use("/users", userRoutes);
-app.use("/beach", beachRoutes);
-app.use("/village", villageRoutes);
-app.use("/organization", organizationRoutes);
-app.use("/organization/category", organizationCategoryRoutes);
-app.use("/organization/category/item", organizationCategoryItemRoutes);
-app.use("/place", placeRoutes);
-app.use("/activity", activityRoutes);
-app.use("/activity/category", activityCategoryRoutes);
-app.use("/mobile", mobileRoutes)
+app.use("/api", apiRoutes);
 
-app.get("/", (req, res) => {
-  res.render("index", { 
-    title: "Karaburun Hub", 
-    message: "Hoş geldin kanka! Ana sayfa",
-    activePage: "home",
-    page: "home"
-  });
-});
+app.use("/", authRoutes); 
 
-
-app.get("/dashboard", (req, res) => {
-  res.render("dashboard", {
-    title: "Dashboard",
-    activePage: "dashboard",
-    page: "dashboard"
-  });
-});
-
-app.get("/deneme", (req, res) => {
-  res.render("index", {
-    title: "login",
-    activePage: "login",
-    page: "login",
-    layout: false,
-  });
-});
-
-// Restoran Yönetimi
-app.get("/restourant", (req, res) => {
-  const restaurants = [
-    { name: "Mavi Deniz", category: "Balık", phone: "0 (232) 123 45 67", address: "Karaburun Merkez" },
-    { name: "Kumru Express", category: "Fast Food", phone: "0 (232) 111 22 33", address: "Mordoğan" },
-  ];
-
-  res.render("restourant", {
-    title: "Restoran Yönetimi",
-    activePage: "restourant",
-    page: "restourant",
-    restaurants
-  });
-});
-
+app.use("/users", requireAuth, userRoutes);
+app.use("/beach", requireAuth, beachRoutes);
+app.use("/village", requireAuth, villageRoutes);
+app.use("/organization", requireAuth, organizationRoutes);
+app.use("/organization/category", requireAuth, organizationCategoryRoutes);
+app.use("/organization/category/item", requireAuth, organizationCategoryItemRoutes);
+app.use("/place", requireAuth, placeRoutes);
+app.use("/activity", requireAuth, activityRoutes);
+app.use("/activity/category", requireAuth, activityCategoryRoutes);
 
 export default app;
