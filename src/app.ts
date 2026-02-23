@@ -14,64 +14,51 @@ import organizationRoutes from "./Routes/Organization";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
-import mobileRoutes from "./Routes/Mobile";
+import { apiKeyAuth } from "./Middleware/ApiKeyAuth";
+import { requireAuth } from "./Middleware/Auth";
+import { setLocals } from "./Middleware/Locals";
 
 dotenv.config();
 const app = express();
 
-// --- 1. SESSION YAPILANDIRMASI (Middleware'lerden önce gelmeli) ---
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'karaburun-gizli-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { 
-    maxAge: 1000 * 60 * 60 * 24, // 1 gün
-    httpOnly: true 
-  }
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        maxAge: 1000 * 60 * 60 * 24, 
+        httpOnly: true 
+    }
 }));
-
-// --- 2. AUTH MIDDLEWARE ---
-const requireAuth = (req: any, res: any, next: any) => {
-  if (req.session && req.session.isLoggedIn) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-};
 
 const isProd = process.env.NODE_ENV === "production";
 const uploadPath = path.join(__dirname, "../upload");
 app.use("/upload", express.static(uploadPath));
 
-const viewsPath = isProd
-    ? path.join(__dirname, "../../src/views")
-    : path.join(__dirname, "views");
-
-const publicPath = isProd
-    ? path.join(__dirname, "../../public")
-    : path.join(__dirname, "../public");
+const viewsPath = isProd ? path.join(__dirname, "../../src/views") : path.join(__dirname, "views");
+const publicPath = isProd ? path.join(__dirname, "../../public") : path.join(__dirname, "../public");
     
 app.set("views", viewsPath);
 app.set("view engine", "ejs");
 app.use(express.static(publicPath));
-
 app.use(expressLayouts);
 app.set("layout", "layouts/index");
 
+// --- 3. PARSERS ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  res.locals.title = "KaraburunGO";
-  res.locals.page = "";
-  res.locals.isLoggedIn = (req.session as any).isLoggedIn || false;
-  next();
-});
+// --- 4. CUSTOM MIDDLEWARES ---
+app.use(setLocals); // Locals artık buradan geliyor
 
-app.use("/api", apiRoutes);
 
+// Mobil API (API Key korumalı)
+app.use("/api", apiKeyAuth, apiRoutes);
+
+// Web Auth (Login/Logout)
 app.use("/", authRoutes); 
 
+// Web Admin Paneli (Session korumalı)
 app.use("/users", requireAuth, userRoutes);
 app.use("/beach", requireAuth, beachRoutes);
 app.use("/village", requireAuth, villageRoutes);
