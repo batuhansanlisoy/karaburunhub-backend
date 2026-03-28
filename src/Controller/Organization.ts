@@ -69,7 +69,7 @@ export const update = async (req: Request, res: Response) => {
     const category_id = req.body.category_id;
     const village_id  = req.body.village_id;
     const name        = req.body.name;
-    const email       = req.body.name;
+    const email       = req.body.email;
     const phone       = req.body.phone;
     const address     = req.body.address;
     const website     = req.body.website;
