@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
+        "dev": "ts-node-dev --inspect=0.0.0.0:9229 -r tsconfig-paths/register --respawn src/server.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "ts-node-dev -r tsconfig-paths/register --respawn src/server.ts",
         "build": "tsc && tsc-alias && cp -r src/views dist/src && cp -r public dist",
         "start": "node dist/src/server.js"
     },

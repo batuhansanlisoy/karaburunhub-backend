@@ -12,6 +12,7 @@ COPY . .
 
 # Uygulamanın çalışacağı port
 EXPOSE 3000
+EXPOSE 9229
 
 # Senin çalıştırdığın komut
 CMD ["npm", "run", "dev"]
