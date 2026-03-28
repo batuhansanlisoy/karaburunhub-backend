@@ -3,5 +3,47 @@
         <label class="form-label">Yer Adı</label>
         <input type="text" name="name" class="form-control" value="<%= name %>" required>
     </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="village_id">Bölge</label>
+        <select class="form-select" name="village_id" id="village_id" required>
+            <option value="">Seçiniz</option>
+            <% villages.forEach(village => { %>
+                <option 
+                    value="<%= village.id %>" 
+                    <%= village.id == village_id ? 'selected' : '' %> 
+                >
+                    <%= village.name %>
+                </option>
+            <% }) %>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Kısa Açıklama</label>
+        <input type="text" name="explanation" class="form-control" value="<%= explanation %>">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Detaylı Açıklama</label>
+        <textarea name="detail" rows="3" class="form-control"><%= detail %></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Adres</label>
+        <input type="text" name="address" class="form-control" value="<%= address %>" required>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Latitude</label>
+            <input type="text" name="latitude" class="form-control" value="<%= latitude %>">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Longitude</label>
+            <input type="text" name="longitude" class="form-control" value="<%= longitude %>">
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary w-100">Güncelle</button>
 </form>

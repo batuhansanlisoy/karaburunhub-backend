@@ -12,6 +12,10 @@ export class PlaceRepository {
             place.cover = JSON.parse(place.cover);
         }
 
+        if (place.content && typeof place.content === "string") {
+            place.content = JSON.parse(place.content);
+        }
+
         return place;
     }
 

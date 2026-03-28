@@ -80,10 +80,13 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const update = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    const name = req.body.name;
+    const id        = Number(req.params.id);
+    const name      = req.body.name;
+    const address   = req.body.address;
+    const latitude  = req.body.latitude ? parseFloat(req.body.latitude) : null;
+    const longitude = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
-    const beach: Partial<Beach> = { name };
+    const beach: Partial<Beach> = { name, latitude, longitude, address };
 
     try {
         const result = await service.update(id, beach);

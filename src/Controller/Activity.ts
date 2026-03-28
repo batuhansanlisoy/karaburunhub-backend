@@ -63,10 +63,28 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const update = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    const name = req.body.name;
+    const id          = Number(req.params.id);
+    const village_id  = req.body.village_id;
+    const name        = req.body.name;
+    const explanation = req.body.explanation;
+    const address     = req.body.address;
+    const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
+    const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
+    const begin       = req.body.begin;
+    const end         = req.body.end;
 
-    const activity: Partial<Activity> = { name };
+    const activity: Partial<Activity> = {
+        name,
+        content: {
+            explanation: explanation
+        },
+        latitude,
+        longitude,
+        address,
+        begin,
+        end,
+        village_id
+    };
 
     try {
         const result = await service.update(id, activity);

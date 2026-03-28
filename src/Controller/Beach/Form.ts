@@ -22,7 +22,10 @@ export const editForm = async (req: Request, res: Response) => {
     res.render("beach/form/edit", {
         beachId: id,
         layout: false,
-        name: beach.name
+        name: beach.name,
+        latitude: beach.latitude,
+        longitude: beach.longitude,
+        address: beach.address
     });
 };
 

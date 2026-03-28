@@ -1,5 +1,6 @@
 export interface Organization{
     id: number,
+    village_id: number,
     category_id: number,
     name: string,
     email?: string,

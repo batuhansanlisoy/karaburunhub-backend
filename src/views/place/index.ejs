@@ -20,28 +20,49 @@
 <script>
 async function refreshTable() {
     try {
-        const res = await fetch("/place/list");
-        let data = await res.json();
+        const [placeRes, villageRes] = await Promise.all([
+            fetch("/place/list"),
+            fetch("/village/list")
+        ]);
+
+        const data = await placeRes.json();
+        const villages = await villageRes.json();
+
+        const villageMap = {};
+
+        villages.forEach(element => {
+            villageMap[element.id] = element.name;
+        });
 
         const columns = [
             { label: '', key: 'actions', type:"html", width: '25px'},
+            { label: 'Konum', key: 'village_name'},
             { label: 'İsim', key: 'name' },
             { label: 'Adres', key: 'address' },
+            { label: 'Enlem', key: 'latitude'},
+            { label: 'Boylam', key: 'longitude'},
             { label: 'Oluşturulma Tarihi', key: 'created_at', type: 'date'}
         ];
         
-        const rows = data.map((item, idx) => ({
-            actions: `
-                <div class="d-flex">
-                    <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
-                </div>
-            `,
-            name: item.name,
-            address: item.address,
-            created_at: item.created_at
-        }));
+        const rows = data.map(item => {
+            const village_name = villageMap[item.village_id];
+
+            return {
+                actions: `
+                    <div class="d-flex">
+                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                    </div>
+                `,
+                village_name: village_name,
+                name: item.name,
+                address: item.address,
+                latitude: item.latitude,
+                longitude: item.longitude,
+                created_at: item.created_at
+            }
+        });
 
         renderTable(columns, rows, "/place");
     } catch (err) { console.error(err); }
@@ -69,7 +90,15 @@ document.addEventListener("DOMContentLoaded", () => {
             config = { 
                 method: 'PUT', 
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: form.name.value }) 
+                body: JSON.stringify({
+                    name: form.name.value,
+                    explanation: form.explanation.value,
+                    detail: form.detail.value,
+                    address: form.address.value,
+                    latitude: form.latitude.value,
+                    longitude: form.longitude.value,
+                    village_id: form.village_id.value
+                })
             };
         } else if (form.id === 'upload-form') {
             url = `/place/upload/${form.dataset.placeId}`;

@@ -18,11 +18,19 @@ export const editForm = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
 
     const place = await place_service.single(id);
+    const villages = await village_service.list();
 
     res.render("place/form/edit", {
         placeId: id,
         layout: false,
-        name: place.name
+        name: place.name,
+        explanation: place.content?.explanation,
+        detail: place.content?.detail,
+        address: place.address,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        village_id: place.village_id,
+        villages: villages
     });
 };
 

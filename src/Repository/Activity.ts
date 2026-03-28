@@ -11,6 +11,10 @@ export class ActivityRepository {
             activity.cover = JSON.parse(activity.cover);
         }
 
+        if (activity.content && typeof activity.content === "string" ) {
+            activity.content = JSON.parse(activity.content);
+        }
+
         return activity;
     }
 

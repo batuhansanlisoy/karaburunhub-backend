@@ -4,6 +4,10 @@ import { Village } from "../Entity/Village";
 export class VillageService {
     private repo = new VillageRepository();
 
+    async single(id: number): Promise<Village> {
+        return this.repo.single(id);
+    }
+
     async list(): Promise<Village[]> {
         return this.repo.getAll();
     }

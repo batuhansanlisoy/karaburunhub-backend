@@ -18,27 +18,63 @@
 <script>
 async function refreshTable() {
     try {
-        const res = await fetch("/activity/list");
-        let data = await res.json();
+        const [activityRes, villageRes, categoryRes] = await Promise.all([
+            fetch("/activity/list"),
+            fetch("/village/list"),
+            fetch("/activity/category/list")
+        ]);
+
+        const data = await activityRes.json();
+        const villages = await villageRes.json();
+        const categories = await categoryRes.json();
+
+        const villageMap = {};
+        const categoryMap = {};
+
+        villages.forEach(element => {
+            villageMap[element.id] = element.name;
+        });
+
+        categories.forEach(element => {
+            categoryMap[element.id] = element.name;
+        })
+
         const columns = [
             { label: "", key: "actions", type: "html", width: "25px" },
+            { label: "Konum", key: "village_name"},
+            { label: "Etkinlik Türü", key: "category_name" },
             { label: "Etkinlik", key: "name" },
             { label: "Adres", key:"address", type: "string"},
+            { label: "Enlem", key: "latitude" },
+            { label: "Boylam", key: "longitude" },
             { label: "Başlangıç Tarihi", key: "begin", type: "date" },
             { label: "Bitiş Tarihi", key: "end", type: "date" },
         ];
 
-        const rows = data.map(item => ({
-            actions: `
-                <div class="d-flex">
-                    <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
-                    <button class="btn btn-dark btn-sm rounded-circle ms-2 day-calender" data-id="${item.id}"><i class="bi bi-calendar-plus"></i></button>
-                </div>
-            `,
-            name: item.name, address: item.address, begin: item.begin, end: item.end,
-        }));
+        const rows = data.map(item => {
+            const villageName = villageMap[item.village_id] || "";
+            const categoryName = categoryMap[item.category_id] || "";
+
+            return {
+                actions: `
+                    <div class="d-flex">
+                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 day-calender" data-id="${item.id}"><i class="bi bi-calendar-plus"></i></button>
+                    </div>
+                `,
+                village_name: villageName,
+                category_name: categoryName,
+                name: item.name,
+                address: item.address,
+                latitude: item.latitude,
+                longitude: item.longitude,
+                begin: item.begin,
+                end: item.end,
+            }
+        });
+
         renderTable(columns, rows, "/activity");
     } catch (err) { console.error(err); }
 }
@@ -72,7 +108,16 @@ document.addEventListener("DOMContentLoaded", () => {
             config = { 
                 method: 'PUT', 
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: form.name.value }) 
+                body: JSON.stringify({
+                    name: form.name.value,
+                    begin: form.begin.value,
+                    end: form.end.value,
+                    latitude: form.latitude.value,
+                    longitude: form.longitude.value,
+                    explanation: form.explanation.value,
+                    address: form.address.value,
+                    village_id: form.village_id.value
+                })
             };
         } else if (form.id === 'upload-form') {
             url = `/activity/upload/${form.dataset.activityId}`;
@@ -80,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (form.id === 'create-form') {
             url = `/activity/create`;
             const payload = Object.fromEntries(new FormData(form));
-            config = { 
+            config = {
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

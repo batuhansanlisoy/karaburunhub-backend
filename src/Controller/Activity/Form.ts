@@ -22,11 +22,24 @@ export const editForm = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
 
     const activity = await activity_service.single(id);
+    const villages = await village_service.list();
 
     res.render("activity/form/edit", {
         activityId: id,
         layout: false,
-        name: activity.name
+        name: activity.name,
+        explanation: (activity.content as any)?.explanation,
+        latitude: activity.latitude,
+        longitude: activity.longitude,
+        begin: activity.begin
+            ? new Date(activity.begin).toISOString().split('T')[0]
+            : "",
+        end: activity.end
+            ? new Date(activity.end).toISOString().split('T')[0]
+            : "",
+        address: activity.address,
+        village_id: activity.village_id,
+        villages: villages
     });
 };
 

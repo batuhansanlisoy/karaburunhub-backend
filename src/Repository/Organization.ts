@@ -6,9 +6,11 @@ export class OrganizationRepository {
 
     async single(id: number): Promise<Organization> {
         const org = await db(this.tableName).where({ id }).first();
+
         if (org?.cover && typeof org.cover === "string") {
             org.cover = JSON.parse(org.cover); // artık servis tarafında cover bir obje
         }
+
         return org;
     }
 

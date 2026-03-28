@@ -3,5 +3,23 @@
         <label class="form-label">Yer Adı</label>
         <input type="text" name="name" class="form-control" value="<%= name %>" required>
     </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Enlem</label>
+            <input type="text" name="latitude" class="form-control" value="<%= latitude %>">
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Boylam</label>
+            <input type="text" name="longitude" class="form-control" value="<%= longitude %>">
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="address">Adres</label>
+        <input type="text" name="address" id="address" class="form-control" value="<%= address %>" required>
+    </div>
+
     <button type="submit" class="btn btn-primary w-100">Güncelle</button>
 </form>
