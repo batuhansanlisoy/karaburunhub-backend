@@ -1,6 +1,6 @@
 import { Organization } from "./Organization";
 
-export interface FeaturedOrganization{
+export interface HighlightedOrganization{
     id: number,
     organization_id: number,
     active?: boolean,

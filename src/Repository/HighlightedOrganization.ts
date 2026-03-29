@@ -1,7 +1,7 @@
 import db from "../db/knex";
-import { FeaturedOrganization } from "../Entity/FeaturedOrganization";
+import { HighlightedOrganization } from "../Entity/HighlightedOrganization";
 
-export class FeaturedOrganizationRepository {
+export class HighlightedOrganizationRepository {
     private tableName = "widget_featured_organization";
 
     async getAll(orgId?: number, orgInfo: boolean = false): Promise<any[]> {
@@ -45,7 +45,7 @@ export class FeaturedOrganizationRepository {
         });
     }
 
-    async create(payload: Partial<FeaturedOrganization>): Promise<number[]> {
+    async create(payload: Partial<HighlightedOrganization>): Promise<number[]> {
         return db(this.tableName).insert(payload);
     }
 }

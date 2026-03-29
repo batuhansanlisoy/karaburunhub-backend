@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { FeaturedOrganizationService } from "../Service/FeaturedOrganization";
-import { FeaturedOrganization } from "../Entity/FeaturedOrganization";
-import { FeaturedOrganization as Converter } from "../Converter/FeaturedOrganization";
+import { HighlightedOrganizationService } from "../Service/HighlightedOrganization";
+import { HighlightedOrganization } from "../Entity/HighlightedOrganization";
+import { HighlightedOrganization as Converter } from "../Converter/HighligtedOrganization";
 
-const service = new FeaturedOrganizationService();
+const service = new HighlightedOrganizationService();
 
 export const list = async(req: Request, res: Response) => {
     const organization_id = req.query.organization_id ? Number(req.query.organization_id) : undefined;
@@ -22,7 +22,7 @@ export const list = async(req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
     const organization_id = req.body.organization_id;
-    const payload: Partial<FeaturedOrganization> = { organization_id };
+    const payload: Partial<HighlightedOrganization> = { organization_id };
 
     try {
         const result = await service.create(payload);

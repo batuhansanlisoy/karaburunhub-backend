@@ -14,8 +14,8 @@ export class OrganizationService {
         return this.repo.single(id);
     }
 
-    async list(category_id?: number): Promise<Organization[]> {
-        return this.repo.getAll(category_id);
+    async list(category_id?: number, village_id?: number, highlight?: boolean): Promise<Organization[]> {
+        return this.repo.getAll(category_id, village_id, highlight);
     }
 
     async create(organization: Partial<Organization>, items: number[]): Promise<void> {
@@ -33,6 +33,10 @@ export class OrganizationService {
         });
     }
 
+    async patch(id: number, field: string, value: any): Promise<number> {
+        return await this.repo.patch(id, field, value);
+    }
+    
     async update(id: number, payload: Partial<Organization>): Promise<void> {
         await this.repo.update(id, payload);
     }

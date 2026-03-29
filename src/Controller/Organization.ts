@@ -6,12 +6,13 @@ import { Organization as Converter } from "../Converter/Organization";
 import { DistanceActivityOrganizationService } from "../Service/Distance/ActivityOrganization";
 import { DistanceBeachOrganizationService } from "../Service/Distance/BeachOrganization";
 import { DistancePlaceOrganizationService } from "../Service/Distance/PlaceOrganization";
-
+import { HighlightedOrganizationService } from "~/Service/HighlightedOrganization";
 
 const service = new OrganizationService();
 const serviceActivityDistance = new DistanceActivityOrganizationService();
 const serviceBeachDistance = new DistanceBeachOrganizationService();
 const servicePlaceDistance = new DistancePlaceOrganizationService();
+const serviceHihglightedOrganization = new HighlightedOrganizationService();
 
 export const show = async (req: Request, res: Response) => {
     res.render("organization/index", {
@@ -23,8 +24,11 @@ export const show = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
     const category_id = req.query.category_id ? Number(req.query.category_id) : undefined;
+    const village_id  = req.query.village_id ? Number(req.query.village_id) : undefined;
+    const highlight = req.query.highlight !== undefined ? req.query.highlight === 'true' : undefined;
+
     try {
-        const organizations: Organization[] = await service.list(category_id);
+        const organizations: Organization[] = await service.list(category_id, village_id, highlight);
         const responce = Converter.toListResponse(organizations);
 
         res.json(responce);
@@ -87,6 +91,34 @@ export const update = async (req: Request, res: Response) => {
     } catch(err: any) {
         console.error(err);
         res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+    }
+}
+
+export const highligt = async (req: Request, res: Response) => {
+    const organization_id = Number(req.params.id);
+    const value = req.body.value;
+
+    try {
+        const result = await service.patch(organization_id, "highlight", value);
+
+        if (result === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "İşletme Bulunamadı." 
+            });
+        }
+
+        const organization = await service.single(organization_id);
+
+        return res.status(200).json({ 
+            success: true, 
+            message: "Öne çıkarma durumu güncellendi.",
+            data: organization
+        });
+
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || "Highlight error"})
     }
 }
 

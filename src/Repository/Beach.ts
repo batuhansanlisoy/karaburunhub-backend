@@ -12,13 +12,6 @@ export class BeachRepository {
         return beach;
     }
 
-    // async getAll(): Promise<Beach[]> {
-    //     return db(this.tableName).select(
-    //         "beachs.*",
-    //         "villages.name as village_name")
-    //         .leftJoin("villages", "beachs.village_id", "villages.id");
-    // }
-
     async getAll(village_id?: number, highlight?: boolean): Promise<Beach[]> {
         let query = db(this.tableName).select("*");
 

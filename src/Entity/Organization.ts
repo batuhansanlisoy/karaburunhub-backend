@@ -9,6 +9,7 @@ export interface Organization{
     website?: string,
     cover?: Cover,
     gallery?: string[];
+    higlight: boolean,
     address: string,
     latitude?: number | null;
     longitude?: number | null;

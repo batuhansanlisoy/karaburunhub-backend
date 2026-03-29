@@ -21,7 +21,7 @@ import { show as beachShow, list as beachList, nearestActivity as beachNearAct, 
 
 // --- ORGANIZATION & FEATURED CONTROLLER IMPORTS ---
 import { show as orgShow, list as orgList, nearestActivity as orgNearAct, nearestBeaches as orgNearBeach, nearestPlaces as orgNearPlace } from "../Controller/Organization";
-import { list as featuredOrgList } from "../Controller/FeaturedOrganization";
+import { list as featuredOrgList } from "../Controller/HighlightedOrganization";
 
 // --- ACTIVITY CONTROLLER IMPORTS ---
 import { show as activityShow, list as activityList, nearestBeaches as actNearBeach, nearestPlaces as actNearPlace, nearestOrganizations as actNearOrg } from "../Controller/Activity";

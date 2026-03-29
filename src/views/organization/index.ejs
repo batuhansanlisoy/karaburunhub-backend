@@ -44,21 +44,39 @@ async function loadSubCategories(catId) {
     }
 }
 
-async function promoteOrganization(orgId) {
+// async function promoteOrganization(orgId) {
+//     try {
+//         const res = await fetch(`/organization/feature`, {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({ organization_id: orgId })
+//         });
+
+//         if (res.ok) {
+//             alert('İşletme başarıyla öne çıkarıldı! Artık mobil açılışta görünecek.');
+//         } else {
+//             alert('Bir hata oluştu, belki zaten öne çıkarılmıştır?');
+//         }
+//     } catch (err) {
+//         console.error("Öne çıkarma hatası:", err);
+//     }
+// }
+
+async function highlight(orgId, isHighlighted) {
     try {
-        const res = await fetch(`/organization/feature`, {
-            method: 'POST',
+        const res = await fetch(`/organization/${orgId}/highlight`, {
+            method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ organization_id: orgId })
+            body: JSON.stringify({ value: isHighlighted })
         });
 
         if (res.ok) {
-            alert('İşletme başarıyla öne çıkarıldı! Artık mobil açılışta görünecek.');
+            refreshTable();
         } else {
-            alert('Bir hata oluştu, belki zaten öne çıkarılmıştır?');
+            alert('Bir hata oluştu!');
         }
     } catch (err) {
-        console.error("Öne çıkarma hatası:", err);
+        console.error("Hata:", err);
     }
 }
 
@@ -99,6 +117,9 @@ async function refreshTable() {
         ];
 
         const rows = data.map(item => {
+            const highlightClass = item.highlight ? 'text-warning' : 'text-secondary';
+            const highlightTitle = item.highlight ? 'Öne Çıkarılmış' : 'Öne Çıkarılmamış';
+
             const categoryName = categoriesMap[item.category_id];
             const villageName  = villagesMap[item.village_id];
 
@@ -108,7 +129,12 @@ async function refreshTable() {
                         <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
                         <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
                         <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger feature-btn" data-id="${item.id}"><i class="bi bi-lightning"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 highlight-btn ${highlightClass}" 
+                                data-id="${item.id}" 
+                                data-status="${item.highlight}"
+                                title="${highlightTitle}">
+                            <i class="bi bi-lightning-fill"></i>
+                        </button>
                     </div>
                 `,
                 category_name: categoryName,
@@ -141,14 +167,21 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", async (e) => {
         const editBtn = e.target.closest(".edit-btn");
         const uploadBtn = e.target.closest(".upload-btn");
-        const featureBtn = e.target.closest(".feature-btn");
+        const highlightBtn = e.target.closest(".highlight-btn");
 
         if (editBtn) Slideover.show(`/organization/form/edit/${editBtn.dataset.id}`, "Turistik Bölgeyi Düzenle");
         if (uploadBtn) Slideover.show(`/organization/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
-        if (featureBtn) {
-            const orgId = featureBtn.dataset.id;
-            if (confirm("Bu işletmeyi mobil uygulamada öne çıkarmak istediğinize emin misiniz?")) {
-                promoteOrganization(orgId);
+        if (highlightBtn) {
+            const orgId = highlightBtn.dataset.id;
+            const currentStatus = highlightBtn.dataset.status === "true" || highlightBtn.dataset.status === "1";
+            const nextStatus = !currentStatus; 
+
+            const msg = nextStatus 
+                ? "Bu işletmeyi mobil uygulamada öne çıkarmak istediğinize emin misiniz?" 
+                : "Bu işletmeyi öne çıkarılanlardan kaldırmak istiyor musunuz?"; 
+
+            if (confirm(msg)) {
+                highlight(orgId, nextStatus);
             }
         }
     });

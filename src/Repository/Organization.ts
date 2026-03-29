@@ -14,14 +14,26 @@ export class OrganizationRepository {
         return org;
     }
 
-    async getAll(category_id?: number): Promise<Organization[]> {
+    async getAll(category_id?: number, village_id?: number, highlight?: boolean): Promise<Organization[]> {
         let query = db(this.tableName).select("organization.*");
 
-        if (category_id) {
-            query = query
-                .select("organization_category.name as category_name")
-                .leftJoin("organization_category", "organization.category_id", "organization_category.id") // Join yap
-                .where("organization.category_id", category_id);
+        // if (category_id) {
+        //     query = query
+        //         .select("organization_category.name as category_name")
+        //         .leftJoin("organization_category", "organization.category_id", "organization_category.id") // Join yap
+        //         .where("organization.category_id", category_id);
+        // }
+
+        if (village_id != null) {
+            query = query.where("village_id", village_id);
+        }
+
+        if (highlight !== undefined) {
+            query = query.where("highlight", highlight);
+        }
+
+        if (category_id !== undefined) {
+            query = query.where("category_id", category_id);
         }
 
         return query;
@@ -30,6 +42,14 @@ export class OrganizationRepository {
     async create(organization: Partial<Organization>, trx?: Knex.Transaction): Promise<number[]> {
         const query = trx ? trx(this.tableName) : db(this.tableName);
         return query.insert(organization);
+    }
+
+    async patch(id: number, field: string, value: any): Promise<number> {
+        return db(this.tableName)
+            .where({ id: id })
+            .update({
+                [field]: value
+        });
     }
 
     async update(id: number, payload: Partial<Organization>): Promise<number> {
