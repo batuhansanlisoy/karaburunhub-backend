@@ -9,14 +9,34 @@
                 Ana Sayfa
             </a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a href="/dashboard" class="nav-link <%= activePage === 'dashboard' ? 'active' : 'text-white' %>">
                 Panel
+            </a>
+        </li> -->
+        <li class="nav-item">
+            <a href="/village" class="nav-link <%= activePage === 'village' ? 'active' : 'text-white' %>">
+                Köyler
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/activity/category" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
+                Etkinlik Kategorileri
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/organization/category" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
+                İşletme Kategorileri
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/organization/category/item" class="nav-link <%= activePage === 'item' ? 'active' : 'text-white' %>">
+                İşletme Alt Kategoriler
             </a>
         </li>
         <li class="nav-item">
             <a href="/organization" class="nav-link <%= activePage === 'organization' ? 'active' : 'text-white' %>">
-                İşletme
+                İşletmeler
             </a>
         </li>
         <li class="nav-item">
@@ -34,31 +54,11 @@
                 Turistik Yerler
             </a>
         </li>
-        <li class="nav-item">
-            <a href="/village" class="nav-link <%= activePage === 'village' ? 'active' : 'text-white' %>">
-                Köyler
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/organization/category" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
-                İşletme Kategorileri
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/organization/category/item" class="nav-link <%= activePage === 'item' ? 'active' : 'text-white' %>">
-                İşletme Kategori Çeşitleri
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/activity/category" class="nav-link <%= activePage === 'category' ? 'active' : 'text-white' %>">
-                Etkinlik Kategorileri
-            </a>
-        </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a href="/mobile" class="nav-link <%= activePage === 'mobile' ? 'active' : 'text-white' %>">
                 Mobil Yönetim
             </a>
-        </li>
+        </li> -->
         <li class="nav-item">
             <a href="/logout" class="nav-link text-white mt-auto" style="color: #ff4d4d !important;">
                 <i class="bi bi-box-arrow-right me-2"></i> Çıkış Yap
