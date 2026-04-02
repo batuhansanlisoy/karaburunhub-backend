@@ -1,13 +1,16 @@
 import db from "../db/knex";
-import { FileService } from "./File";
 import { Place } from "../Entity/Place";
+import { BaseService } from "./BaseService";
+import { FileService } from "./File";
 import { PlaceRepository } from "../Repository/Place";
 import { LocationDistanceOrchestrator } from "./Distance";
-import path from "path";
 
-export class PlaceService {
-    private repo = new PlaceRepository();
-    private distanceService = new LocationDistanceOrchestrator
+export class PlaceService extends BaseService<Place> {
+    constructor() {
+        super(new PlaceRepository())
+    };
+
+    private distanceService = new LocationDistanceOrchestrator();
 
     async single(id: number): Promise<Place> {
         return this.repo.single(id);
@@ -26,7 +29,7 @@ export class PlaceService {
         const placeIds = await this.repo.create(place);
         const placeId = placeIds[0];
 
-        if (place.latitude != null || place.longitude) {
+        if (place.latitude != null || place.longitude != null) {
 
             this.distanceService.onPlaceCreated(placeId, place.latitude!, place.longitude!);
         }
@@ -35,41 +38,7 @@ export class PlaceService {
     }
 
     async upload(id: number, files: any): Promise<any> {
-        let cover: { url: string, filename: string, path: string } | undefined;
-        let gallery: string[] | undefined;
-
-        if (files?.cover?.[0]) {
-            const file = files.cover[0];
-            const savedPath = await FileService.saveAndCompress(
-                file.buffer, 
-                "place", 
-                id.toString()
-            );
-
-            cover = {
-                url: `/${savedPath}`,
-                filename: path.basename(savedPath),
-                path: path.dirname(savedPath)
-            };
-        }
-
-        if (files?.['gallery[]']?.length > 0) {
-            const galleryPromises = files['gallery[]'].map((f: any) =>
-                FileService.saveAndCompress(f.buffer, "place", id.toString())
-            );
-
-            const savedGalleryPaths = await Promise.all(galleryPromises);
-            gallery = savedGalleryPaths.map(p => `/${p}`);
-        }
-
-        const payload: Partial<Place> = {
-            ...(cover && { cover }),
-            ...(gallery && { gallery })
-        };
-
-        await this.repo.update(id, payload);
-
-        return payload;
+        return await this.handleFileUpload(id, files, "place");
     }
 
     async update(id: number, payload: Partial<Place>): Promise<void> {

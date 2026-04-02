@@ -1,12 +1,15 @@
 import db from "../db/knex";
+import { BaseService } from "./BaseService";
 import { FileService } from "./File";
 import { Activity } from "../Entity/Activity";
 import { ActivityRepository } from "../Repository/Activity";
 import { LocationDistanceOrchestrator } from "./Distance";
-import path from "path";
 
-export class ActivityService {
-    private repo = new ActivityRepository();
+export class ActivityService extends BaseService<Activity>{
+    constructor() {
+        super(new ActivityRepository())
+    };
+
     private distanceService = new LocationDistanceOrchestrator
 
     async single(id: number): Promise<Activity> {
@@ -32,41 +35,7 @@ export class ActivityService {
     }
 
     async upload(id: number, files: any): Promise<any> {
-        let cover: { url: string, filename: string, path: string } | undefined;
-        let gallery: string[] | undefined;
-
-        if (files?.cover?.[0]) {
-            const file = files.cover[0];
-            const savedPath = await FileService.saveAndCompress(
-                file.buffer, 
-                "activity", 
-                id.toString()
-            );
-
-            cover = {
-                url: `/${savedPath}`,
-                filename: path.basename(savedPath),
-                path: path.dirname(savedPath)
-            };
-        }
-
-        if (files?.['gallery[]']?.length > 0) {
-            const galleryPromises = files['gallery[]'].map((f: any) =>
-                FileService.saveAndCompress(f.buffer, "activity", id.toString())
-            );
-
-            const savedGalleryPaths = await Promise.all(galleryPromises);
-            gallery = savedGalleryPaths.map(p => `/${p}`);
-        }
-
-        const payload: Partial<Activity> = {
-            ...(cover && { cover }),
-            ...(gallery && { gallery })
-        };
-
-        await this.repo.update(id, payload);
-
-        return payload;
+        return await this.handleFileUpload(id, files, "activity");
     }
 
     async update(id: number, activity: Partial<Activity>): Promise<void> {

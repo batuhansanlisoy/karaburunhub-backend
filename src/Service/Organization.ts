@@ -1,13 +1,16 @@
 import db from "../db/knex";
+import { BaseService } from "./BaseService";
 import { FileService } from "./File";
 import { Organization } from "../Entity/Organization";
 import { SubcategoryRepository } from "../Repository/Organization/Subcategory";
 import { Subcategory } from "../Entity/Organization/Subcategory";
 import { OrganizationRepository } from "../Repository/Organization";
-import path from "path";
 
-export class OrganizationService {
-    private repo = new OrganizationRepository();
+export class OrganizationService extends BaseService<Organization>{
+    constructor() {
+        super(new OrganizationRepository())
+    };
+
     private sub_category_repo = new SubcategoryRepository();
 
     async single(id: number): Promise<Organization> {
@@ -43,41 +46,7 @@ export class OrganizationService {
     }
 
     async upload(id: number, files: any): Promise<any> {
-        let cover: { url: string, filename: string, path: string } | undefined;
-        let gallery: string[] | undefined;
-
-        if (files?.cover?.[0]) {
-            const file = files.cover[0];
-            const savedPath = await FileService.saveAndCompress(
-                file.buffer, 
-                "organization", 
-                id.toString()
-            );
-
-            cover = {
-                url: `/${savedPath}`,
-                filename: path.basename(savedPath),
-                path: path.dirname(savedPath)
-            };
-        }
-
-        if (files?.['gallery[]']?.length > 0) {
-            const galleryPromises = files['gallery[]'].map((f: any) =>
-                FileService.saveAndCompress(f.buffer, "organization", id.toString())
-            );
-
-            const savedGalleryPaths = await Promise.all(galleryPromises);
-            gallery = savedGalleryPaths.map(p => `/${p}`);
-        }
-
-        const payload: Partial<Organization> = {
-            ...(cover && { cover }),
-            ...(gallery && { gallery })
-        };
-
-        await this.repo.update(id, payload);
-
-        return payload;
+        return await this.handleFileUpload(id, files, "organization");
     }
 
     async del(id: number): Promise<void> {
