@@ -8,7 +8,7 @@ import {
 } from "~/Controller/Organization";
 
 const router = Router();
-const upload = FileService.uploader("organization", (req) => req.params.id);
+const upload = FileService.uploader();
 
 router.get("", show);
 router.get("/form/create", createForm);

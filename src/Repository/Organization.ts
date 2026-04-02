@@ -87,7 +87,6 @@ export class OrganizationRepository {
                 newContent = payload.content;
             }
 
-            // Merge et
             mergedContent = { ...mergedContent, ...newContent };
             dummy.content = JSON.stringify(mergedContent);
         }

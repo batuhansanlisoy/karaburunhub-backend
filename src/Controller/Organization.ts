@@ -12,7 +12,6 @@ const service = new OrganizationService();
 const serviceActivityDistance = new DistanceActivityOrganizationService();
 const serviceBeachDistance = new DistanceBeachOrganizationService();
 const servicePlaceDistance = new DistancePlaceOrganizationService();
-const serviceHihglightedOrganization = new HighlightedOrganizationService();
 
 export const show = async (req: Request, res: Response) => {
     res.render("organization/index", {
@@ -123,33 +122,23 @@ export const highligt = async (req: Request, res: Response) => {
 }
 
 export const uploadPhoto = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    
-    const files: any = req.files;
-    let cover: {url: string, filename: string, path: string} | undefined;
-
-    if (files && files.cover && files.cover[0]) {
-        const file = files.cover[0];
-
-        cover = {
-            url: `/upload/organization/${id}/${file.filename}`,
-            filename: file.filename,
-            path: `/upload/organization/${id}`
-        };
-    }
-
-    const gallery: string[] | undefined = files?.['gallery[]']
-        ? files['gallery[]'].map((f: any) => `/upload/organization/${id}/${f.filename}`)
-        : undefined;
-    
-    const organization: Partial<Organization> = { cover, gallery };
-
     try {
-        const result = await service.update(id, organization);
-        return res.json({ result });
-    } catch(err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+        const id = Number(req.params.id);
+
+        const result = await service.upload(id, req.files);
+
+        return res.json({ 
+            success: true, 
+            message: "Fotoğraflar başarıyla yüklendi", 
+            data: result 
+        });
+
+    } catch (err: any) {
+        console.error("Upload Error:", err);
+        return res.status(500).json({ 
+            message: "Fotoğraflar işlenirken hata oluştu", 
+            error: err.message 
+        });
     }
 }
 

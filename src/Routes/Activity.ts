@@ -7,7 +7,7 @@ import {
 } from "../Controller/Activity";
 
 const router = Router();
-const upload = FileService.uploader("activity", (req) => req.params.id);
+// const upload = FileService.uploader("activity", (req) => req.params.id);
 
 router.get("", show);
 router.get("/form/create", createForm);
@@ -22,10 +22,10 @@ router.post("/create",create);
 router.put("/:id", update);
 router.put("/timeline/:id", timeline);
 
-router.put("/upload/:id", upload.fields([
-    { name: "cover", maxCount: 1 },
-    { name: "gallery[]", maxCount: 10 }
-]), uploadPhoto);
+// router.put("/upload/:id", upload.fields([
+//     { name: "cover", maxCount: 1 },
+//     { name: "gallery[]", maxCount: 10 }
+// ]), uploadPhoto);
 
 router.delete("/:id", del);
 

@@ -4,6 +4,7 @@ import { Organization } from "../Entity/Organization";
 import { SubcategoryRepository } from "../Repository/Organization/Subcategory";
 import { Subcategory } from "../Entity/Organization/Subcategory";
 import { OrganizationRepository } from "../Repository/Organization";
+import path from "path";
 
 export class OrganizationService {
     private repo = new OrganizationRepository();
@@ -39,6 +40,44 @@ export class OrganizationService {
     
     async update(id: number, payload: Partial<Organization>): Promise<void> {
         await this.repo.update(id, payload);
+    }
+
+    async upload(id: number, files: any): Promise<any> {
+        let cover: { url: string, filename: string, path: string } | undefined;
+        let gallery: string[] | undefined;
+
+        if (files?.cover?.[0]) {
+            const file = files.cover[0];
+            const savedPath = await FileService.saveAndCompress(
+                file.buffer, 
+                "organization", 
+                id.toString()
+            );
+
+            cover = {
+                url: `/${savedPath}`,
+                filename: path.basename(savedPath),
+                path: path.dirname(savedPath)
+            };
+        }
+
+        if (files?.['gallery[]']?.length > 0) {
+            const galleryPromises = files['gallery[]'].map((f: any) =>
+                FileService.saveAndCompress(f.buffer, "organization", id.toString())
+            );
+
+            const savedGalleryPaths = await Promise.all(galleryPromises);
+            gallery = savedGalleryPaths.map(p => `/${p}`);
+        }
+
+        const payload: Partial<Organization> = {
+            ...(cover && { cover }),
+            ...(gallery && { gallery })
+        };
+
+        await this.repo.update(id, payload);
+
+        return payload;
     }
 
     async del(id: number): Promise<void> {
