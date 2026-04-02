@@ -109,33 +109,23 @@ export const timeline = async (req: Request, res: Response) => {
 };
 
 export const uploadPhoto = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    
-    const files: any = req.files;
-    let cover: {url: string, filename: string, path: string} | undefined;
-
-    if (files && files.cover && files.cover[0]) {
-        const file = files.cover[0];
-
-        cover = {
-            url: `/upload/activity/${id}/${file.filename}`,
-            filename: file.filename,
-            path: `/upload/activity/${id}`
-        };
-    }
-
-    const gallery: string[] | undefined = files?.['gallery[]']
-        ? files['gallery[]'].map((f: any) => `/upload/activity/${id}/${f.filename}`)
-        : undefined;
-    
-    const activity: Partial<Activity> = { cover, gallery };
-
     try {
-        const result = await service.update(id, activity);
-        return res.json({ result });
-    } catch(err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+        const id = Number(req.params.id);
+
+        const result = await service.upload(id, req.files);
+
+        return res.json({ 
+            success: true, 
+            message: "Fotoğraflar başarıyla yüklendi", 
+            data: result 
+        });
+
+    } catch (err: any) {
+        console.error("Upload Error:", err);
+        return res.status(500).json({ 
+            message: "Fotoğraflar işlenirken hata oluştu", 
+            error: err.message 
+        });
     }
 }
 

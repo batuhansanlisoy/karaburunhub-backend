@@ -3,6 +3,7 @@ import { FileService } from "./File";
 import { Place } from "../Entity/Place";
 import { PlaceRepository } from "../Repository/Place";
 import { LocationDistanceOrchestrator } from "./Distance";
+import path from "path";
 
 export class PlaceService {
     private repo = new PlaceRepository();
@@ -31,6 +32,44 @@ export class PlaceService {
         }
 
         return placeIds;
+    }
+
+    async upload(id: number, files: any): Promise<any> {
+        let cover: { url: string, filename: string, path: string } | undefined;
+        let gallery: string[] | undefined;
+
+        if (files?.cover?.[0]) {
+            const file = files.cover[0];
+            const savedPath = await FileService.saveAndCompress(
+                file.buffer, 
+                "place", 
+                id.toString()
+            );
+
+            cover = {
+                url: `/${savedPath}`,
+                filename: path.basename(savedPath),
+                path: path.dirname(savedPath)
+            };
+        }
+
+        if (files?.['gallery[]']?.length > 0) {
+            const galleryPromises = files['gallery[]'].map((f: any) =>
+                FileService.saveAndCompress(f.buffer, "place", id.toString())
+            );
+
+            const savedGalleryPaths = await Promise.all(galleryPromises);
+            gallery = savedGalleryPaths.map(p => `/${p}`);
+        }
+
+        const payload: Partial<Place> = {
+            ...(cover && { cover }),
+            ...(gallery && { gallery })
+        };
+
+        await this.repo.update(id, payload);
+
+        return payload;
     }
 
     async update(id: number, payload: Partial<Place>): Promise<void> {
