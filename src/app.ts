@@ -11,6 +11,7 @@ import placeRoutes from "./Routes/Place";
 import villageRoutes from "./Routes/Village";
 import activityRoutes from "./Routes/Activity";
 import organizationRoutes from "./Routes/Organization";
+import feedbackRoutes from "./Routes/Feedback";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
@@ -68,5 +69,6 @@ app.use("/organization/category/item", requireAuth, organizationCategoryItemRout
 app.use("/place", requireAuth, placeRoutes);
 app.use("/activity", requireAuth, activityRoutes);
 app.use("/activity/category", requireAuth, activityCategoryRoutes);
+app.use("/feedback", feedbackRoutes);
 
 export default app;

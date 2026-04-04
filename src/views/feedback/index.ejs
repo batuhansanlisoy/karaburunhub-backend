@@ -1,0 +1,47 @@
+<div class="container mt-3">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="p-2 bg-primary text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
+            <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
+        </div>
+        <button id="openFilter" class="btn btn-dark rounded-5">
+            <i class="bi bi-filter me-2"></i>Filtre
+        </button>
+        <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
+    </div>
+
+    <%- include('../ui/table.ejs', { title: "Geri Bildirim" }) %>
+</div>
+
+<script>
+async function refreshTable() {
+    try {
+        const feedbacks = await fetch("/feedback/list");
+
+        const data = await feedbacks.json();
+
+        const columns = [
+            { label: 'Ad', key: 'name' },
+            { label: 'Soyad', key: 'last_name' },
+            { label: 'E-mail', key: 'email' },
+            { label: 'Telefon', key: 'phone', type: 'phone' },
+            { label: 'Mesaj', key: 'message', type: 'longtext', limit: 40 }
+        ];
+
+        const rows = data.map((item, idx) => {
+            return {
+                name: item.name,
+                last_name: item.last_name,
+                email: item.email,
+                phone: item.phone,
+                message: item.content.message
+            };
+        });
+
+        renderTable(columns, rows, "/feedback");
+    } catch (err) { console.error(err); }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    refreshTable();
+});
+</script>

@@ -55,7 +55,16 @@ function renderTable(columns, data, deleteUrl) {
             } 
             else if (col.type === 'html' && value) {
                 td.innerHTML = value;
-            } 
+            } else if (col.type === 'longtext' && value && value !== '-') {
+                const limit = col.limit || 50;
+                if (value.length > limit) {
+                    const shortText = value.substring(0, limit) + "...";
+                    td.innerHTML = `<span class="text-truncate-custom" title="Tamamını gör" onclick="alert(\`${value.replace(/"/g, '&quot;')}\`)">${shortText}</span>`;
+                    td.style.cursor = "pointer";
+                } else {
+                    td.textContent = value;
+                }
+            }
             else {
                 td.textContent = capitalizeFirstLetter(value);
             }
