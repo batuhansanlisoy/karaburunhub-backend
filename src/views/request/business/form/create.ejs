@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Ol | KaraburunGO</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+        }
+
+        .form-card {
+            background-color: #fff;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .section-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .section-line::after {
+            content: "";
+            height: 1px;
+            background: #eee;
+            flex-grow: 1;
+        }
+
+        .form-control {
+            border: 2px solid #f0f0f0;
+            padding: 12px;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: var(--red-color);
+            box-shadow: none;
+            outline: none;
+        }
+
+        .package-box {
+            background-color: #fff8f8;
+            border: 2px solid var(--red-color);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .char-count {
+            font-size: 11px;
+            color: #999;
+            text-align: right;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center">
+    <div class="form-card">
+        <div class="p-5 text-center border-bottom bg-white">
+            <h2 class="fw-bold m-0">Karaburun<span class="text-red">GO</span> Partnerlik</h2>
+            <p class="text-muted text-mmd mt-2">İşletmenizi dijital dünyaya taşıyın</p>
+        </div>
+        
+        <div class="p-5" id="main-content">
+            <form id="partner-form">
+                
+                <div class="section-line text-red text-sm fw-bold text-uppercase">Yetkili Bilgileri</div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label text-mmd fw-bold text-secondary">Ad</label>
+                        <input type="text" name="name" class="form-control" placeholder="Ahmet" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-mmd fw-bold text-secondary">Soyad</label>
+                        <input type="text" name="last_name" class="form-control" placeholder="Yılmaz" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-mmd fw-bold text-secondary">E-Posta</label>
+                        <input type="email" name="email" class="form-control" placeholder="ahmet@example.com" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-mmd fw-bold text-secondary">Telefon</label>
+                        <input type="tel" name="phone" class="form-control tel-mask" placeholder="0 5XX XXX XX XX" maxlength="15" required>
+                    </div>
+                </div>
+
+                <div class="section-line text-red text-sm fw-bold text-uppercase">İşletme Bilgileri</div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-8">
+                        <label class="form-label text-mmd fw-bold text-secondary">İşletme Adı</label>
+                        <input type="text" name="biz_name" class="form-control" placeholder="Örn: Deniz Restoran" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-mmd fw-bold text-secondary">İşletme Telefonu</label>
+                        <input type="tel" name="biz_phone" class="form-control tel-mask" placeholder="0 232 XXX XX XX" maxlength="15">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-mmd fw-bold text-secondary">İşletme Hakkında</label>
+                        <textarea name="biz_description" rows="2" class="form-control" maxlength="50" placeholder="Örn: Oto tamir, bahçe bakımı, ev yemekleri..." required></textarea>
+                        <div class="char-count">0/50</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label text-mmd fw-bold text-secondary">İşletme Adresi</label>
+                        <textarea name="biz_address" rows="2" class="form-control" maxlength="100" placeholder="Açık adres giriniz..."></textarea>
+                        <div class="char-count">0/100</div>
+                    </div>
+                </div>
+
+                <div class="package-box d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fs-6 fw-bold m-0 text-dark">Standart Paket</h4>
+                        <p class="text-sm text-muted m-0">Mobil rehberde listelenme aktif edilir.</p>
+                    </div>
+                    <div class="badge-custom bg-red">Aktif</div>
+                    <input type="hidden" name="package" value="standart">
+                </div>
+
+                <button type="submit" id="submitBtn" class="submit-btn bg-red text-uppercase shadow-sm">
+                    Talebi Gönder
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.tel-mask').forEach(input => {
+        input.addEventListener('input', (e) => {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            if (!x[1]) {
+                e.target.value = '';
+            } else {
+                e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '') + (x[5] ? ' ' + x[5] : '');
+            }
+        });
+    });
+
+    // Karakter Sayacı
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.addEventListener('input', (e) => {
+            const count = e.target.value.length;
+            const max = e.target.getAttribute('maxlength');
+            e.target.nextElementSibling.innerText = `${count}/${max}`;
+        });
+    });
+
+    document.getElementById('partner-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const mainContent = document.getElementById('main-content');
+        const formData = Object.fromEntries(new FormData(e.target));
+
+        // API'ye giderken telefonları birleştiriyoruz (boşlukları silerek)
+        const payload = {
+            sender: {
+                name: formData.name,
+                last_name: formData.last_name,
+                email: formData.email,
+                phone: formData.phone.replace(/\s/g, '') 
+            },
+            business: {
+                name: formData.biz_name,
+                phone: formData.biz_phone.replace(/\s/g, ''),
+                description: formData.biz_description,
+                address: formData.biz_address
+            },
+            package: formData.package
+        };
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> İŞLENİYOR...';
+
+        try {
+            const response = await fetch('/request/business/create', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                mainContent.innerHTML = `
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-check-circle-fill text-green success-icon"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3 text-dark">Başvuru Alındı!</h3>
+                        <p class="text-secondary text-mmd px-4">
+                            Talebiniz başarıyla bize ulaştı. <br>
+                            En kısa sürede inceleyip sizinle iletişime geçeceğiz.
+                        </p>
+                    </div>
+                `;
+            } else {
+                alert('Hata oluştu, lütfen tekrar deneyin.');
+                btn.disabled = false;
+                btn.innerHTML = 'TALEBİ GÖNDER';
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Sunucuyla bağlantı kurulamadı.');
+            btn.disabled = false;
+            btn.innerHTML = 'TALEBİ GÖNDER';
+        }
+    });
+</script>
+
+</body>
+</html>

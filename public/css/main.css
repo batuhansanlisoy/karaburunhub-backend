@@ -1,0 +1,74 @@
+/* 🎨 KaraburunGO Global Renk Paleti */
+:root {
+    /* Temel Kırmızı (Baba) */
+    --red-color: #d84242;
+    --red-dark: #b53535;
+    --red-light: #ff5e5e;
+
+    /* Turuncu (Enerjik) */
+    --orange-color: #f39c12;
+    --orange-dark: #e67e22;
+
+    /* Sarı (Uyarı/Dikkat) */
+    --yellow-color: #f1c40f;
+    --yellow-dark: #f39c12;
+
+    /* Yeşil (Onay/Başarı) */
+    --green-color: #27ae60;
+    --green-dark: #2ecc71;
+
+    /* Mavi (Bilgi/İşlem) */
+    --blue-color: #3498db;
+    --blue-dark: #2980b9;
+    --blue-darker: #1b5b86;
+    --blue-light: #7bcaff;
+    
+    /* Mor (Premium/Özel) */
+    --purple-color: #8e44ad;
+    --purple-light: #9b59b6;
+
+    /* Pembe (Etkinlik/Vurgu) */
+    --pink-color: #e91e63;
+    --pink-light: #f06292;
+
+    --sm-text: 10px;
+    --md-text: 13px;
+}
+
+.text-red    { color: var(--red-color) !important; }
+.text-orange { color: var(--orange-color) !important; }
+.text-yellow { color: var(--yellow-color) !important; }
+.text-green  { color: var(--green-color) !important; }
+.text-blue   { color: var(--blue-color) !important; }
+.text-purple { color: var(--purple-color) !important; }
+.text-pink   { color: var(--pink-color) !important; }
+.text-blue-light   { color: var(--blue-light) !important; }
+
+.text-sm { font-size: var(--sm-text) !important}
+.text-mmd { font-size: var(--md-text) !important}
+
+.text-red-bold    { color: var(--red-color) !important; font-weight: 700; }
+.text-orange-bold { color: var(--orange-color) !important; font-weight: 700; }
+.text-green-bold  { color: var(--green-color) !important; font-weight: 700; }
+.text-blue-bold   { color: var(--blue-color) !important; font-weight: 700; }
+
+.bg-red    { background-color: var(--red-color) }
+.bg-orange { background-color: var(--orange-color) }
+.bg-yellow { background-color: var(--yellow-color) }
+.bg-green  { background-color: var(--green-color) }
+.bg-blue   { background-color: var(--blue-color) }
+.bg-purple { background-color: var(--purple-color) }
+.bg-pink   { background-color: var(--pink-color) }
+.bg-blue-dark { background-color: var(--blue-dark) }
+.bg-blue-darker { background-color: var(--blue-darker) }
+.bg-blue-light   { color: var(--blue-light) !important; }
+
+.badge-custom {
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+    line-height: 1.4;
+}

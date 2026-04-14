@@ -12,6 +12,7 @@ import villageRoutes from "./Routes/Village";
 import activityRoutes from "./Routes/Activity";
 import organizationRoutes from "./Routes/Organization";
 import feedbackRoutes from "./Routes/Feedback";
+import requestBusinessRoutes from "./Routes/RequestBusiness";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
@@ -61,7 +62,7 @@ app.use("/", authRoutes);
 
 // Web Admin Paneli (Session korumalı)
 app.use("/users", requireAuth, userRoutes);
-app.use("/beach", requireAuth, beachRoutes);
+app.use("/beach", beachRoutes);
 app.use("/village", requireAuth, villageRoutes);
 app.use("/organization", requireAuth, organizationRoutes);
 app.use("/organization/category", requireAuth, organizationCategoryRoutes);
@@ -70,5 +71,6 @@ app.use("/place", requireAuth, placeRoutes);
 app.use("/activity", requireAuth, activityRoutes);
 app.use("/activity/category", requireAuth, activityCategoryRoutes);
 app.use("/feedback", feedbackRoutes);
+app.use("/request/business", requestBusinessRoutes);
 
 export default app;

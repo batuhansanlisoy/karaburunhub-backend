@@ -1,0 +1,197 @@
+<div class="container mt-3">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="filter-badge p-2 bg-dark text-white rounded-5 px-4" data-type="all" style="cursor:pointer;">
+            <h2 class="mb-0 fs-6 text-center">Hepsi</h2>
+        </div>
+        <div class="filter-badge p-2 bg-dark text-white rounded-5 px-4" data-type="status" data-value="pending" style="cursor:pointer;">
+            <h2 class="mb-0 fs-6 text-center">Bekleyen</h2>
+        </div>
+        <div class="filter-badge p-2 bg-dark text-white rounded-5 px-4" data-type="status" data-value="approved" style="cursor:pointer;">
+            <h2 class="mb-0 fs-6 text-center">Onaylı</h2>
+        </div>
+        <div class="filter-badge p-2 bg-dark text-white rounded-5 px-4" data-type="status" data-value="rejected" style="cursor:pointer;">
+            <h2 class="mb-0 fs-6 text-center">Reddedilen</h2>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="p-2 bg-blue text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
+            <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
+        </div>
+        <button id="openFilter" class="btn btn-dark rounded-5">
+            <i class="bi bi-filter me-2"></i>Filtre
+        </button>
+        <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
+    </div>
+
+    <%- include('../../ui/table.ejs', { title: "Gezilecek Yerler" }) %>
+</div>
+
+<script>
+    function buildQueryString(params) {
+        if (!params) return "";
+        return "?" + Object.keys(params)
+            .filter(key => params[key] !== undefined)
+            .map(key => `${key}=${params[key]}`)
+            .join('&');
+    }
+
+    let currentFilters = { status: "pending" };
+
+    async function markAsRead(requestBusinessId) {
+        try {
+            const res = await fetch(`/request/business/${requestBusinessId}/mark_as_read`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (res.ok) {
+                refreshTable(currentFilters);
+            } else {
+                alert('Bir hata oluştu!');
+            }
+        } catch (err) {
+            console.error("Hata:", err);
+        }
+    }
+
+    async function changeStatus(requestBusinessId, status) {
+        try {
+            const res = await fetch(`/request/business/${requestBusinessId}/change_status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: status })
+            });
+
+            if (res.ok) {
+                refreshTable(currentFilters);
+            } else {
+                alert('Bir hata oluştu!');
+            }
+        } catch (err) {
+            console.error("Hata:", err);
+        }
+    }
+
+    async function refreshTable(filterParams = {}) {
+        try {
+            const queryString = buildQueryString(filterParams);
+            const requestBusinessRes = await fetch(`/request/business/list${queryString}`);
+            const data = await requestBusinessRes.json();
+
+            const columns = [
+                { label: '', key: 'actions', type: "html", width: '25px' },
+                { label: 'Talep Eden', key: 'sender_info', type: 'html' },
+                { label: 'İşletme Bilgileri', key: 'business_info', type: 'html' },
+                { label: 'Paket & Durum', key: 'meta_info', type: 'html' },
+                { label: 'Talep Tarihi', key: 'created_at', type: 'date' }
+            ];
+
+            const rows = data.map(item => {
+                const statusIcon = item.is_read ? 'bi-envelope-open-fill' : 'bi-envelope-fill';
+                const statusColor = item.is_read ? 'text-blue' : 'text-orange';
+                const readingTitle = item.is_read ? 'Okundu' : 'Yeni Talep. Okundu Olarak Değiştir';
+
+                return {
+                    actions: `
+                        <div class="d-flex align-items-center gap-1">
+                            ${!item.is_read ? `
+                                <button class="btn btn-dark btn-sm rounded-circle reading-btn" data-id="${item.id}" title="Okundu Olarak İşaretle">
+                                    <i class="bi bi-check2-all text-blue"></i>
+                                </button>
+                            ` : ''}
+                            ${item.status === 'pending' ? `
+                                <button class="btn btn-dark btn-sm rounded-circle approve-btn" data-id="${item.id}" title="Onayla">
+                                    <i class="bi bi-check-lg text-green"></i>
+                                </button>
+                                <button class="btn btn-dark btn-sm rounded-circle reject-btn" data-id="${item.id}" title="Reddet">
+                                    <i class="bi bi-x-lg text-red"></i>
+                                </button>
+                            ` : ''}
+                        </div>`,
+                    sender_info: `
+                        <div class="d-flex flex-column gap-1">
+                            <div class="text text-capitalize fw-semibold">
+                                <span>${item.sender.name}</span> ${item.sender.last_name}
+                            </div>
+                            <div class="small"><i class="bi bi-envelope-fill me-1 text-blue"></i>${item.sender.email}</div>
+                            <div class="small"><i class="bi bi-telephone-fill me-1 text-green"></i>${item.sender.phone}</div>
+                        </div>`,
+                    business_info: `
+                        <div class="d-flex flex-column gap-1 text-white">
+                            <div class="text-capitalize fw-semibold">${item.business.name}</div>
+                            <div class="small text-truncate" style="max-width: 200px;" title="${item.business.address}">
+                                <i class="bi bi-geo-alt-fill me-1 text-orange"></i>${item.business.address || '-'}
+                            </div>
+                            <div class="small"><i class="bi bi-envelope-fill me-1 text-blue"></i>${item.business.email || item.sender.email}</div>
+                            ${item.business.phone ? `<div class="small italic"><i class="bi bi-telephone-fill me-1 text-green"></i>${item.business.phone}</div>` : ''}
+                        </div>`,
+                    meta_info: `
+                        <span class="badge bg-blue text-capitalize text-md p-2" style="width: fit-content;">
+                            ${item.package}
+                        </span>`,
+                    created_at: item.created_at
+                }
+            });
+
+            renderTable(columns, rows, "/place");
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        refreshTable(currentFilters);
+
+        const defaultBadge = document.querySelector('.filter-badge[data-value="pending"]');
+        if (defaultBadge) {
+            defaultBadge.classList.replace('bg-dark', 'bg-red');
+        }
+
+        document.addEventListener("click", async (e) => {
+            const readBtn    = e.target.closest(".reading-btn");
+            const approveBtn = e.target.closest(".approve-btn");
+            const rejectBtn  = e.target.closest(".reject-btn");
+
+            if (readBtn) {
+                const requestBusinessId = readBtn.dataset.id;
+                if (confirm("Okundu Olarak İşaretlemek İstiyor musunuz?")) {
+                    markAsRead(requestBusinessId);
+                }
+            }
+
+            if (approveBtn) {
+                const requestBusinessId = approveBtn.dataset.id;
+                if (confirm("Onaylamak istiyor musunuz?")) {
+                    changeStatus(requestBusinessId, "approved");
+                }
+            }
+
+            if (rejectBtn) {
+                const requestBusinessId = rejectBtn.dataset.id;
+                if (confirm("Reddetmek istiyor musunuz?")) {
+                    changeStatus(requestBusinessId, "rejected");
+                }
+            }
+        });
+
+        document.querySelectorAll('.filter-badge').forEach(badge => {
+            badge.addEventListener('click', function () {
+                const type = this.getAttribute('data-type');
+                const value = this.getAttribute('data-value');
+
+                document.querySelectorAll('.filter-badge').forEach(b => {
+                    b.classList.replace('bg-red', 'bg-dark');
+                });
+                this.classList.replace('bg-dark', 'bg-red');
+
+                currentFilters = {};
+                if (type !== 'all') {
+                    currentFilters[type] = value;
+                }
+
+                refreshTable(currentFilters);
+            });
+        });
+    });
+</script>

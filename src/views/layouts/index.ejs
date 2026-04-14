@@ -5,61 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %> | KaraburunGO</title>
 
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap & Icons -->
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/main.css">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
             background-color: rgb(37, 37, 37);
-            color: #212121;
         }
 
-        /* Sidebar */
+        /* Sidebar Sabitleme */
         .sidebar {
-            background-color: #1e1e1e;
+            background-color: #212529;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Navigasyon Linkleri */
+        .nav-link {
+            border-radius: 8px;
+            margin-bottom: 4px;
+            transition: all 0.2s ease;
+        }
+
+        /* Aktif Durum: İkon ve Metni Beyaz Yap */
+        .nav-link.active {
+            background-color: var(--blue-color) !important; 
+            color: white !important;
+        }
+        
+        .nav-link.active i, 
+        .nav-link.active span {
+            color: white !important;
+        }
+
+        .nav-link:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white !important;
+        }
+        .sidebar .nav-link i {
+            opacity: 0.7; /* Burayı 0.5 yaparsan daha da söner */
+            transition: opacity 0.3s ease; /* Yumuşak geçiş için */
+        }
+        .sidebar .nav-link:hover i,
+        .sidebar .nav-link.active i {
+            opacity: 1 !important;
+        }
+
+        /* Main Content Kaydırma (Sidebar genişliği kadar offset) */
+        main {
+            background-color: #333b42;
             min-height: 100vh;
         }
 
-        .nav-link.active {
-            background-color: #0d6efd !important;
-            color: #fff !important;
-        }
-
-        .nav-link:hover {
-            background-color: #495057;
-            color: #fff !important;
-        }
-
-        /* Scroll bar ufak stil */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <%- include('./navbar.ejs') %>
-            <!-- Main Content -->
-            <main class="col-12 col-md-9 col-lg-10 p-4">
-                <%- body %>
-            </main>
 
-            <footer class="text-white text-center py-1" style="background-color: #1e1e1e;">
-                <p class="mb-0">&copy; <%= new Date().getFullYear() %> KaraburunGO. Tüm hakları saklıdır.</p>
-            </footer>
+            <main class="col-12 col-md-9 col-lg-10 p-4 offset-md-3 offset-lg-2 d-flex flex-column">
+                <div class="flex-grow-1">
+                    <%- body %>
+                </div>
+
+                <footer class="text-white text-md text-center border-top">
+                    <p>&copy; <%= new Date().getFullYear() %> KaraburunGO. Tüm hakları saklıdır.</p>
+                </footer>
+            </main>
         </div>
     </div>
+
     <script src="/js/slideover-manager.js"></script>
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>

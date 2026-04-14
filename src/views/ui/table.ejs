@@ -1,5 +1,5 @@
 <div class="table-widget-container">
-  <div class="table-widget-body table-responsive">
+  <div class="table-widget-body">
     <table class="table table-dark table-striped table-hover align-middle mb-0 custom-table">
       <thead class="table-header text-white">
         <tr id="dynamicTableHead"></tr>
@@ -101,6 +101,14 @@ function renderTable(columns, data, deleteUrl) {
 </script>
 
 <style>
+.table-widget-body {
+    max-height: 600px; /* Buraya istediğin sabit yüksekliği ver (örn: 500px, 70vh vb.) */
+    overflow-y: auto;  /* İçerik taşarsa dikey scroll çıksın */
+    overflow-x: auto;  /* Yatayda gerekirse kaydırılsın */
+    position: relative;
+    background: #1f1f1f;
+}
+
 /* 🔹 Tablonun kapsayıcı container'ı */
 .table-widget-container {
     border-radius: 16px;
@@ -115,19 +123,16 @@ function renderTable(columns, data, deleteUrl) {
     background: #1f1f1f;
 }
 
-/* 🔹 Header */
-.table-header {
-    background: linear-gradient(90deg, #3b82f6, #06b6d4);
-}
-
 .table-header th {
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Diğer satırların üstünde kalması için */
     font-weight: 600;
     font-size: 13px;
-    /* padding: 14px; */
     border: none !important;
-    /* text-transform: uppercase; */
     letter-spacing: 0.5px;
     color: #fff;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2); /* Alt satırlarla başlık arasına hafif gölge */
 }
 
 /* 🔹 Satırlar */
@@ -148,8 +153,19 @@ function renderTable(columns, data, deleteUrl) {
 
 /* 🔹 Hover efekti */
 .custom-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: rgba(202, 5, 5, 0.07);
     /* transform: scale(1.01); */
     transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.table-widget-body::-webkit-scrollbar {
+    width: 6px;
+}
+.table-widget-body::-webkit-scrollbar-track {
+    background: #1f1f1f;
+}
+.table-widget-body::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 10px;
 }
 </style>
