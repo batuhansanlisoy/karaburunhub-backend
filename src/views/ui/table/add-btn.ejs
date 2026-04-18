@@ -1,0 +1,5 @@
+<button 
+onclick="Slideover.show('<%= url %>', '<%= title %>')" 
+class="btn btn-dark rounded-5 so-trigger <%= typeof extraClass !== 'undefined' ? extraClass : '' %>">
+    <i class="bi bi-plus-circle me-2"></i><%= label || 'Ekle' %>
+</button>

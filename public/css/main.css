@@ -150,6 +150,8 @@ main {
 .text-pink { color: var(--pink-color) !important; }
 .bg-blue { background-color: var(--blue-color) !important; }
 .bg-red { background-color: var(--red-color) !important; }
+.bg-green { background-color: var(--green-color) !important}
+.bg-orange { background-color: var(--orange-color) !important}
 .text-truncate-custom { color: var(--blue-light); text-decoration: underline; cursor: pointer; }
 
 /* Scrollbars */

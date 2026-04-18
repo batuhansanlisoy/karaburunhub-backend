@@ -4,9 +4,11 @@
             <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
         </div>
 
-        <button onclick="Slideover.show('/activity/form/create', 'Yeni Etkinlik')" class="btn btn-dark rounded-5 so-trigger">
-            <i class="bi bi-plus-circle me-2"></i>Ekle
-        </button>
+        <%- include('../ui/table/add-btn.ejs', { 
+            url: '/activity/form/create', 
+            title: 'Yeni Etkinlik', 
+            label: 'Ekle'
+        }) %>
 
         <button id="openFilter" class="btn btn-dark rounded-5">
             <i class="bi bi-filter me-2"></i>Filtre
