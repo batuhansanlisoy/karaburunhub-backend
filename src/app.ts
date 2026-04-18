@@ -62,7 +62,7 @@ app.use("/", authRoutes);
 
 // Web Admin Paneli (Session korumalı)
 app.use("/users", requireAuth, userRoutes);
-app.use("/beach", beachRoutes);
+app.use("/beach", requireAuth, beachRoutes);
 app.use("/village", requireAuth, villageRoutes);
 app.use("/organization", requireAuth, organizationRoutes);
 app.use("/organization/category", requireAuth, organizationCategoryRoutes);

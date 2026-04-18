@@ -1,6 +1,6 @@
-<div class="container mt-3">
-    <div class="d-flex align-items-center gap-2 mb-3">
-        <div class="p-2 bg-primary text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
+<div>
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <div class="p-2 bg-blue text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
             <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
         </div>
         
@@ -10,7 +10,7 @@
         <button id="openFilter" class="btn btn-dark rounded-5">
             <i class="bi bi-filter me-2"></i>Filtre
         </button>
-        <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
+        <input type="text" id="searchInput" class="form-control rounded-5 w-100 w-md-auto" placeholder="Ara..." style="max-width: 250px;">
     </div>
 
     <%- include('../ui/slideover.ejs') %>
@@ -25,8 +25,8 @@ async function refreshTable() {
 
         const columns = [
             { label: '', key: 'actions', type:"html", width: '75px'},
-            { label: 'Köy Adı', key: 'name' },
-            { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date" }
+            { label: 'Köy Adı', key: 'name', width: '150px' },
+            { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date", width: '200px' }
         ];
 
         const rows = data.map((item, idx) => ({

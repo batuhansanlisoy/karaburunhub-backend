@@ -12,20 +12,28 @@
     <link rel="stylesheet" href="/css/main.css"> </head>
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <%- include('./navbar.ejs') %>
-
-            <main class="col-12 col-md-9 col-lg-10 p-4 offset-md-3 offset-lg-2 d-flex flex-column">
-                <div class="flex-grow-1">
-                    <%- body %>
-                </div>
-
-                <footer class="text-center border-top">
-                    <p>&copy; <%= new Date().getFullYear() %> KaraburunGO. Tüm hakları saklıdır.</p>
-                </footer>
-            </main>
+    <div class="row">
+        <div class="col-12 d-md-none bg-dark p-3 d-flex justify-content-between align-items-center position-sticky top-0" style="z-index: 1050;">
+            <h3 class="mb-0 fs-5">
+                <span class="text-white">Karaburun</span>
+                <span class="fw-semibold text-red">GO</span>
+            </h3>
+            <button class="btn btn-outline-light border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                <i class="bi bi-list fs-3"></i>
+            </button>
         </div>
+
+        <nav id="sidebarMenu" class="col-12 col-md-3 col-lg-2 sidebar d-md-flex flex-column p-3 collapse d-md-block">
+             <%- include('./navbar.ejs') %>
+        </nav>
+
+        <main class="col-12 col-md-9 col-lg-10 pt-3 offset-md-3 offset-lg-2 d-flex flex-column">
+            <div class="flex-grow-1">
+                <%- body %>
+            </div>
+            </main>
     </div>
+</div>
 
     <script src="/js/slideover-manager.js"></script>
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

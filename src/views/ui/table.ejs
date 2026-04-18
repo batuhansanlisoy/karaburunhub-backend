@@ -15,23 +15,36 @@ function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+/**
+ * KaraburunGO Dinamik Tablo Render Fonksiyonu
+ * @param {Array} columns - Sütun tanımları: { label, key, type, width, align, limit }
+ * @param {Array} data - Tablo verisi
+ * @param {String} deleteUrl - Silme işlemi için API endpoint'i
+ */
 function renderTable(columns, data, deleteUrl) {
     const tableHead = document.getElementById('dynamicTableHead');
     const tableBody = document.getElementById('dynamicTableBody');
 
-    // --- Table Head Render & Resize Logic ---
+    function capitalizeFirstLetter(str) {
+        if (!str || str === '-') return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // --- 1. TABLE HEAD RENDER ---
     tableHead.innerHTML = '';
-    columns.forEach(col => {
+    columns.forEach((col, index) => {
         const th = document.createElement('th');
         th.textContent = col.label;
-        if (col.width) th.style.width = col.width;
 
-        // Resizer div'ini ekle
+        // Genişlik ve Hizalama
+        if (col.width) th.style.width = col.width;
+        if (col.align) th.style.textAlign = col.align;
+
+        // Resizer (Sütun Genişletme) Zımbırtısı
         const resizer = document.createElement('div');
         resizer.classList.add('resizer');
         th.appendChild(resizer);
 
-        // Resize Event
         resizer.addEventListener('mousedown', function (e) {
             const startX = e.pageX;
             const startWidth = th.offsetWidth;
@@ -52,48 +65,74 @@ function renderTable(columns, data, deleteUrl) {
 
         tableHead.appendChild(th);
     });
-    
-    // --- Table Body Render ---
+
+    // --- OTOMATİK SPACER (BAŞLIK) ---
+    // Tablonun sağda kesik durmaması için boşluğu yutan hayalet başlık
+    const spacerTh = document.createElement('th');
+    spacerTh.style.width = 'auto';
+    tableHead.appendChild(spacerTh);
+
+    // --- 2. TABLE BODY RENDER ---
     tableBody.innerHTML = '';
     data.forEach(row => {
         const tr = document.createElement('tr');
+
         columns.forEach(col => {
             const td = document.createElement('td');
             let value = row[col.key] ?? '-';
 
+            // Hücre bazlı hizalama
+            if (col.align) td.style.textAlign = col.align;
+
+            // Veri Tiplerine Göre Formatlama
             if (col.type === 'phone' && value !== '-') {
                 const digits = value.replace(/\D/g, '');
                 td.textContent = digits.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-            } else if (col.type === 'date' && value !== '-') {
+            } 
+            else if (col.type === 'date' && value !== '-') {
                 const d = new Date(value);
                 td.textContent = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-            } else if (col.type === 'html') {
+            } 
+            else if (col.type === 'html') {
                 td.innerHTML = value;
-            } else if (col.type === 'longtext' && value !== '-') {
+            } 
+            else if (col.type === 'longtext' && value !== '-') {
                 const limit = col.limit || 50;
                 if (value.length > limit) {
                     td.innerHTML = `<span class="text-truncate-custom" onclick="alert(\`${value.replace(/"/g, '&quot;')}\`)">${value.substring(0, limit)}...</span>`;
                 } else {
                     td.textContent = value;
                 }
-            } else {
+            } 
+            else {
                 td.textContent = capitalizeFirstLetter(value);
             }
             tr.appendChild(td);
         });
+
+        // --- OTOMATİK SPACER (HÜCRE) ---
+        // Verileri sola yaslamak için her satırın sonuna boş hücre
+        const spacerTd = document.createElement('td');
+        tr.appendChild(spacerTd);
+
         tableBody.appendChild(tr);
     });
 
-    // --- Delete Action ---
+    // --- 3. DELETE ACTION ---
     document.querySelectorAll(".delete-btn").forEach(btn => {
         btn.onclick = async () => {
             const id = btn.dataset.id;
             if (id && confirm("Bu kaydı silmek istediğine emin misin?")) {
                 try {
                     const res = await fetch(`${deleteUrl}/${id}`, { method: 'DELETE' });
-                    if (res.ok) { location.reload(); }
-                    else { alert("Silme başarısız."); }
-                } catch (err) { console.error(err); }
+                    if (res.ok) { 
+                        location.reload(); 
+                    } else { 
+                        alert("Silme başarısız."); 
+                    }
+                } catch (err) { 
+                    console.error("Silme Hatası:", err); 
+                }
             }
         };
     });

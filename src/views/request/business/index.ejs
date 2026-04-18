@@ -1,4 +1,4 @@
-<div class="container mt-3">
+<div>
     <div class="d-flex align-items-center gap-2 mb-3">
         <div class="filter-badge p-2 bg-dark text-white rounded-5 px-4" data-type="all" style="cursor:pointer;">
             <h2 class="mb-0 fs-6 text-center">Hepsi</h2>
@@ -14,14 +14,14 @@
         </div>
     </div>
 
-    <div class="d-flex align-items-center gap-2 mb-3">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
         <div class="p-2 bg-blue text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
             <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
         </div>
         <button id="openFilter" class="btn btn-dark rounded-5">
             <i class="bi bi-filter me-2"></i>Filtre
         </button>
-        <input type="text" id="searchInput" class="form-control rounded-5" placeholder="Ara..." style="max-width: 250px;">
+        <input type="text" id="searchInput" class="form-control rounded-5 w-100 w-md-auto" placeholder="Ara..." style="max-width: 250px;">
     </div>
 
     <%- include('../../ui/table.ejs', { title: "Gezilecek Yerler" }) %>
@@ -36,13 +36,17 @@
             .join('&');
     }
 
-    let currentFilters = { status: "pending" };
+    let currentFilters = {
+        status: "pending"
+    };
 
     async function markAsRead(requestBusinessId) {
         try {
             const res = await fetch(`/request/business/${requestBusinessId}/mark_as_read`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
             if (res.ok) {
@@ -59,8 +63,12 @@
         try {
             const res = await fetch(`/request/business/${requestBusinessId}/change_status`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: status })
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: status
+                })
             });
 
             if (res.ok) {
@@ -80,11 +88,36 @@
             const data = await requestBusinessRes.json();
 
             const columns = [
-                { label: '', key: 'actions', type: "html", width: '150px' },
-                { label: 'Talep Eden', key: 'sender_info', type: 'html' },
-                { label: 'İşletme Bilgileri', key: 'business_info', type: 'html' },
-                { label: 'Paket & Durum', key: 'meta_info', type: 'html' },
-                { label: 'Talep Tarihi', key: 'created_at', type: 'date' }
+                {
+                    label: '',
+                    key: 'actions',
+                    type: "html",
+                    width: '120px',
+                },
+                {
+                    label: 'Talep Eden',
+                    key: 'sender_info',
+                    type: 'html',
+                    width: '250px',
+                },
+                {
+                    label: 'İşletme Bilgileri',
+                    key: 'business_info',
+                    type: 'html',
+                    width: '250px',
+                },
+                {
+                    label: 'Paket',
+                    key: 'meta_info',
+                    type: 'html',
+                    width: '100px',
+                },
+                {
+                    label: 'Talep Tarihi',
+                    key: 'created_at',
+                    type: 'date',
+                    width: '200px',
+                }
             ];
 
             const rows = data.map(item => {
@@ -110,7 +143,7 @@
                             ` : ''}
                         </div>`,
                     sender_info: `
-                        <div class="d-flex flex-column gap-1">
+                        <div class="d-flex flex-column gap-1" style="width: fit-content;">
                             <div class="text text-capitalize fw-semibold">
                                 <span>${item.sender.name}</span> ${item.sender.last_name}
                             </div>
@@ -118,7 +151,7 @@
                             <div class="small"><i class="bi bi-telephone-fill me-1 text-green"></i>${item.sender.phone}</div>
                         </div>`,
                     business_info: `
-                        <div class="d-flex flex-column gap-1 text-white">
+                        <div class="d-flex flex-column gap-1 text-white" style="width: fit-content;">
                             <div class="text-capitalize fw-semibold">${item.business.name}</div>
                             <div class="small text-truncate" style="max-width: 200px;" title="${item.business.address}">
                                 <i class="bi bi-geo-alt-fill me-1 text-orange"></i>${item.business.address || '-'}
@@ -127,7 +160,7 @@
                             ${item.business.phone ? `<div class="small italic"><i class="bi bi-telephone-fill me-1 text-green"></i>${item.business.phone}</div>` : ''}
                         </div>`,
                     meta_info: `
-                        <span class="badge bg-blue text-capitalize text-md p-2" style="width: fit-content;">
+                        <span class="badge bg-blue text-capitalize text-md p-2">
                             ${item.package}
                         </span>`,
                     created_at: item.created_at
@@ -149,9 +182,9 @@
         }
 
         document.addEventListener("click", async (e) => {
-            const readBtn    = e.target.closest(".reading-btn");
+            const readBtn = e.target.closest(".reading-btn");
             const approveBtn = e.target.closest(".approve-btn");
-            const rejectBtn  = e.target.closest(".reject-btn");
+            const rejectBtn = e.target.closest(".reject-btn");
 
             if (readBtn) {
                 const requestBusinessId = readBtn.dataset.id;
@@ -176,7 +209,7 @@
         });
 
         document.querySelectorAll('.filter-badge').forEach(badge => {
-            badge.addEventListener('click', function () {
+            badge.addEventListener('click', function() {
                 const type = this.getAttribute('data-type');
                 const value = this.getAttribute('data-value');
 
