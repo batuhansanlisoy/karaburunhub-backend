@@ -13,6 +13,13 @@ export const show = async (req: Request, res: Response) => {
     });
 };
 
+export const showForm = async (req: Request, res: Response) => {
+    res.render("feedback/form/create", {
+        title: "Geri Bildirim Formu",
+        layout: false,
+    });
+};
+
 export const list = async (req: Request, res: Response) => {
     try {
         const feedbacks: Feedback[] = await service.list();

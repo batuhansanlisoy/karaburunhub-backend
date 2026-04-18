@@ -9,67 +9,7 @@
 
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/main.css">
-
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: rgb(37, 37, 37);
-        }
-
-        /* Sidebar Sabitleme */
-        .sidebar {
-            background-color: #212529;
-            min-height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            border-right: 1px solid rgba(255,255,255,0.05);
-        }
-
-        /* Navigasyon Linkleri */
-        .nav-link {
-            border-radius: 8px;
-            margin-bottom: 4px;
-            transition: all 0.2s ease;
-        }
-
-        /* Aktif Durum: İkon ve Metni Beyaz Yap */
-        .nav-link.active {
-            background-color: var(--blue-color) !important; 
-            color: white !important;
-        }
-        
-        .nav-link.active i, 
-        .nav-link.active span {
-            color: white !important;
-        }
-
-        .nav-link:hover:not(.active) {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white !important;
-        }
-        .sidebar .nav-link i {
-            opacity: 0.7; /* Burayı 0.5 yaparsan daha da söner */
-            transition: opacity 0.3s ease; /* Yumuşak geçiş için */
-        }
-        .sidebar .nav-link:hover i,
-        .sidebar .nav-link.active i {
-            opacity: 1 !important;
-        }
-
-        /* Main Content Kaydırma (Sidebar genişliği kadar offset) */
-        main {
-            background-color: #333b42;
-            min-height: 100vh;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; }
-    </style>
-</head>
+    <link rel="stylesheet" href="/css/main.css"> </head>
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -80,7 +20,7 @@
                     <%- body %>
                 </div>
 
-                <footer class="text-white text-md text-center border-top">
+                <footer class="text-center border-top">
                     <p>&copy; <%= new Date().getFullYear() %> KaraburunGO. Tüm hakları saklıdır.</p>
                 </footer>
             </main>

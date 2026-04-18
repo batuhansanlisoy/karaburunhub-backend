@@ -1,7 +1,7 @@
 <div class="table-widget-container">
   <div class="table-widget-body">
-    <table class="table table-dark table-striped table-hover align-middle mb-0 custom-table">
-      <thead class="table-header text-white">
+    <table class="align-middle mb-0 custom-table">
+      <thead class="table-header">
         <tr id="dynamicTableHead"></tr>
       </thead>
       <tbody id="dynamicTableBody"></tbody>
@@ -19,153 +19,83 @@ function renderTable(columns, data, deleteUrl) {
     const tableHead = document.getElementById('dynamicTableHead');
     const tableBody = document.getElementById('dynamicTableBody');
 
-    // Table Head
+    // --- Table Head Render & Resize Logic ---
     tableHead.innerHTML = '';
     columns.forEach(col => {
         const th = document.createElement('th');
         th.textContent = col.label;
-        th.classList.add('align-middle', 'py-2', 'ps-4');
         if (col.width) th.style.width = col.width;
+
+        // Resizer div'ini ekle
+        const resizer = document.createElement('div');
+        resizer.classList.add('resizer');
+        th.appendChild(resizer);
+
+        // Resize Event
+        resizer.addEventListener('mousedown', function (e) {
+            const startX = e.pageX;
+            const startWidth = th.offsetWidth;
+
+            const onMouseMove = (e) => {
+                const newWidth = startWidth + (e.pageX - startX);
+                th.style.width = `${newWidth}px`;
+            };
+
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
         tableHead.appendChild(th);
     });
     
-    // Table Body
+    // --- Table Body Render ---
     tableBody.innerHTML = '';
     data.forEach(row => {
         const tr = document.createElement('tr');
-        tr.classList.add('align-middle');
-
         columns.forEach(col => {
             const td = document.createElement('td');
-            td.classList.add('py-2', 'ps-4');
-            if (col.width) td.style.width = col.width;
-
             let value = row[col.key] ?? '-';
 
-            if (col.type === 'phone' && value && value !== '-') {
+            if (col.type === 'phone' && value !== '-') {
                 const digits = value.replace(/\D/g, '');
-                value = digits.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-                td.textContent = value;
-            } else if (col.type === 'date' && value && value !== '-') {
-                const date = new Date(value);
-                const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const year = date.getFullYear();
-                td.textContent = `${day}/${month}/${year}`;
-            } 
-            else if (col.type === 'html' && value) {
+                td.textContent = digits.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            } else if (col.type === 'date' && value !== '-') {
+                const d = new Date(value);
+                td.textContent = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            } else if (col.type === 'html') {
                 td.innerHTML = value;
-            } else if (col.type === 'longtext' && value && value !== '-') {
+            } else if (col.type === 'longtext' && value !== '-') {
                 const limit = col.limit || 50;
                 if (value.length > limit) {
-                    const shortText = value.substring(0, limit) + "...";
-                    td.innerHTML = `<span class="text-truncate-custom" title="Tamamını gör" onclick="alert(\`${value.replace(/"/g, '&quot;')}\`)">${shortText}</span>`;
-                    td.style.cursor = "pointer";
+                    td.innerHTML = `<span class="text-truncate-custom" onclick="alert(\`${value.replace(/"/g, '&quot;')}\`)">${value.substring(0, limit)}...</span>`;
                 } else {
                     td.textContent = value;
                 }
-            }
-            else {
+            } else {
                 td.textContent = capitalizeFirstLetter(value);
             }
-
             tr.appendChild(td);
         });
-
         tableBody.appendChild(tr);
     });
 
+    // --- Delete Action ---
     document.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.addEventListener("click", async () => {
+        btn.onclick = async () => {
             const id = btn.dataset.id;
-            if (!id) return;
-
-            if (!confirm("Bu kaydı silmek istediğine emin misin?")) return;
-
-            try {
-                const res = await fetch(`${deleteUrl}/${id}`, { method: 'DELETE' });
-                if (res.ok) {
-                    alert("Kayıt başarıyla silindi!");
-                    location.reload();
-                } else {
-                    const data = await res.json();
-                    alert("Silme işlemi başarısız: " + (data.error || "Bilinmeyen hata"));
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Silme sırasında hata oluştu");
+            if (id && confirm("Bu kaydı silmek istediğine emin misin?")) {
+                try {
+                    const res = await fetch(`${deleteUrl}/${id}`, { method: 'DELETE' });
+                    if (res.ok) { location.reload(); }
+                    else { alert("Silme başarısız."); }
+                } catch (err) { console.error(err); }
             }
-        });
+        };
     });
 }
 </script>
-
-<style>
-.table-widget-body {
-    max-height: 600px; /* Buraya istediğin sabit yüksekliği ver (örn: 500px, 70vh vb.) */
-    overflow-y: auto;  /* İçerik taşarsa dikey scroll çıksın */
-    overflow-x: auto;  /* Yatayda gerekirse kaydırılsın */
-    position: relative;
-    background: #1f1f1f;
-}
-
-/* 🔹 Tablonun kapsayıcı container'ı */
-.table-widget-container {
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.35);
-}
-
-/* 🔹 Tablo genel görünümü */
-.custom-table {
-    border-collapse: collapse;
-    width: 100%;
-    background: #1f1f1f;
-}
-
-.table-header th {
-    position: sticky;
-    top: 0;
-    z-index: 10; /* Diğer satırların üstünde kalması için */
-    font-weight: 600;
-    font-size: 13px;
-    border: none !important;
-    letter-spacing: 0.5px;
-    color: #fff;
-    box-shadow: 0 2px 2px rgba(0,0,0,0.2); /* Alt satırlarla başlık arasına hafif gölge */
-}
-
-/* 🔹 Satırlar */
-.custom-table td {
-    border: none !important;
-    /* padding: 12px 16px; */
-    font-weight: 400;
-    color: white;
-    background-color: transparent;
-    font-size: 14px;
-    transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-/* 🔹 Alternatif satır rengi (striped) */
-.custom-table tbody tr:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.03);
-}
-
-/* 🔹 Hover efekti */
-.custom-table tbody tr:hover {
-    background-color: rgba(202, 5, 5, 0.07);
-    /* transform: scale(1.01); */
-    transition: transform 0.2s ease, background-color 0.3s ease;
-}
-
-.table-widget-body::-webkit-scrollbar {
-    width: 6px;
-}
-.table-widget-body::-webkit-scrollbar-track {
-    background: #1f1f1f;
-}
-.table-widget-body::-webkit-scrollbar-thumb {
-    background: #3b82f6;
-    border-radius: 10px;
-}
-</style>

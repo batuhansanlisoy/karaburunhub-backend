@@ -34,12 +34,12 @@ async function refreshTable() {
         });
 
         const columns = [
-            { label: '', key: 'actions', type:"html", width: '25px'},
-            { label: 'Konum', key: 'village_name' },
-            { label: 'Plaj Adı', key: 'name' },
-            { label: 'Adres', key: 'address' },
-            { label: 'Enlem', key: 'latitude' },
-            { label: 'Boylam', key: 'longitude' },
+            { label: '', key: 'actions', type:"html", width: '200px'},
+            { label: 'Konum', key: 'village_name', width: '150px'},
+            { label: 'Plaj Adı', key: 'name', width: '150px' },
+            { label: 'Adres', key: 'address', width: '250px' },
+            { label: 'Enlem', key: 'latitude', width: '100px' },
+            { label: 'Boylam', key: 'longitude', width: '100px' },
         ];
 
         const rows = data.map((item, idx) => {

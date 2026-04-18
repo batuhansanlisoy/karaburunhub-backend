@@ -21,7 +21,7 @@ async function refreshTable() {
         const res = await fetch('/activity/category/list');
         let data = await res.json();
         const columns = [
-            { label: '', key: 'actions', type: 'html', width: '25px'},
+            { label: '', key: 'actions', type: 'html', width: '75px'},
             { label: "İşletme Türü", key: 'name'},
             { label: 'Katılma Tarihi', key: 'created_at', type: 'date'},
         ];

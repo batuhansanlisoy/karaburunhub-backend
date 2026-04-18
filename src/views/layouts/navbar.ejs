@@ -12,7 +12,7 @@
         
         <li class="nav-item">
             <a href="/village" class="nav-link <%= activePage === 'village' ? 'active' : 'text-white' %>">
-                <i class="bi bi-geo-alt-fill text-orange me-2"></i> Köyler
+                <i class="bi bi-geo-alt-fill me-2"></i> Köyler
             </a>
         </li>
 
@@ -22,7 +22,7 @@
                href="#orgSubmenu" 
                role="button" 
                aria-expanded="<%= ['organization', 'organization/category', 'organization/category/item'].includes(activePage) ? 'true' : 'false' %>">
-                <span><i class="bi bi-building-fill-check text-red me-2"></i> İşletme Yönetimi</span>
+                <span><i class="bi bi-building-fill-check me-2"></i> İşletme Yönetimi</span>
                 <i class="bi bi-chevron-down small"></i>
             </a>
             <div class="collapse <%= ['organization', 'organization/category', 'organization/category/item'].includes(activePage) ? 'show' : '' %>" id="orgSubmenu">
@@ -52,7 +52,7 @@
                href="#actSubmenu" 
                role="button" 
                aria-expanded="<%= ['activity', 'activity/category'].includes(activePage) ? 'true' : 'false' %>">
-                <span><i class="bi bi-calendar-event-fill text-purple me-2"></i> Etkinlik Yönetimi</span>
+                <span><i class="bi bi-calendar-event-fill me-2"></i> Etkinlik Yönetimi</span>
                 <i class="bi bi-chevron-down small"></i>
             </a>
             <div class="collapse <%= ['activity', 'activity/category'].includes(activePage) ? 'show' : '' %>" id="actSubmenu">
@@ -73,24 +73,24 @@
 
         <li class="nav-item">
             <a href="/beach" class="nav-link <%= activePage === 'beach' ? 'active' : 'text-white' %>">
-               <i class="bi bi-sun-fill me-2 text-yellow"></i> Koy & Plaj
+               <i class="bi bi-sun-fill me-2"></i> Koy & Plaj
             </a>
         </li>
         
         <li class="nav-item">
             <a href="/place" class="nav-link <%= activePage === 'place' ? 'active' : 'text-white' %>">
-                <i class="bi bi-map-fill text-green me-2"></i> Turistik Yerler
+                <i class="bi bi-map-fill me-2"></i> Turistik Yerler
             </a>
         </li>
         <li class="nav-item">
             <a href="/feedback" class="nav-link <%= activePage === 'feedback' ? 'active' : 'text-white' %>">
-                <i class="bi bi-chat-left-text-fill text-blue me-2"></i> Geri Bildirim
+                <i class="bi bi-chat-left-text-fill me-2"></i> Geri Bildirim
             </a>
         </li>
 
         <li class="nav-item">
             <a href="/request/business" class="nav-link <%= activePage === 'request/business' ? 'active' : 'text-white' %>">
-                <i class="bi bi-clipboard-check-fill text-pink me-2"></i> Talepler
+                <i class="bi bi-clipboard-check-fill me-2"></i> Talepler
             </a>
         </li>
         

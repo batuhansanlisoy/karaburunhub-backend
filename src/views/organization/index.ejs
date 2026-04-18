@@ -104,16 +104,16 @@ async function refreshTable() {
         })
         
         const columns = [
-            { label: '', key: 'actions', type: 'html'},
-            { label: "İşletme Türü", key: 'category_name'},
-            { label: 'Firma', key: 'name' },
-            { label: 'Telefon', key: 'phone', type: 'phone'},
-            { label: 'E-mail', key: 'email',},
-            { label: 'Adres', key: 'address' },
-            { label: 'Enlem', key: 'latitude'},
-            { label: 'Boylam', key: 'longitude'},
-            { label: 'Web Site', key: 'website'},
-            { label: 'Katılma Tarihi', key: 'created_at', type: 'date'},
+            { label: '', key: 'actions', type: 'html', width: '200px'},
+            { label: "İşletme Türü", key: 'category_name', width: '150px'},
+            { label: 'Firma', key: 'name', width: '150px' },
+            { label: 'Telefon', key: 'phone', type: 'phone', width: '180px'},
+            { label: 'E-mail', key: 'email', width: '200px'},
+            { label: 'Adres', key: 'address', width: '250px' },
+            { label: 'Enlem', key: 'latitude', width: '100px' },
+            { label: 'Boylam', key: 'longitude', width: '100px' },
+            { label: 'Web Site', key: 'website', width: '200px' },
+            { label: 'Katılma Tarihi', key: 'created_at', type: 'date', width: '200px'},
         ];
 
         const rows = data.map(item => {

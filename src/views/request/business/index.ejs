@@ -80,7 +80,7 @@
             const data = await requestBusinessRes.json();
 
             const columns = [
-                { label: '', key: 'actions', type: "html", width: '25px' },
+                { label: '', key: 'actions', type: "html", width: '150px' },
                 { label: 'Talep Eden', key: 'sender_info', type: 'html' },
                 { label: 'İşletme Bilgileri', key: 'business_info', type: 'html' },
                 { label: 'Paket & Durum', key: 'meta_info', type: 'html' },
@@ -97,15 +97,15 @@
                         <div class="d-flex align-items-center gap-1">
                             ${!item.is_read ? `
                                 <button class="btn btn-dark btn-sm rounded-circle reading-btn" data-id="${item.id}" title="Okundu Olarak İşaretle">
-                                    <i class="bi bi-check2-all text-blue"></i>
+                                    <i class="bi bi-check2-all"></i>
                                 </button>
                             ` : ''}
                             ${item.status === 'pending' ? `
                                 <button class="btn btn-dark btn-sm rounded-circle approve-btn" data-id="${item.id}" title="Onayla">
-                                    <i class="bi bi-check-lg text-green"></i>
+                                    <i class="bi bi-check-lg"></i>
                                 </button>
                                 <button class="btn btn-dark btn-sm rounded-circle reject-btn" data-id="${item.id}" title="Reddet">
-                                    <i class="bi bi-x-lg text-red"></i>
+                                    <i class="bi bi-x-lg"></i>
                                 </button>
                             ` : ''}
                         </div>`,

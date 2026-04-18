@@ -40,15 +40,15 @@ async function refreshTable() {
         })
 
         const columns = [
-            { label: "", key: "actions", type: "html", width: "25px" },
-            { label: "Konum", key: "village_name"},
-            { label: "Etkinlik Türü", key: "category_name" },
-            { label: "Etkinlik", key: "name" },
-            { label: "Adres", key:"address", type: "string"},
-            { label: "Enlem", key: "latitude" },
-            { label: "Boylam", key: "longitude" },
-            { label: "Başlangıç Tarihi", key: "begin", type: "date" },
-            { label: "Bitiş Tarihi", key: "end", type: "date" },
+            { label: "", key: "actions", type: "html", width: "200px" },
+            { label: "Konum", key: "village_name", width: '150px'},
+            { label: "Etkinlik Türü", key: "category_name", width: '150px' },
+            { label: "Etkinlik", key: "name", width: '150px' },
+            { label: "Adres", key:"address", type: "string", width: '250px'},
+            { label: "Enlem", key: "latitude", width: '100px' },
+            { label: "Boylam", key: "longitude", width: '100px' },
+            { label: "Başlangıç Tarihi", key: "begin", type: "date", width: '200px' },
+            { label: "Bitiş Tarihi", key: "end", type: "date", width: '200px' },
         ];
 
         const rows = data.map(item => {

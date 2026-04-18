@@ -1,74 +1,157 @@
 /* 🎨 KaraburunGO Global Renk Paleti */
 :root {
-    /* Temel Kırmızı (Baba) */
     --red-color: #d84242;
     --red-dark: #b53535;
     --red-light: #ff5e5e;
 
-    /* Turuncu (Enerjik) */
     --orange-color: #f39c12;
     --orange-dark: #e67e22;
 
-    /* Sarı (Uyarı/Dikkat) */
     --yellow-color: #f1c40f;
-    --yellow-dark: #f39c12;
 
-    /* Yeşil (Onay/Başarı) */
     --green-color: #27ae60;
     --green-dark: #2ecc71;
 
-    /* Mavi (Bilgi/İşlem) */
     --blue-color: #3498db;
     --blue-dark: #2980b9;
-    --blue-darker: #1b5b86;
+    --blue-darker: #1a252f;
     --blue-light: #7bcaff;
     
-    /* Mor (Premium/Özel) */
     --purple-color: #8e44ad;
-    --purple-light: #9b59b6;
-
-    /* Pembe (Etkinlik/Vurgu) */
     --pink-color: #e91e63;
-    --pink-light: #f06292;
 
+    --bg-main: #ffffff;
+    --bg-table: var(--blue-darker);
     --sm-text: 10px;
     --md-text: 13px;
 }
 
+/* --- Layout & Global --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-main);
+    color: #333;
+    margin: 0;
+}
+
+.sidebar {
+    background-color: var(--blue-darker);
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+main {
+    background-color: var(--bg-main);
+    min-height: 100vh;
+}
+
+/* --- Navigation --- */
+.nav-link {
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: all 0.2s ease;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff !important;
+}
+
+.nav-link.active {
+    background-color: #44444469 !important;
+    color: #fff !important;
+}
+
+/* --- 📊 Table Widget System --- */
+.table-widget-container {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: var(--bg-table);
+    border: 3px solid rgba(255, 255, 255, 0.05);
+}
+
+.table-widget-body {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: auto;
+    position: relative;
+    background: var(--bg-table);
+}
+
+.custom-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed; /* Resize özelliğinin düzgün çalışması için şart */
+}
+
+.table-header th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #151d26; 
+    font-weight: 600;
+    font-size: 13px;
+    color: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    white-space: nowrap !important;
+    position: relative; /* Resizer için */
+    border: none !important;            /* Kenarlıkları sıfırla */
+    outline: none !important;           /* Varsa outline'ı uçur */
+    box-shadow: none !important;
+}
+
+.resizer {
+    position: absolute;
+    right: 10%;
+    top: 10%;
+    height: 80%;
+    width: 3px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.219);
+}
+
+.resizer:hover { background: var(--blue-color); }
+
+.custom-table td {
+    border: none !important;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    padding: 14px 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.custom-table tr:hover {
+    /* 0.15 olan yeri artırarak açıklığı ayarlayabilirsin */
+    background-color: rgba(255, 255, 255, 0.08) !important; 
+    transition: background-color 0.2s ease;
+}
+
+/* --- Global Helpers --- */
 .text-red    { color: var(--red-color) !important; }
 .text-orange { color: var(--orange-color) !important; }
-.text-yellow { color: var(--yellow-color) !important; }
 .text-green  { color: var(--green-color) !important; }
 .text-blue   { color: var(--blue-color) !important; }
+.text-yellow { color: var(--yellow-color) !important; }
 .text-purple { color: var(--purple-color) !important; }
-.text-pink   { color: var(--pink-color) !important; }
-.text-blue-light   { color: var(--blue-light) !important; }
+.text-pink { color: var(--pink-color) !important; }
+.bg-blue { background-color: var(--blue-color) !important; }
+.bg-red { background-color: var(--red-color) !important; }
+.text-truncate-custom { color: var(--blue-light); text-decoration: underline; cursor: pointer; }
 
-.text-sm { font-size: var(--sm-text) !important}
-.text-mmd { font-size: var(--md-text) !important}
-
-.text-red-bold    { color: var(--red-color) !important; font-weight: 700; }
-.text-orange-bold { color: var(--orange-color) !important; font-weight: 700; }
-.text-green-bold  { color: var(--green-color) !important; font-weight: 700; }
-.text-blue-bold   { color: var(--blue-color) !important; font-weight: 700; }
-
-.bg-red    { background-color: var(--red-color) }
-.bg-orange { background-color: var(--orange-color) }
-.bg-yellow { background-color: var(--yellow-color) }
-.bg-green  { background-color: var(--green-color) }
-.bg-blue   { background-color: var(--blue-color) }
-.bg-purple { background-color: var(--purple-color) }
-.bg-pink   { background-color: var(--pink-color) }
-.bg-blue-dark { background-color: var(--blue-dark) }
-.bg-blue-darker { background-color: var(--blue-darker) }
-.bg-blue-light   { color: var(--blue-light) !important; }
-
-.badge-custom {
-    padding: 3px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    display: inline-block;
-    line-height: 1.4;
-}
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.1); border-radius: 4px; }
+.table-widget-body::-webkit-scrollbar-thumb { background-color: var(--blue-color); }

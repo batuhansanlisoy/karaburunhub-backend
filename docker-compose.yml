@@ -12,6 +12,11 @@ services:
     command: npm run dev
     depends_on:
       - karaburun_db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
 
   karaburun_db:
     image: mariadb:latest

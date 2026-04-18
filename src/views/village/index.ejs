@@ -24,7 +24,7 @@ async function refreshTable() {
         let data = await res.json();
 
         const columns = [
-            { label: '', key: 'actions', type:"html", width: '25px'},
+            { label: '', key: 'actions', type:"html", width: '75px'},
             { label: 'Köy Adı', key: 'name' },
             { label: 'Oluşturulma Tarihi', key: 'created_at', type: "date" }
         ];
