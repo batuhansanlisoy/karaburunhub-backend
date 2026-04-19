@@ -39,7 +39,7 @@ app.use("/upload", express.static(uploadPath));
 
 const viewsPath = isProd ? path.join(__dirname, "../../src/views") : path.join(__dirname, "views");
 const publicPath = isProd ? path.join(__dirname, "../../public") : path.join(__dirname, "../public");
-    
+
 app.set("views", viewsPath);
 app.set("view engine", "ejs");
 app.use(express.static(publicPath));

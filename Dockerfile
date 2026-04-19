@@ -1,18 +1,33 @@
-FROM node:20-alpine
-
-# Docker içindeki çalışma dizinimiz
+# 1. Aşama: Base (Her iki ortam için ortak)
+FROM node:20-alpine AS base
 WORKDIR /app
-
-# Sadece paket dosyalarını kopyalayıp yükleme yapıyoruz (Hız için)
 COPY package*.json ./
 RUN npm install
-
-# Geri kalan her şeyi (src, knexfile.ts, tsconfig.json vb.) kopyala
 COPY . .
 
-# Uygulamanın çalışacağı port
-EXPOSE 3000
-EXPOSE 9229
-
-# Senin çalıştırdığın komut
+# 2. Aşama: Development (Sadece dev için)
+FROM base AS development
+EXPOSE 3000 9229
 CMD ["npm", "run", "dev"]
+
+# 3. Aşama: Build (Prod öncesi derleme)
+FROM base AS build
+RUN npm run build
+
+# 4. Aşama: Production (Canlı ortam)
+FROM node:20-alpine AS production
+WORKDIR /app
+
+# Derlenmiş JavaScript kodlarını al (Zaten dist/src içine gidiyorlar)
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package*.json ./
+
+# KRİTİK DÜZELTME: Knex dosyaları artık src altındaydı, build aşamasından oradan çekiyoruz
+COPY --from=build /app/src/knexfile.ts ./src/knexfile.ts
+COPY --from=build /app/src/db/migrations ./src/db/migrations
+
+# Sadece prod paketlerini kur
+RUN npm install --omit=dev
+
+EXPOSE 3000
+CMD ["npm", "run", "start"]

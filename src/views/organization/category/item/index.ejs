@@ -23,12 +23,24 @@
 <script>
 async function refreshTable() {
     try {
-        const res = await fetch('/organization/category/item/list');
-        let data = await res.json();
+        const [itemRes, categoryRes] = await Promise.all([
+            fetch('/organization/category/item/list'),
+            fetch('/organization/category/list')
+        ]);
+
+        const data = await itemRes.json();
+        const categories = await categoryRes.json();
+
+        const categoryMap = {};
+
+        categories.forEach(element => {
+            categoryMap[element.id] = element.name;
+        });
 
         const columns = [
             { label: '', key: 'actions', type: 'html', width: '75px'},
-            { label: "İşletme Türü", key: 'name', width: '150px' },
+            { label: "İşletme Alt Kategorisi", key: 'name', width: '200px' },
+            { label: "İşletme Kategorisi", key: 'category', width: '150px' },
             { label: 'Katılma Tarihi', key: 'created_at', type: 'date', width: '200px' },
         ];
 
@@ -39,6 +51,7 @@ async function refreshTable() {
                 </div>
             `,
             name: item.name,
+            category: categoryMap[item.organization_category_id] || "",
             created_at: item.created_at,
         }));
 

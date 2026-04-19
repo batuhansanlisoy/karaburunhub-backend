@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "ts-node-dev --inspect=0.0.0.0:9229 -r tsconfig-paths/register --respawn src/server.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc && tsc-alias && cp -r src/views dist/src && cp -r public dist",
+        "build": "rm -rf dist && tsc && tsc-alias && cp -r src/views dist/src && cp -r public dist",
         "start": "node dist/src/server.js"
     },
     "keywords": [],
@@ -14,13 +14,6 @@
     "description": "",
     "dependencies": {
         "@tailwindcss/postcss": "^4.1.14",
-        "@types/bcrypt": "^5.0.2",
-        "@types/cors": "^2.8.19",
-        "@types/express": "^5.0.3",
-        "@types/express-ejs-layouts": "^2.5.4",
-        "@types/jsonwebtoken": "^9.0.10",
-        "@types/node": "^24.0.13",
-        "ag-grid-community": "^34.2.0",
         "bcrypt": "^6.0.0",
         "bootstrap": "^5.3.8",
         "bootstrap-icons": "^1.13.1",
@@ -41,6 +34,12 @@
     "devDependencies": {
         "@types/express-session": "^1.18.2",
         "@types/multer": "^2.0.0",
+        "@types/node": "^24.0.13",
+        "@types/bcrypt": "^5.0.2",
+        "@types/cors": "^2.8.19",
+        "@types/express-ejs-layouts": "^2.5.4",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/express": "^5.0.3",
         "ts-node": "^10.9.2",
         "ts-node-dev": "^2.0.0",
         "tsc-alias": "^1.8.16",

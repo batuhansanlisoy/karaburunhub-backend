@@ -1,33 +1,38 @@
+name: karaburun-dev
 services:
   app:
-    build: .
+    container_name: karaburun-app-dev
+    build:
+      context: .
+      target: development
     ports:
       - "3000:3000"
       - "9229:9229"
     env_file:
-      - .env
+      - .env.dev
     volumes:
       - .:/app
       - /app/node_modules
     command: npm run dev
     depends_on:
-      - karaburun_db
+      - karaburun_db_dev
     deploy:
       resources:
         limits:
           cpus: '0.50'
           memory: 1024M
 
-  karaburun_db:
+  karaburun_db_dev:
+    container_name: karaburun-db-dev
     image: mariadb:latest
     restart: always
     environment:
-      - MARIADB_ROOT_PASSWORD=root123
-      - MARIADB_DATABASE=karaburun
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
     ports:
       - "3307:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mariadb_data_dev:/var/lib/mysql
 
 volumes:
-  mariadb_data:
+  mariadb_data_dev:

@@ -11,7 +11,8 @@ upload/
 .env.local
 .env.development
 .env.test
-.env.production
+.env.prod
+.env.dev
 
 # Logs
 npm-debug.log*

@@ -1,0 +1,28 @@
+name: karaburun-prod
+services:
+  app:
+    container_name: karaburun-app-prod
+    build:
+      context: .
+      target: production
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.prod
+    command: npm run start
+    restart: always
+    depends_on:
+      - karaburun_db_prod
+
+  karaburun_db_prod:
+    container_name: karaburun-db-prod
+    image: mariadb:latest
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+    volumes:
+      - mariadb_data_prod:/var/lib/mysql
+
+volumes:
+  mariadb_data_prod:
