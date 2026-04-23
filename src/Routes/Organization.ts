@@ -3,7 +3,7 @@ import { Router } from "express";
 import { createForm, editForm, uploadForm } from "~/Controller/Organization/Form";
 import { FileService } from "~/Service/File";
 import {
-    show, list, create, del, update, uploadPhoto,
+    show, list, create, del, update, uploadPhoto, activation,
     nearestActivity, nearestBeaches, nearestPlaces, highligt
 } from "~/Controller/Organization";
 
@@ -22,6 +22,7 @@ router.get("/:id/nearest-beaches", nearestBeaches);
 // router.get("/featured", featuredList)
 router.post("/create", create);
 router.patch("/:id/highlight", highligt);
+router.patch("/:id/activation", activation);
 
 router.put("/:id", update);
 router.put("/upload/:id", upload.fields([

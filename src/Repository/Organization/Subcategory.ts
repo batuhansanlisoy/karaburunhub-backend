@@ -5,8 +5,14 @@ import { Subcategory } from "../../Entity/Organization/Subcategory";
 export class SubcategoryRepository {
     private tableName = "organization_subcategory";
 
-    async getAll(): Promise<Subcategory[]> {
-        return db(this.tableName).select("*");
+    async getAll(organizationIds?: number[],): Promise<Subcategory[]> {
+        let query = db(this.tableName).select("*");
+
+        if (organizationIds && organizationIds.length > 0) {
+            query = query.whereIn("organization_id", organizationIds)
+        }
+
+        return query;
     }
 
     async create(subcategory: Partial<Subcategory>, trx?: Knex.Transaction): Promise<number[]> {

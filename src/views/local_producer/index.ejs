@@ -3,10 +3,10 @@
         <div class="p-2 bg-blue text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
             <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
         </div>
-
+        
         <%- include('../ui/table/add-btn.ejs', { 
-            url: '/organization/form/create', 
-            title: 'Yeni İşletme', 
+            url: '/local_producer/form/create', 
+            title: 'Yeni Yerel Üretici', 
             label: 'Ekle'
         }) %>
 
@@ -17,40 +17,84 @@
     </div>
 
     <%- include('../ui/slideover.ejs') %>
-    <%- include('../ui/table.ejs', { title: "Plaj & Koy" }) %>
+    <%- include('../ui/table.ejs', { title: "Yerel Üretici" }) %>
 </div>
+
 <script>
-async function loadSubCategories(catId) {
-    const itemSelect = document.getElementById("item_id");
-    if (!itemSelect) return;
-
-    itemSelect.innerHTML = '<option>Yükleniyor...</option>';
-
+async function refreshTable() {
     try {
-        const res = await fetch(`/organization/category/item/orgCategory?id=${catId}`);
-        const data = await res.json();
-        
-        itemSelect.innerHTML = ''; // Temizle
+        const [localProducerRes, villageRes] = await Promise.all([
+            fetch("/local_producer/list"),
+            fetch("/village/list")
+        ]);
 
-        if (!data || data.length === 0) {
-            itemSelect.innerHTML = '<option disabled>Alt kategori bulunamadı</option>';
-            return;
-        }
+        const data = await localProducerRes.json();
+        const villages = await villageRes.json();
 
-        data.forEach(item => {
-            const opt = document.createElement("option");
-            opt.value = item.id;
-            opt.text = item.name;
-            itemSelect.add(opt);
+        const villageMap = {};
+
+        villages.forEach(element => {
+            villageMap[element.id] = element.name;
         });
-    } catch (err) {
-        console.error("Alt kategori yükleme hatası:", err);
-    }
+
+        const columns = [
+            { label: '', key: 'actions', type:"html", width: '230px'},
+            { label: 'Konum', key: 'village_name', width: '150px'},
+            { label: 'Üretici Adı', key: 'name', width: '150px' },
+            { label: 'Email', key: 'email', width: '200px' },
+            { label: 'Telefon', key: 'phone', type: 'phone', width: '150px' },
+            { label: 'Üretici Başlığı', key: 'title', width: '150px' },
+            { label: 'Adres', key: 'address', width: '250px' },
+            { label: 'Eklenme Tarihi', key: 'created_at', type: 'date', width: '200px' },
+        ];
+
+        const rows = data.map((item, idx) => {
+            const highlightClass = item.highlight ? 'text-warning' : 'text-secondary';
+            const highlightTitle = item.highlight ? 'Öne Çıkarılmış' : 'Öne Çıkarılmamış';
+
+            const activationClass = item.is_active ? 'text-green' : 'text-red';
+            const activationTitle = item.is_active ? 'Aktif, Pasif Hale Getir' : 'Pasif, Aktif Hale Getir';
+
+            const villageName = villageMap[item.village_id] || "";
+
+            return {
+                actions: `
+                    <div class="d-flex">
+                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 activation-btn ${activationClass}" 
+                                data-id="${item.id}" 
+                                data-status="${item.is_active}"
+                                title="${activationTitle}">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </button>
+
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 highlight-btn ${highlightClass}" 
+                                data-id="${item.id}" 
+                                data-status="${item.highlight}"
+                                title="${highlightTitle}">
+                            <i class="bi bi-lightning-fill"></i>
+                        </button>
+                    </div>
+                `,
+                village_name: villageName,
+                name: item.name,
+                email: item.email,
+                phone: item.phone,
+                title: item.title,
+                address: item.address,
+                created_at: item.created_at
+            };
+        });
+        // 3. parametre silmek url' si
+        renderTable(columns, rows, "/local_producer");
+    } catch (err) { console.error(err); }
 }
 
-async function highlight(orgId, isHighlighted) {
+async function highlight(id, isHighlighted) {
     try {
-        const res = await fetch(`/organization/${orgId}/highlight`, {
+        const res = await fetch(`/local_producer/${id}/highlight`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ value: isHighlighted })
@@ -68,7 +112,7 @@ async function highlight(orgId, isHighlighted) {
 
 async function activation(id, payload) {
     try {
-        const res = await fetch(`/organization/${id}/activation`, {
+        const res = await fetch(`/local_producer/${id}/activation`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ value: payload })
@@ -84,97 +128,8 @@ async function activation(id, payload) {
     }
 }
 
-async function refreshTable() {
-    try {
-        const [organizationRes, categoryRes, villageRes] = await Promise.all([
-            fetch("/organization/list"),
-            fetch("/organization/category/list"),
-            fetch("/village/list")
-        ]);
-
-        const data       = await organizationRes.json();
-        const categories = await categoryRes.json();
-        const villages   = await villageRes.json();
-
-        const categoriesMap = {};
-        const villagesMap = {};
-
-        categories.forEach(element => {
-            categoriesMap[element.id] = element.name;
-        });
-
-        villages.forEach(element => {
-            villagesMap[element.id] = element.name;
-        })
-        
-        const columns = [
-            { label: '', key: 'actions', type: 'html', width: '230px'},
-            { label: "İşletme Türü", key: 'category_name', width: '150px'},
-            { label: 'Firma', key: 'name', width: '150px' },
-            { label: 'Telefon', key: 'phone', type: 'phone', width: '180px'},
-            { label: 'E-mail', key: 'email', width: '200px'},
-            { label: 'Adres', key: 'address', width: '250px' },
-            { label: 'Enlem', key: 'latitude', width: '100px' },
-            { label: 'Boylam', key: 'longitude', width: '100px' },
-            { label: 'Web Site', key: 'website', width: '200px' },
-            { label: 'Katılma Tarihi', key: 'created_at', type: 'date', width: '200px'},
-        ];
-
-        const rows = data.map(item => {
-            const highlightClass = item.highlight ? 'text-warning' : 'text-secondary';
-            const highlightTitle = item.highlight ? 'Öne Çıkarılmış' : 'Öne Çıkarılmamış';
-
-            const activationClass = item.is_active ? 'text-green' : 'text-red';
-            const activationTitle = item.is_active ? 'Aktif, Pasif Hale Getir' : 'Pasif, Aktif Hale Getir';
-
-            const categoryName = categoriesMap[item.category_id];
-            const villageName  = villagesMap[item.village_id];
-
-            return {
-                actions: `
-                    <div class="d-flex">
-                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 activation-btn ${activationClass}" 
-                                data-id="${item.id}" 
-                                data-status="${item.is_active}"
-                                title="${activationTitle}">
-                            <i class="bi bi-check-circle-fill"></i>
-                        </button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 highlight-btn ${highlightClass}" 
-                                data-id="${item.id}" 
-                                data-status="${item.highlight}"
-                                title="${highlightTitle}">
-                            <i class="bi bi-lightning-fill"></i>
-                        </button>
-                    </div>
-                `,
-                category_name: categoryName,
-                village_name: villageName,
-                name: item.name,
-                phone: item.phone,
-                email: item.email,
-                address: item.address,
-                latitude: item.latitude,
-                longitude: item.longitude,
-                website: item.website,
-                created_at: item.created_at,
-            };
-        });
-
-        renderTable(columns, rows, "/organization");
-    } catch (err) { console.error(err); }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     refreshTable();
-
-    document.addEventListener("change", (e) => {
-        if (e.target && e.target.id === "category_id") {
-            loadSubCategories(e.target.value);
-        }
-    });
 
     document.addEventListener("click", async (e) => {
         const editBtn = e.target.closest(".edit-btn");
@@ -182,19 +137,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const highlightBtn = e.target.closest(".highlight-btn");
         const activationBtn = e.target.closest(".activation-btn");
 
-        if (editBtn) Slideover.show(`/organization/form/edit/${editBtn.dataset.id}`, "Turistik Bölgeyi Düzenle");
-        if (uploadBtn) Slideover.show(`/organization/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
+        if (editBtn) Slideover.show(`/local_producer/form/edit/${editBtn.dataset.id}`, "Koyu Düzenle");
+        if (uploadBtn) Slideover.show(`/local_producer/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
         if (highlightBtn) {
-            const orgId = highlightBtn.dataset.id;
+            const id = highlightBtn.dataset.id;
             const currentStatus = highlightBtn.dataset.status === "true" || highlightBtn.dataset.status === "1";
-            const nextStatus = !currentStatus; 
+            const nextStatus = !currentStatus;
 
             const msg = nextStatus 
-                ? "Bu işletmeyi mobil uygulamada öne çıkarmak istediğinize emin misiniz?" 
-                : "Bu işletmeyi öne çıkarılanlardan kaldırmak istiyor musunuz?"; 
+                ? "Öne Çıkarmak İstiyor musunuz?" 
+                : "Öne çıkarılanlardan kaldırmak istiyor musunuz?"; 
 
             if (confirm(msg)) {
-                highlight(orgId, nextStatus);
+                highlight(id, nextStatus);
             }
         }
         if (activationBtn) {
@@ -219,32 +174,31 @@ document.addEventListener("DOMContentLoaded", () => {
         let config = { method: 'POST' };
 
         if (form.id === 'edit-form') {
-            url = `/organization/${form.dataset.organizationId}`;
-            config = { 
+            url = `/local_producer/${form.dataset.id}`;
+            config = {
                 method: 'PUT', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    category_id: form.category_id.value,
                     village_id: form.village_id.value,
                     name: form.name.value,
+                    title: form.title.value,
                     email: form.email.value,
                     phone: form.phone.value,
-                    address: form.address.value,
-                    website: form.website.value,
-                    latitude: form.latitude.value,
-                    longitude: form.longitude.value
-                })
+                    address: form.address.value
+                }) 
             };
         } else if (form.id === 'upload-form') {
-            url = `/organization/upload/${form.dataset.organizationId}`;
+            url = `/local_producer/upload/${form.dataset.id}`;
             config = { method: 'PUT', body: new FormData(form) };
         } else if (form.id === 'create-form') {
-            url = `/organization/create`;
+            url = `/local_producer/create`;
             
             const formData = new FormData(form);
-            const payload = Object.fromEntries(formData);
+            const payload = Object.fromEntries(formData.entries());
             
-            payload.item_ids = formData.getAll('item_ids[]'); 
+            payload.products = formData.getAll('products[]'); 
+
+            delete payload['products[]'];
 
             config = { 
                 method: 'POST', 

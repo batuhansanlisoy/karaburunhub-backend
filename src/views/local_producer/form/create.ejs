@@ -1,0 +1,48 @@
+<form id="create-form">
+    <div class="mb-3">
+        <label class="form-label" for="village_id">Köy / Mahalle</label>
+        <select class="form-select" name="village_id" id="village_id" required>
+            <option value="">Seçiniz</option>
+            <% villages.forEach(village => { %>
+                <option value="<%= village.id %>"><%= village.name %></option>
+            <% }) %>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label" for="name">Ad Soyad</label>
+        <input type="text" name="name" id="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="title">Üretici Başlığı</label>
+        <input type="text" name="title" id="title" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">E-posta</label>
+        <input type="email" name="email" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Telefon</label>
+        <input type="text" name="phone" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label text-white">Üretilen Ürünler</label>
+        <select name="products[]" class="form-select" multiple>
+            <% products.forEach(product => { %>
+                <option value="<%= product %>"><%= product %></option>
+            <% }) %>
+        </select>
+        <small>Birden fazla seçim yapabilirsiniz.</small>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="address">Adres</label>
+        <input type="text" name="address" id="address" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn bg-blue text-white w-100 mt-3">Kaydet</button>
+</form>

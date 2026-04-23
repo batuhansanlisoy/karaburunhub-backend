@@ -1,4 +1,3 @@
-// src/controllers/UserController.ts
 import { Request, Response } from "express";
 import { Organization } from "../Entity/Organization";
 import { OrganizationService } from "../Service/Organization";
@@ -6,7 +5,6 @@ import { Organization as Converter } from "../Converter/Organization";
 import { DistanceActivityOrganizationService } from "../Service/Distance/ActivityOrganization";
 import { DistanceBeachOrganizationService } from "../Service/Distance/BeachOrganization";
 import { DistancePlaceOrganizationService } from "../Service/Distance/PlaceOrganization";
-import { HighlightedOrganizationService } from "~/Service/HighlightedOrganization";
 
 const service = new OrganizationService();
 const serviceActivityDistance = new DistanceActivityOrganizationService();
@@ -25,9 +23,14 @@ export const list = async (req: Request, res: Response) => {
     const category_id = req.query.category_id ? Number(req.query.category_id) : undefined;
     const village_id  = req.query.village_id ? Number(req.query.village_id) : undefined;
     const highlight = req.query.highlight !== undefined ? req.query.highlight === 'true' : undefined;
+    const is_active = req.query.is_active !== undefined ? req.query.is_active === 'true' : undefined;
+    const sub_category_info = req.query.sub_category_info !== undefined ? req.query.sub_category_info === 'true' : undefined;
 
     try {
-        const organizations: Organization[] = await service.list(category_id, village_id, highlight);
+        const organizations: Organization[] = await service.list(
+            category_id, village_id, highlight, is_active, sub_category_info
+        );
+
         const responce = Converter.toListResponse(organizations);
 
         res.json(responce);
@@ -186,5 +189,33 @@ export const nearestPlaces = async (req: Request, res: Response) => {
     } catch (err: any) {
         console.error(err);
         res.status(500).json({ error: err.message || err });
+    }
+}
+
+export const activation = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const value = req.body.value;
+
+    try {
+        const result = await service.patch(id, "is_active", value);
+
+        if (result === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "İşletme Bulunamadı" 
+            });
+        }
+
+        const organization = await service.single(id);
+
+        return res.status(200).json({ 
+            success: true, 
+            message: "Aktiflik Durumu güncellendi.",
+            data: organization
+        });
+
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: err.message || "Activation error"})
     }
 }

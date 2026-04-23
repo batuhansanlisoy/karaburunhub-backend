@@ -13,6 +13,7 @@ import activityRoutes from "./Routes/Activity";
 import organizationRoutes from "./Routes/Organization";
 import feedbackRoutes from "./Routes/Feedback";
 import requestBusinessRoutes from "./Routes/RequestBusiness";
+import localProducerRoutes from "./Routes/LocalProducer";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
@@ -72,5 +73,6 @@ app.use("/activity", requireAuth, activityRoutes);
 app.use("/activity/category", requireAuth, activityCategoryRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use("/request/business", requestBusinessRoutes);
+app.use("/local_producer", requireAuth, localProducerRoutes);
 
 export default app;

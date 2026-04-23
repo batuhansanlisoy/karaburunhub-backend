@@ -1,10 +1,14 @@
 import { Router } from "express";
 
+import { list as localProducerList } from "../Controller/LocalProducer";
+import { list as orgCategoryItemList } from "../Controller/Organization/Category/Item";
+
 // --- CATEGORY IMPORTS (Activity & Organization) ---
 import { 
     show as activityCatShow, 
     list as activityCatList 
 } from "../Controller/Activity/Category";
+
 import { 
     show as orgCatShow, 
     list as orgCatList 
@@ -27,6 +31,9 @@ import { list as featuredOrgList } from "../Controller/HighlightedOrganization";
 import { show as activityShow, list as activityList, nearestBeaches as actNearBeach, nearestPlaces as actNearPlace, nearestOrganizations as actNearOrg } from "../Controller/Activity";
 
 const router = Router();
+
+//LOCAL PRODUCER
+router.get("/local_producer/list", localProducerList);
 
 // --- ORGANIZATION CATEGORY (İşletme Kategorileri) ---
 router.get("/organization/category/list", orgCatList);
@@ -61,6 +68,7 @@ router.get("/organization/:id", orgShow);
 router.get("/organization/:id/nearest-activity", orgNearAct);
 router.get("/organization/:id/nearest-beaches", orgNearBeach);
 router.get("/organization/:id/nearest-places", orgNearPlace);
+router.get("/organization/category/item/list", orgCategoryItemList);
 
 // --- ACTIVITY (Etkinlikler) ---
 router.get("/activity/list", activityList);

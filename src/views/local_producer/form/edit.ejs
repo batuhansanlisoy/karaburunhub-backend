@@ -1,0 +1,43 @@
+<form id="edit-form" data-id="<%= localProducerId %>">
+    <div class="mb-3">
+        <label class="form-label" for="village_id">Bölge</label>
+        <select class="form-select" name="village_id" id="village_id" required>
+            <option value="">Seçiniz</option>
+            <% villages.forEach(village => { %>
+                <option 
+                    value="<%= village.id %>" 
+                    <%= village.id == village_id ? 'selected' : '' %> 
+                >
+                    <%= village.name %>
+                </option>
+            <% }) %>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ad Soyad</label>
+        <input type="text" name="name" class="form-control" value="<%= name %>" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="title">Üretici Başlığı</label>
+        <input type="text" name="title" id="title" class="form-control" value="<%= title %>" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">E-posta</label>
+        <input type="email" name="email" class="form-control" value="<%= email %>">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Telefon</label>
+        <input type="text" name="phone" class="form-control" value="<%= phone %>" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Adres</label>
+        <input type="text" name="address" class="form-control" value="<%= address %>" required>
+    </div>
+
+    <button type="submit" class="btn bg-blue text-white w-100">Güncelle</button>
+</form>

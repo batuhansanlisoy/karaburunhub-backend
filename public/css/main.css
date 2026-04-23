@@ -225,11 +225,9 @@ main {
 }
 
 #slideover-content .form-select {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border-radius: 8px;
-    /* Bootstrap'in aşağı ok ikonunu beyaz yapmak için */
+    background-color: #1a252f !important;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 

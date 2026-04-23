@@ -18,8 +18,31 @@ export class OrganizationService extends BaseService<Organization>{
         return this.repo.single(id);
     }
 
-    async list(category_id?: number, village_id?: number, highlight?: boolean): Promise<Organization[]> {
-        return this.repo.getAll(category_id, village_id, highlight);
+    async list(
+        category_id?: number,
+        village_id?: number,
+        highlight?: boolean,
+        is_active?: boolean,
+        sub_category_info?: boolean,
+    ): Promise<Organization[]> {
+        const organizations: Organization[] = await this.repo.getAll(
+            category_id,
+            village_id,
+            highlight,
+            is_active
+        );
+
+        if (sub_category_info != null && organizations.length > 0) {
+            const orgIds = organizations.map(org => org.id);
+
+            const allSubCategories = await this.sub_category_repo.getAll(orgIds);
+
+            organizations.forEach(org => {
+                org.sub_categories = allSubCategories.filter(sc => sc.organization_id === org.id);
+            });
+        }
+
+        return organizations;
     }
 
     async create(organization: Partial<Organization>, items: number[]): Promise<void> {

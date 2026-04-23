@@ -1,3 +1,5 @@
+import { Subcategory } from "./Organization/Subcategory";
+
 export interface Organization{
     id: number,
     village_id: number,
@@ -10,11 +12,13 @@ export interface Organization{
     cover?: Cover,
     gallery?: string[];
     higlight: boolean,
+    is_active: boolean,
     address: string,
     latitude?: number | null;
     longitude?: number | null;
     created_at: string,
     updated_at?: string,
+    sub_categories?: Subcategory[];
 }
 
 export interface Content {

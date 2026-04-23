@@ -14,15 +14,13 @@ export class OrganizationRepository {
         return org;
     }
 
-    async getAll(category_id?: number, village_id?: number, highlight?: boolean): Promise<Organization[]> {
+    async getAll(
+        category_id?: number,
+        village_id?: number,
+        highlight?: boolean,
+        is_active?: boolean
+    ): Promise<Organization[]> {
         let query = db(this.tableName).select("organization.*");
-
-        // if (category_id) {
-        //     query = query
-        //         .select("organization_category.name as category_name")
-        //         .leftJoin("organization_category", "organization.category_id", "organization_category.id") // Join yap
-        //         .where("organization.category_id", category_id);
-        // }
 
         if (village_id != null) {
             query = query.where("village_id", village_id);
@@ -30,6 +28,10 @@ export class OrganizationRepository {
 
         if (highlight !== undefined) {
             query = query.where("highlight", highlight);
+        }
+
+        if (is_active !== undefined) {
+            query = query.where("is_active", is_active);
         }
 
         if (category_id !== undefined) {
