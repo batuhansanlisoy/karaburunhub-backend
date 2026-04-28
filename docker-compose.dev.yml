@@ -27,6 +27,8 @@ services:
     container_name: karaburun-db-dev
     image: mariadb:latest
     restart: "no"
+    env_file:
+      - .env.dev
     environment:
       - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
       - MARIADB_DATABASE=${DB_NAME}
