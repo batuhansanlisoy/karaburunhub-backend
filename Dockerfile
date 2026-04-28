@@ -25,7 +25,7 @@ COPY --from=build /app/package*.json ./
 # KRİTİK DÜZELTME: Knex dosyaları artık src altındaydı, build aşamasından oradan çekiyoruz
 COPY --from=build /app/src/knexfile.ts ./src/knexfile.ts
 COPY --from=build /app/src/db/migrations ./src/db/migrations
-
+COPY --from=build /app/src/db/seeds ./src/db/seeds
 # Sadece prod paketlerini kur
 RUN npm install --omit=dev
 
