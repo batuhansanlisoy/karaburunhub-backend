@@ -14,6 +14,7 @@ services:
       - .:/app
       - /app/node_modules
     command: npm run dev
+    restart: "no"
     depends_on:
       - karaburun_db_dev
     deploy:
@@ -25,7 +26,7 @@ services:
   karaburun_db_dev:
     container_name: karaburun-db-dev
     image: mariadb:latest
-    restart: always
+    restart: "no"
     environment:
       - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
       - MARIADB_DATABASE=${DB_NAME}
