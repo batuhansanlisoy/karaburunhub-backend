@@ -5,8 +5,8 @@ services:
     build:
       context: .
       target: production
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     env_file:
       - .env.prod
     command: npm run start
@@ -28,5 +28,16 @@ services:
     volumes:
       - mariadb_data_prod:/var/lib/mysql
 
+  nginx-proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: karaburun-proxy
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginx_data:/data
+      - ./nginx_letsencrypt:/etc/letsencrypt
 volumes:
   mariadb_data_prod:
