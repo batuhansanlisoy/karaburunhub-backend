@@ -245,6 +245,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const payload = Object.fromEntries(formData);
             
             payload.item_ids = formData.getAll('item_ids[]'); 
+            payload.payment_methods = formData.getAll('payment_methods[]');
+            
+            delete payload['item_ids[]'];
+            delete payload['payment_methods[]'];
 
             config = { 
                 method: 'POST', 

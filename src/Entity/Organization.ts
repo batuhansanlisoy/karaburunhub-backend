@@ -7,7 +7,7 @@ export interface Organization{
     name: string,
     email?: string,
     phone?: string,
-    content?: string,
+    content?: Content,
     website?: string,
     cover?: Cover,
     gallery?: string[];
@@ -22,8 +22,10 @@ export interface Organization{
 }
 
 export interface Content {
-    explanation?: string,
-    detail?: string
+    description?: string,
+    has_delivery?: boolean,
+    has_wifi?: boolean,
+    payment_methods?: string[]
 }
 
 export interface Cover {

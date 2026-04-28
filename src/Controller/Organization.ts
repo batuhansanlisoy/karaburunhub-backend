@@ -41,24 +41,41 @@ export const list = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-    const category_id = req.body.category_id;
-    const village_id  = req.body.village_id;
-    const name        = req.body.name;
-    const email       = req.body.email;
-    const phone       = req.body.phone;
-    const address     = req.body.address;
-    const website     = req.body.website;
-    const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
-    const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
-    const items       = req.body.item_ids;
+    const category_id     = req.body.category_id;
+    const village_id      = req.body.village_id;
+    const name            = req.body.name;
+    const email           = req.body.email;
+    const phone           = req.body.phone;
+    const address         = req.body.address;
+    const website         = req.body.website;
+    const description     = req.body.description;
+    const has_delivery    = req.body.has_delivery;
+    const has_wifi        = req.body.has_wifi;
+    const payment_methods = req.body.payment_methods;
+    const latitude        = req.body.latitude ? parseFloat(req.body.latitude) : null;
+    const longitude       = req.body.longitude ? parseFloat(req.body.longitude) : null;
+    const items           = req.body.item_ids;
 
     if (!name || !address) {
         return res.status(400).send("Boş Alanlar var");
     }
 
     const organization: Partial<Organization> = {
-        category_id, village_id, name, email, phone,
-        address, website, latitude, longitude
+        category_id,
+        village_id,
+        name,
+        email,
+        phone,
+        content: {
+            description,
+            has_delivery,
+            has_wifi,
+            payment_methods
+        },
+        address,
+        website,
+        latitude,
+        longitude
     };
 
     try {

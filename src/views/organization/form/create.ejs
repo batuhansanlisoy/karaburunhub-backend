@@ -27,6 +27,43 @@
         </select>
     </div>
 
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="form-check form-switch d-flex align-items-center">
+                <input class="form-check-input mt-0" type="checkbox" name="has_delivery" id="has_delivery" value="1">
+                <label class="form-check-label ms-2" for="has_delivery">Paket Servis</label>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-check form-switch d-flex align-items-center">
+                <input class="form-check-input mt-0" type="checkbox" name="has_wifi" id="has_wifi" value="1">
+                <label class="form-check-label ms-2" for="has_wifi">Wi-Fi</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label d-block mb-2">Ödeme Yöntemleri</label>
+        <div class="d-flex gap-3">
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input mt-0" type="checkbox" name="payment_methods[]" value="nakit" id="pay_cash">
+                <label class="form-check-label ms-2" for="pay_cash">Nakit</label>
+            </div>
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input mt-0" type="checkbox" name="payment_methods[]" value="kart" id="pay_card">
+                <label class="form-check-label ms-2" for="pay_card">Kredi Kartı</label>
+            </div>
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input mt-0" type="checkbox" name="payment_methods[]" value="kapıda ödeme" id="pay_door">
+                <label class="form-check-label ms-2" for="pay_door">Kapıda Ödeme</label>
+            </div>
+            <div class="form-check d-flex align-items-center">
+                <input class="form-check-input mt-0" type="checkbox" name="payment_methods[]" value="havale" id="pay_eft">
+                <label class="form-check-label ms-2" for="pay_eft">Iban / Havale</label>
+            </div>
+        </div>
+    </div>
+
     <!-- Diğer alanlar aynı -->
     <div class="mb-3">
         <label class="form-label">İşletme Adı</label>
@@ -51,6 +88,11 @@
     <div class="mb-3">
         <label class="form-label">Web Sitesi</label>
         <input type="text" name="website" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="description">İşletme Açıklaması</label>
+        <textarea name="description" id="description" class="form-control" rows="4" placeholder="İşletme hakkında kısa bir bilgi yazınız..."></textarea>
     </div>
 
     <div class="row">
