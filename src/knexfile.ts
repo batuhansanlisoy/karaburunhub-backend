@@ -29,10 +29,10 @@ const config: { [key: string]: Knex.Config } = {
             database: process.env.DB_NAME,
         },
         migrations: {
-            directory: "./dist/src/db/migrations",
+            directory: "./db/migrations",
         },
         seeds: {
-            directory: "./dist/src/db/seeds"
+            directory: "./db/seeds"
         }
     },
 };
