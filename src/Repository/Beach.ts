@@ -12,8 +12,16 @@ export class BeachRepository {
         return beach;
     }
 
-    async getAll(village_id?: number, highlight?: boolean): Promise<Beach[]> {
+    async getAll(
+        village_id?: number,
+        highlight?: boolean,
+        ids?: number[]
+    ): Promise<Beach[]> {
         let query = db(this.tableName).select("*");
+
+        if (ids && ids.length > 0) {
+            query = query.whereIn("id", ids);
+        }
 
         if (village_id != null) {
             query = query.where("village_id", village_id);

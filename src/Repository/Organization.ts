@@ -7,10 +7,6 @@ export class OrganizationRepository {
     async single(id: number): Promise<Organization> {
         const org = await db(this.tableName).where({ id }).first();
 
-        if (org?.cover && typeof org.cover === "string") {
-            org.cover = JSON.parse(org.cover); // artık servis tarafında cover bir obje
-        }
-
         return org;
     }
 
@@ -18,9 +14,14 @@ export class OrganizationRepository {
         category_id?: number,
         village_id?: number,
         highlight?: boolean,
-        is_active?: boolean
+        is_active?: boolean,
+        ids?: number[]
     ): Promise<Organization[]> {
         let query = db(this.tableName).select("organization.*");
+
+        if (ids && ids.length > 0) {
+            query = query.whereIn("id", ids);
+        }
 
         if (village_id != null) {
             query = query.where("village_id", village_id);

@@ -19,16 +19,39 @@ export const show = async (req: Request, res: Response) => {
     });
 };
 
+export const single = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+
+    try {
+        const organization = await service.single(id);
+
+        if (!organization) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "İşletme bulunamadı" 
+            });
+        }
+
+        const response = Converter.toResponse(organization); 
+
+        res.json(response);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "İşletme detayları alınamadı" });
+    }
+};
+
 export const list = async (req: Request, res: Response) => {
     const category_id = req.query.category_id ? Number(req.query.category_id) : undefined;
     const village_id  = req.query.village_id ? Number(req.query.village_id) : undefined;
     const highlight = req.query.highlight !== undefined ? req.query.highlight === 'true' : undefined;
     const is_active = req.query.is_active !== undefined ? req.query.is_active === 'true' : undefined;
     const sub_category_info = req.query.sub_category_info !== undefined ? req.query.sub_category_info === 'true' : undefined;
+    const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : undefined;
 
     try {
         const organizations: Organization[] = await service.list(
-            category_id, village_id, highlight, is_active, sub_category_info
+            category_id, village_id, highlight, is_active, sub_category_info, ids
         );
 
         const responce = Converter.toListResponse(organizations);

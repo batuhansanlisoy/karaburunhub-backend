@@ -13,9 +13,22 @@ export class OrganizationService extends BaseService<Organization>{
 
     private sub_category_repo = new SubcategoryRepository();
 
-    async single(id: number): Promise<Organization> {
+    async single(id: number): Promise<Organization | null> {
+        const organization: Organization = await this.repo.single(id);
 
-        return this.repo.single(id);
+        if (!organization) return null;
+
+        try {
+            const subCategories = await this.sub_category_repo.getAll([organization.id]);
+
+            organization.sub_categories = subCategories;
+            
+        } catch (err) {
+            console.error(`${id} ID'li işletme için alt kategoriler çekilemedi:`, err);
+            organization.sub_categories = [];
+        }
+
+        return organization;
     }
 
     async list(
@@ -24,12 +37,14 @@ export class OrganizationService extends BaseService<Organization>{
         highlight?: boolean,
         is_active?: boolean,
         sub_category_info?: boolean,
+        ids?: number[]
     ): Promise<Organization[]> {
         const organizations: Organization[] = await this.repo.getAll(
             category_id,
             village_id,
             highlight,
-            is_active
+            is_active,
+            ids
         );
 
         if (sub_category_info != null && organizations.length > 0) {

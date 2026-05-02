@@ -23,8 +23,9 @@ export const list = async (req: Request, res: Response) => {
     try {
         const village_id  = req.query.village_id ? Number(req.query.village_id) : undefined;
         const category_id = req.query.category_id ? Number(req.query.category_id) : undefined;
+        const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : undefined;
 
-        const activities: Activity[] = await service.list(village_id, category_id);
+        const activities: Activity[] = await service.list(village_id, category_id, ids);
         const response = ActivityConverter.toListResponse(activities);
 
         res.json(response);

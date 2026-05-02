@@ -25,6 +25,10 @@ export const editForm = async (req: Request, res: Response) => {
 
     const organization = await org_service.single(id);
 
+    if (!organization) {
+        return res.status(404).send("Düzenlenmek istenen işletme bulunamadı.");
+    }
+
     const [categories, villages] = await Promise.all([
         org_category_service.list(),
         village_service.list()

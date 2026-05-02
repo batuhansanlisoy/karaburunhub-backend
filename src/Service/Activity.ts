@@ -16,9 +16,17 @@ export class ActivityService extends BaseService<Activity>{
         return this.repo.single(id);
     }
 
-    async list(village_id?: number, category_id?: number): Promise<Activity[]> {
+    async list(
+        village_id?: number,
+        category_id?: number,
+        ids?: number[]
+    ): Promise<Activity[]> {
         
-        return this.repo.getAll(village_id, category_id);
+        return this.repo.getAll(
+            village_id,
+            category_id,
+            ids
+        );
     }
 
     async create(activity: Partial<Activity>): Promise<number[]> {

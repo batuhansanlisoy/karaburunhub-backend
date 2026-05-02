@@ -18,9 +18,16 @@ export class ActivityRepository {
         return activity;
     }
 
-    async getAll(village_id?: number, category_id?: number): Promise<Activity[]> {
-
+    async getAll(
+        village_id?: number,
+        category_id?: number,
+        ids?: number[]
+    ): Promise<Activity[]> {
         let query = db(this.tableName).select("*");
+
+        if (ids && ids.length > 0) {
+            query = query.whereIn("id", ids);
+        }
 
         if (village_id != null) {
             query = query.where("village_id", village_id);

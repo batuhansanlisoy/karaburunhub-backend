@@ -16,12 +16,9 @@ export class PlaceService extends BaseService<Place> {
         return this.repo.single(id);
     }
 
-    async list(village_id?: number): Promise<Place[]> {
-        if (village_id) {
-            return this.repo.getByVillageId(village_id);
-        }
+    async list(village_id?: number, ids?: number[]): Promise<Place[]> {
 
-        return this.repo.getAll();
+        return this.repo.getAll(village_id, ids);
     }
 
     async create(place: Partial<Place>): Promise<number[]> {

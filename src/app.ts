@@ -17,10 +17,10 @@ import localProducerRoutes from "./Routes/LocalProducer";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
+import infoRoutes from "./Routes/Info";
 import { apiKeyAuth } from "./Middleware/ApiKeyAuth";
 import { requireAuth } from "./Middleware/Auth";
 import { setLocals } from "./Middleware/Locals";
-
 dotenv.config();
 const app = express();
 
@@ -74,5 +74,5 @@ app.use("/activity/category", requireAuth, activityCategoryRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use("/request/business", requestBusinessRoutes);
 app.use("/local_producer", requireAuth, localProducerRoutes);
-
+app.use("/info", infoRoutes)
 export default app;

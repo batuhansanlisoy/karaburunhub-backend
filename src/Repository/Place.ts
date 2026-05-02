@@ -19,11 +19,18 @@ export class PlaceRepository {
         return place;
     }
 
-    async getAll(): Promise<Place[]> {
-        return db(this.tableName).select(
-            "place.*",
-            "villages.name as village_name")
-            .leftJoin("villages", "place.village_id", "villages.id");
+    async getAll(village_id?: number ,ids?: number[]): Promise<Place[]> {
+        let query = db(this.tableName).select("place.*");
+        
+        if (ids && ids.length > 0) {
+            query = query.whereIn("id", ids);
+        }
+
+        if (village_id != null) {
+            query = query.where("village_id", village_id);
+        }
+
+        return query;
     }
 
     async getByVillageId(village_id: number): Promise<Place[]> {

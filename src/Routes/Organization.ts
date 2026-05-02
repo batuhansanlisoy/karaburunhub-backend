@@ -3,7 +3,7 @@ import { Router } from "express";
 import { createForm, editForm, uploadForm } from "~/Controller/Organization/Form";
 import { FileService } from "~/Service/File";
 import {
-    show, list, create, del, update, uploadPhoto, activation,
+    show, single, list, create, del, update, uploadPhoto, activation,
     nearestActivity, nearestBeaches, nearestPlaces, highligt
 } from "~/Controller/Organization";
 
@@ -15,6 +15,7 @@ router.get("/form/create", createForm);
 router.get("/form/edit/:id", editForm);
 router.get("/form/upload/:id", uploadForm);
 router.get("/list", list);
+router.get("/:id/single", single);
 router.get("/:id/nearest-activity", nearestActivity);
 router.get("/:id/nearest-places", nearestPlaces);
 router.get("/:id/nearest-beaches", nearestBeaches);

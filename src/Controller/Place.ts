@@ -21,9 +21,10 @@ export const show = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
     const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
+    const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : undefined;
 
     try {
-        const places: Place[] = await service.list(village_id);
+        const places: Place[] = await service.list(village_id, ids);
         const response = PlaceConverter.toListResponse(places);
 
         res.json(response);

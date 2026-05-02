@@ -17,9 +17,16 @@ export class BeachService extends BaseService<Beach> {
         return this.repo.getById(id);
     }
 
-    async list(village_id?: number, highlight?: boolean): Promise<Beach[]> {
-        
-        return this.repo.getAll(village_id, highlight);
+    async list(
+        village_id?: number,
+        highlight?: boolean,
+        ids?: number[]
+    ): Promise<Beach[]> {
+        return this.repo.getAll(
+            village_id,
+            highlight,
+            ids
+        );
     }
 
     async create(beach: Partial<Beach>): Promise<number[]> {

@@ -42,9 +42,10 @@ export const single = async (req: Request, res: Response) => {
 export const list = async (req: Request, res: Response) => {
     const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
     const highlight = req.query.highlight !== undefined ? req.query.highlight === 'true' : undefined;
+    const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : undefined;
 
     try {
-        const beaches: Beach[] = await service.list(village_id, highlight);
+        const beaches: Beach[] = await service.list(village_id, highlight, ids);
         const response = BeachConverter.toListResponse(beaches);
 
         res.json(response);

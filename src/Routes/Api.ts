@@ -24,11 +24,13 @@ import { show as placeShow, list as placeList, nearestActivity as placeNearAct, 
 import { show as beachShow, list as beachList, nearestActivity as beachNearAct, nearestOrganizations as beachNearOrg, nearestPlaces as beachNearPlace } from "../Controller/Beach";
 
 // --- ORGANIZATION & FEATURED CONTROLLER IMPORTS ---
-import { show as orgShow, list as orgList, nearestActivity as orgNearAct, nearestBeaches as orgNearBeach, nearestPlaces as orgNearPlace } from "../Controller/Organization";
+import { show as orgShow, single as orgSingle, list as orgList, nearestActivity as orgNearAct, nearestBeaches as orgNearBeach, nearestPlaces as orgNearPlace } from "../Controller/Organization";
 import { list as featuredOrgList } from "../Controller/HighlightedOrganization";
 
 // --- ACTIVITY CONTROLLER IMPORTS ---
 import { show as activityShow, list as activityList, nearestBeaches as actNearBeach, nearestPlaces as actNearPlace, nearestOrganizations as actNearOrg } from "../Controller/Activity";
+
+import { getLaunchPopup } from "../Controller/Config";
 
 const router = Router();
 
@@ -62,6 +64,7 @@ router.get("/beach/:id/nearest-organizations", beachNearOrg);
 router.get("/beach/:id/nearest-places", beachNearPlace);
 
 // --- ORGANIZATION (İşletmeler) ---
+router.get("/organization/:id/single", orgSingle)
 router.get("/organization/list", orgList);
 router.get("/organization/featured", featuredOrgList);
 router.get("/organization/:id", orgShow);
@@ -76,5 +79,7 @@ router.get("/activity/:id", activityShow);
 router.get("/activity/:id/nearest-beaches", actNearBeach);
 router.get("/activity/:id/nearest-places", actNearPlace);
 router.get("/activity/:id/nearest-organizations", actNearOrg);
+
+router.get("/config/launch-popup", getLaunchPopup);
 
 export default router;
