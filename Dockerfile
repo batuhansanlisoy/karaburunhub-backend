@@ -1,6 +1,7 @@
 # 1. Aşama: Base (Her iki ortam için ortak)
 FROM node:20-alpine AS base
 WORKDIR /app
+RUN mkdir -p upload
 COPY package*.json ./
 RUN npm install
 COPY . .
