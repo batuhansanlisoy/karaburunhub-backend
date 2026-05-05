@@ -1,0 +1,101 @@
+<div>
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <div class="p-2 bg-blue text-white rounded-5 px-4 d-flex align-items-center justify-content-center">
+            <h2 class="mb-0 fs-6 text-center"><%= title %></h2>
+        </div>
+
+        <%- include('../ui/table/add-btn.ejs', { 
+            url: '/notification/form/create', 
+            title: 'Yeni Bildirim', 
+            label: 'Ekle'
+        }) %>
+
+        <button id="openFilter" class="btn btn-dark rounded-5">
+            <i class="bi bi-filter me-2"></i>Filtre
+        </button>
+
+        <input type="text" id="searchInput" class="form-control rounded-5 w-100 w-md-auto" placeholder="Ara..." style="max-width: 250px;">
+    </div>
+    
+    <%- include('../ui/slideover.ejs') %>
+    <%- include('../ui/table.ejs', { title: "Bildirimler" }) %>
+</div>
+
+
+<script>
+async function refreshTable() {
+    try {
+        const notificationRes = await fetch("/notification/list");
+
+        const data = await notificationRes.json();
+
+        const columns = [
+            { label: '', key: 'actions', type:"html", width: '100px'},
+            { label: 'Başlık', key: 'title', width: '150px'},
+            { label: 'Mesaj', key: 'message', width: '650px', },
+            { label: 'Durum', key: 'is_active', width: '200px' },
+            { label: 'Oluşturulma Tarihi', key: 'created_at', type: 'date', width: '200px' }
+        ];
+        
+        const rows = data.map(item => {
+            return {
+                actions: `
+                    <div class="d-flex">
+                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
+                    </div>
+                `,
+                title: item.title,
+                message: item.message,
+                is_active: item.is_active ? "Aktif": "Pasif",
+                created_at: item.created_at
+            }
+        });
+
+        renderTable(columns, rows, "/notification");
+    } catch (err) { console.error(err); }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    refreshTable();
+
+    document.addEventListener("click", async (e) => {
+        const editBtn = e.target.closest(".edit-btn");
+        if (editBtn) Slideover.show(`/notification/form/edit/${editBtn.dataset.id}`, "Bildirimi Düzenle");
+    });
+
+    document.getElementById('slideover-content').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        let url = '';
+        let config = { method: 'POST' };
+        
+        const payload = Object.fromEntries(new FormData(form));
+
+        if (form.id === 'edit-form') {
+            url = `/notification/${form.dataset.notificationId}`;
+            config = { 
+                method: 'PUT', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+        } else if (form.id === 'create-form') {
+            url = `/notification/create`;
+            config = { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+        }
+
+        const res = await fetch(url, config);
+        if (res.ok) {
+            alert('Başarılı!');
+            Slideover.hide();
+            refreshTable();
+        } else {
+            alert('Hata oluştu!');
+        }
+    });
+});
+</script>

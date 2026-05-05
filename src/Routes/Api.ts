@@ -31,6 +31,7 @@ import { list as featuredOrgList } from "../Controller/HighlightedOrganization";
 import { show as activityShow, list as activityList, nearestBeaches as actNearBeach, nearestPlaces as actNearPlace, nearestOrganizations as actNearOrg } from "../Controller/Activity";
 
 import { getLaunchPopup } from "../Controller/Config";
+import { list as notificationList } from "../Controller/Notification";
 
 const router = Router();
 
@@ -81,5 +82,6 @@ router.get("/activity/:id/nearest-places", actNearPlace);
 router.get("/activity/:id/nearest-organizations", actNearOrg);
 
 router.get("/config/launch-popup", getLaunchPopup);
+router.get("/notification/list", notificationList);
 
 export default router;
