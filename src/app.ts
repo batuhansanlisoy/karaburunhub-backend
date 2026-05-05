@@ -36,7 +36,7 @@ app.use(session({
 }));
 
 const isProd = process.env.NODE_ENV === "production";
-const uploadPath = path.join(__dirname, "../upload");
+const uploadPath = path.join(process.cwd(), "upload");
 app.use("/upload", express.static(uploadPath));
 
 const viewsPath = isProd ? path.join(__dirname, "../../src/views") : path.join(__dirname, "views");
