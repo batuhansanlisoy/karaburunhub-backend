@@ -20,6 +20,8 @@ services:
     container_name: karaburun-db-prod
     image: mariadb:latest
     restart: always
+    ports:
+      - "3322:3306"
     env_file:
       - .env.prod
     environment:
