@@ -90,7 +90,7 @@ export const uploadPhoto = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
 
-        const result = await service.upload(id, req.files);
+        const result = await service.handleFileUpload(id, req.files, "local_producer");
 
         return res.json({ 
             success: true, 
@@ -106,6 +106,20 @@ export const uploadPhoto = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const deletePhoto = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const { type, index } = req.body;
+
+    try {
+        await service.deleteImage(id, type, index);
+
+        return res.json({ success: true, message: "Başarıyla silindi" });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ message: "Hata", error: err.message });
+    }
+};
 
 export const del = async (req: Request, res: Response) => {
     const id = Number(req.params.id);

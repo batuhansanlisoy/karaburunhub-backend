@@ -14,7 +14,7 @@ export class OrganizationService extends BaseService<Organization>{
     private sub_category_repo = new SubcategoryRepository();
 
     async single(id: number): Promise<Organization | null> {
-        const organization: Organization = await this.repo.single(id);
+        const organization: Organization = await this.repo.getById(id);
 
         if (!organization) return null;
 
@@ -83,14 +83,10 @@ export class OrganizationService extends BaseService<Organization>{
         await this.repo.update(id, payload);
     }
 
-    async upload(id: number, files: any): Promise<any> {
-        return await this.handleFileUpload(id, files, "organization");
-    }
-
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const org = await this.repo.single(id);
+            const org = await this.repo.getById(id);
 
             if (!org) { 
                 throw new Error("Organizasyon buluanamadı");

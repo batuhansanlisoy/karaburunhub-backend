@@ -5,7 +5,7 @@ export class VillageService {
     private repo = new VillageRepository();
 
     async single(id: number): Promise<Village> {
-        return this.repo.single(id);
+        return this.repo.getById(id);
     }
 
     async list(): Promise<Village[]> {

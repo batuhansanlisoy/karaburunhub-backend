@@ -4,16 +4,8 @@ import { Activity } from "../Entity/Activity";
 export class ActivityRepository {
     private tableName = "activity";
 
-    async single(id: number): Promise<Activity> {
+    async getById(id: number): Promise<Activity> {
         const activity = await db(this.tableName).where({ id }).first();
-        
-        if (activity?.cover && typeof activity.cover === "string") {
-            activity.cover = JSON.parse(activity.cover);
-        }
-
-        if (activity.content && typeof activity.content === "string" ) {
-            activity.content = JSON.parse(activity.content);
-        }
 
         return activity;
     }

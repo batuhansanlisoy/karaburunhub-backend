@@ -92,15 +92,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Tıklama Yakalayıcı (Event Delegation)
     document.addEventListener("click", async (e) => {
-        const editBtn = e.target.closest(".edit-btn");
-        const uploadBtn = e.target.closest(".upload-btn");
-        const calendarBtn = e.target.closest(".day-calender");
+        const editBtn      = e.target.closest(".edit-btn");
+        const uploadBtn    = e.target.closest(".upload-btn");
+        const calendarBtn  = e.target.closest(".day-calender");
+        const deleteImgBtn = e.target.closest(".delete-image");
 
         if (editBtn) Slideover.show(`/activity/form/edit/${editBtn.dataset.id}`, "Etkinliği Düzenle");
         if (uploadBtn) Slideover.show(`/activity/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
         
         if (calendarBtn) {
             return;
+        }
+
+        if (deleteImgBtn) {
+            const activityId = deleteImgBtn.dataset.activityId;
+            const type = deleteImgBtn.dataset.type;
+            const index = deleteImgBtn.dataset.index;
+
+            if (confirm("Bu fotoğrafı kalıcı olarak silmek istediğinize emin misiniz?")) {
+                try {
+                    const res = await fetch(`/activity/${activityId}/photo`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type, index })
+                    });
+
+                    if (res.ok) {
+                        // Slideover içindeki formu yeniliyoruz ki silinen resim gitsin
+                        Slideover.show(`/activity/form/upload/${activityId}`, "Fotoğraf Yükle");
+                    } else {
+                        const err = await res.json();
+                        alert("Hata: " + (err.message || "Silme işlemi başarısız."));
+                    }
+                } catch (err) {
+                    console.error("Silme hatası:", err);
+                    alert("Bağlantı hatası oluştu.");
+                }
+            }
         }
     });
 

@@ -9,6 +9,13 @@ export class BeachRepository {
         if (beach?.cover && typeof beach.cover === "string") {
             beach.cover = JSON.parse(beach.cover);
         }
+
+        return beach;
+    }
+
+    async getById(id: number): Promise<Beach> {
+        const beach = await db(this.tableName).where({ id }).first();
+
         return beach;
     }
 
@@ -32,15 +39,6 @@ export class BeachRepository {
         }
 
         return query;
-    }
-
-    async getById(id: number): Promise<Beach> {
-        return db(this.tableName).select(
-            "beachs.*",
-            "villages.name as village_name")
-            .leftJoin("villages", "beachs.village_id", "villages.id")
-            .where("beachs.id", id)
-            .first();
     }
 
     async create(beach: Partial<Beach>): Promise<number[]> {

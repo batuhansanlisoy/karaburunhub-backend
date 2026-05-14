@@ -32,7 +32,7 @@ export const single = async (req: Request, res: Response) => {
 
         const response = BeachConverter.toResponse(beach);
 
-        res.json(beach);
+        res.json(response);
     } catch (err) {
         console.error(err);
         res.status(500).send("Plaj fotoğrafları alınırken hata oluştu");

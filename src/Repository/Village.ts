@@ -5,7 +5,7 @@ import { Village } from "../Entity/Village";
 export class VillageRepository {
     private tableName = "villages";
 
-    async single(id: number): Promise<Village> {
+    async getById(id: number): Promise<Village> {
         return db(this.tableName).where({id}).first();
     }
 

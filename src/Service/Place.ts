@@ -13,7 +13,7 @@ export class PlaceService extends BaseService<Place> {
     private distanceService = new LocationDistanceOrchestrator();
 
     async single(id: number): Promise<Place> {
-        return this.repo.single(id);
+        return this.repo.getById(id);
     }
 
     async list(village_id?: number, ids?: number[]): Promise<Place[]> {
@@ -34,10 +34,6 @@ export class PlaceService extends BaseService<Place> {
         return placeIds;
     }
 
-    async upload(id: number, files: any): Promise<any> {
-        return await this.handleFileUpload(id, files, "place");
-    }
-
     async update(id: number, payload: Partial<Place>): Promise<void> {
         await this.repo.update(id, payload);
     }
@@ -45,7 +41,7 @@ export class PlaceService extends BaseService<Place> {
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const place = await this.repo.single(id);
+            const place = await this.repo.getById(id);
             
             if (!place) {
                 throw new Error("place nesenesi bulunamadı");

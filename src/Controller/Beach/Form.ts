@@ -5,7 +5,6 @@ import { BeachConverter } from "~/Converter/Beach";
 
 const village_service = new VillageService();
 const beach_service = new BeachService();
-const beach_converter = new BeachConverter();
 
 export const createForm = async (req: Request, res: Response) => {
     const villages = await village_service.list();

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CategoryService } from "~/Service/Organization/Category";
 import { OrganizationService } from "~/Service/Organization";
 import { VillageService } from "~/Service/Village";
+import { Organization as Converter } from "~/Converter/Organization";
 
 const org_category_service = new CategoryService();
 const org_service = new OrganizationService();
@@ -52,9 +53,14 @@ export const editForm = async (req: Request, res: Response) => {
 };
 
 export const uploadForm = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
+
+    const rawData = await org_service.single(id);
+    const organization = Converter.toResponse(rawData!);
+
     res.render("organization/form/upload", {
         organizationId: id,
+        organization: organization,
         layout: false
     });
 };

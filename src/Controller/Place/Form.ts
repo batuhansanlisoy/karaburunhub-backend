@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { VillageService } from "~/Service/Village";
 import { PlaceService } from "~/Service/Place";
+import { PlaceConverter } from "~/Converter/Place";
 
 const village_service = new VillageService();
 const place_service = new PlaceService();
@@ -35,9 +36,14 @@ export const editForm = async (req: Request, res: Response) => {
 };
 
 export const uploadForm = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
+
+    const rawData = await place_service.single(id);
+    const place = PlaceConverter.toResponse(rawData);
+
     res.render("place/form/upload", {
         placeId: id,
+        place: place,
         layout: false
     });
 };

@@ -4,7 +4,7 @@ import { createForm, editForm, uploadForm } from "~/Controller/Organization/Form
 import { FileService } from "~/Service/File";
 import {
     show, single, list, create, del, update, uploadPhoto, activation,
-    nearestActivity, nearestBeaches, nearestPlaces, highligt
+    nearestActivity, nearestBeaches, nearestPlaces, highligt, deletePhoto
 } from "~/Controller/Organization";
 
 const router = Router();
@@ -30,6 +30,8 @@ router.put("/upload/:id", upload.fields([
     { name: "cover", maxCount: 1 },
     { name: "gallery[]", maxCount: 10 }
 ]), uploadPhoto);
+
+router.delete("/:id/photo", deletePhoto);
 
 router.delete("/:id", del);
 export default router;

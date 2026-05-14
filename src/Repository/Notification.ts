@@ -4,7 +4,7 @@ import { Notification } from "../Entity/Notification";
 export class NotificationRepository {
     private tableName = "notifications";
 
-    async single(id: number): Promise<Notification> {
+    async getById(id: number): Promise<Notification> {
         const notification = await db(this.tableName).where({ id }).first();
 
         return notification;

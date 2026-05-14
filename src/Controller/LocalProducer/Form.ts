@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { VillageService } from "~/Service/Village";
 import { LocalProducerService } from "~/Service/LocalProducer";
 import { LOCAL_PRODUCTS } from "../../shared/constants/local_products";
+import { LocalProducerConverter } from "~/Converter/LocalProducer";
 
 const village_service = new VillageService();
 const local_producer_service = new LocalProducerService();
@@ -36,9 +37,14 @@ export const editForm = async (req: Request, res: Response) => {
 };
 
 export const uploadForm = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
+
+    const rawData = await local_producer_service.single(id);
+    const localProducer = LocalProducerConverter.toResponse(rawData);
+
     res.render("local_producer/form/upload", {
-        localProducer: id,
+        localProducerId: id,
+        localProducer: localProducer,
         layout: false
     });
 };

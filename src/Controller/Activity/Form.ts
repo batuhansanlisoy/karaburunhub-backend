@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CategoryService } from "../../Service/Activity/Category";
 import { VillageService } from "../../Service/Village";
 import { ActivityService } from "../../Service/Activity";
+import { ActivityConverter } from "~/Converter/Activity";
 
 const category_service = new CategoryService();
 const village_service = new VillageService();
@@ -44,9 +45,14 @@ export const editForm = async (req: Request, res: Response) => {
 };
 
 export const uploadForm = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
+
+    const rawData = await activity_service.single(id);
+    const activity = ActivityConverter.toResponse(rawData);
+
     res.render("activity/form/upload", {
         activityId: id,
+        activity: activity,
         layout: false
     });
 };

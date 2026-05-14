@@ -4,7 +4,7 @@ import { Organization } from "../Entity/Organization";
 export class OrganizationRepository {
     private tableName = "organization";
 
-    async single(id: number): Promise<Organization> {
+    async getById(id: number): Promise<Organization> {
         const org = await db(this.tableName).where({ id }).first();
 
         return org;

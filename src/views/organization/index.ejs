@@ -177,10 +177,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.addEventListener("click", async (e) => {
-        const editBtn = e.target.closest(".edit-btn");
-        const uploadBtn = e.target.closest(".upload-btn");
-        const highlightBtn = e.target.closest(".highlight-btn");
+        const editBtn       = e.target.closest(".edit-btn");
+        const uploadBtn     = e.target.closest(".upload-btn");
+        const highlightBtn  = e.target.closest(".highlight-btn");
         const activationBtn = e.target.closest(".activation-btn");
+        const deleteImgBtn  = e.target.closest(".delete-image");
 
         if (editBtn) Slideover.show(`/organization/form/edit/${editBtn.dataset.id}`, "Turistik Bölgeyi Düzenle");
         if (uploadBtn) Slideover.show(`/organization/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
@@ -197,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 highlight(orgId, nextStatus);
             }
         }
+
         if (activationBtn) {
             const id = activationBtn.dataset.id;
             const currentStatus = activationBtn.dataset.status === "true" || activationBtn.dataset.status === "1";
@@ -208,6 +210,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (confirm(msg)) {
                 activation(id, nextStatus);
+            }
+        }
+
+        if (deleteImgBtn) {
+            const organizationId = deleteImgBtn.dataset.organizationId;
+            const type = deleteImgBtn.dataset.type;
+            const index = deleteImgBtn.dataset.index;
+
+            if (confirm("Bu fotoğrafı kalıcı olarak silmek istediğinize emin misiniz?")) {
+                try {
+                    const res = await fetch(`/organization/${organizationId}/photo`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type, index })
+                    });
+
+                    if (res.ok) {
+                        // Slideover içindeki formu yeniliyoruz ki silinen resim gitsin
+                        Slideover.show(`/organization/form/upload/${organizationId}`, "Fotoğraf Yükle");
+                    } else {
+                        const err = await res.json();
+                        alert("Hata: " + (err.message || "Silme işlemi başarısız."));
+                    }
+                } catch (err) {
+                    console.error("Silme hatası:", err);
+                    alert("Bağlantı hatası oluştu.");
+                }
             }
         }
     });

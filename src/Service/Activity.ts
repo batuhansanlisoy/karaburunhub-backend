@@ -13,7 +13,7 @@ export class ActivityService extends BaseService<Activity>{
     private distanceService = new LocationDistanceOrchestrator
 
     async single(id: number): Promise<Activity> {
-        return this.repo.single(id);
+        return this.repo.getById(id);
     }
 
     async list(
@@ -42,10 +42,6 @@ export class ActivityService extends BaseService<Activity>{
         return activityIds;
     }
 
-    async upload(id: number, files: any): Promise<any> {
-        return await this.handleFileUpload(id, files, "activity");
-    }
-
     async update(id: number, activity: Partial<Activity>): Promise<void> {
         await this.repo.update(id, activity);
     }
@@ -53,7 +49,7 @@ export class ActivityService extends BaseService<Activity>{
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const activity = await this.repo.single(id);
+            const activity = await this.repo.getById(id);
 
             if (!activity) {
                 throw new Error("Activity bulunamadı");

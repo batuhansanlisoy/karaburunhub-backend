@@ -103,10 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
     refreshTable();
 
     document.addEventListener("click", async (e) => {
-        const editBtn = e.target.closest(".edit-btn");
-        const uploadBtn = e.target.closest(".upload-btn");
+        const editBtn      = e.target.closest(".edit-btn");
+        const uploadBtn    = e.target.closest(".upload-btn");
         const highlightBtn = e.target.closest(".highlight-btn");
-
         const deleteImgBtn = e.target.closest(".delete-image");
 
         if (editBtn) Slideover.show(`/beach/form/edit/${editBtn.dataset.id}`, "Koyu Düzenle");
@@ -124,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 highlight(beachId, nextStatus);
             }
         }
+
         if (deleteImgBtn) {
             const beachId = deleteImgBtn.dataset.beachId;
             const type = deleteImgBtn.dataset.type;

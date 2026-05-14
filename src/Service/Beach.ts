@@ -53,7 +53,7 @@ export class BeachService extends BaseService<Beach> {
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const beach = await this.repo.single(id);
+            const beach = await this.repo.getById(id);
             
             if (!beach) {
                 throw new Error("Beach nesenesi bulunamadı");

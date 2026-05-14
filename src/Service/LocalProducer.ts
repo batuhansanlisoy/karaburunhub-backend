@@ -12,7 +12,7 @@ export class LocalProducerService extends BaseService<LocalProducer> {
     }
 
     async single(id: number): Promise<LocalProducer> {
-        return this.repo.single(id);
+        return this.repo.getById(id);
     }
 
     async list(village_id?: number, highlight?: boolean, is_active?: boolean): Promise<LocalProducer[]> {
@@ -26,10 +26,6 @@ export class LocalProducerService extends BaseService<LocalProducer> {
         return respId;
     }
 
-    async upload(id: number, files: any): Promise<any> {
-        return await this.handleFileUpload(id, files, "local_producer");
-    }
-
     async update(id: number, payload: Partial<LocalProducer>): Promise<void> {
         await this.repo.update(id, payload);
     }
@@ -41,7 +37,7 @@ export class LocalProducerService extends BaseService<LocalProducer> {
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const local_producer = await this.repo.single(id);
+            const local_producer = await this.repo.getById(id);
             
             if (!local_producer) {
                 throw new Error("Yerel Üretici nesenesi bulunamadı");

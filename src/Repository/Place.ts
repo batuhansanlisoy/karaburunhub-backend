@@ -5,16 +5,8 @@ import { Place } from "../Entity/Place";
 export class PlaceRepository {
     private tableName = "place";
 
-    async single(id: number): Promise<Place> {
+    async getById(id: number): Promise<Place> {
         const place = await db(this.tableName).where({ id }).first();
-
-        if (place?.cover && typeof place.cover === "string") {
-            place.cover = JSON.parse(place.cover);
-        }
-
-        if (place.content && typeof place.content === "string") {
-            place.content = JSON.parse(place.content);
-        }
 
         return place;
     }

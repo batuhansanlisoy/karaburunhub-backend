@@ -4,7 +4,7 @@ import { LocalProducer } from "../Entity/LocalProducer";
 export class LocalProducerRepository {
     private tableName = "local_producers";
 
-    async single(id: number): Promise<LocalProducer> {
+    async getById(id: number): Promise<LocalProducer> {
         const local_producer = await db(this.tableName).where({ id }).first();
         return local_producer;
     }

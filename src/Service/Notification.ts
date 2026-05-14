@@ -9,7 +9,7 @@ export class NotificationService extends BaseService<Notification> {
     };
 
     async single(id: number): Promise<Notification> {
-        return this.repo.single(id);
+        return this.repo.getById(id);
     }
 
     async list(ids?: number[]): Promise<Notification[]> {
@@ -31,7 +31,7 @@ export class NotificationService extends BaseService<Notification> {
     async del(id: number): Promise<void> {
 
         await db.transaction(async (trx) => {
-            const notification = await this.repo.single(id);
+            const notification = await this.repo.getById(id);
 
             if (!notification) {
                 throw new Error("notification not found");
