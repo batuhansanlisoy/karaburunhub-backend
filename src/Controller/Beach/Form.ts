@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { VillageService } from "~/Service/Village";
 import { BeachService } from "~/Service/Beach";
+import { BeachConverter } from "~/Converter/Beach";
 
 const village_service = new VillageService();
 const beach_service = new BeachService();
+const beach_converter = new BeachConverter();
 
 export const createForm = async (req: Request, res: Response) => {
     const villages = await village_service.list();
@@ -30,9 +32,15 @@ export const editForm = async (req: Request, res: Response) => {
 };
 
 export const uploadForm = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    
+    const id = Number(req.params.id);
+
+    const rawBeach = await beach_service.single(id);
+    const beach = BeachConverter.toResponse(rawBeach);
+
     res.render("beach/form/upload", {
         beachId: id,
-        layout: false
+        layout: false,
+        beach: beach
     });
 };

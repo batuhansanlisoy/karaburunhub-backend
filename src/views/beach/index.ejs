@@ -107,6 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const uploadBtn = e.target.closest(".upload-btn");
         const highlightBtn = e.target.closest(".highlight-btn");
 
+        const deleteImgBtn = e.target.closest(".delete-image");
+
         if (editBtn) Slideover.show(`/beach/form/edit/${editBtn.dataset.id}`, "Koyu Düzenle");
         if (uploadBtn) Slideover.show(`/beach/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");
         if (highlightBtn) {
@@ -120,6 +122,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (confirm(msg)) {
                 highlight(beachId, nextStatus);
+            }
+        }
+        if (deleteImgBtn) {
+            const beachId = deleteImgBtn.dataset.beachId;
+            const type = deleteImgBtn.dataset.type;
+            const index = deleteImgBtn.dataset.index;
+
+            if (confirm("Bu fotoğrafı kalıcı olarak silmek istediğinize emin misiniz?")) {
+                try {
+                    const res = await fetch(`/beach/${beachId}/photo`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type, index })
+                    });
+
+                    if (res.ok) {
+                        // Slideover içindeki formu yeniliyoruz ki silinen resim gitsin
+                        Slideover.show(`/beach/form/upload/${beachId}`, "Fotoğraf Yükle");
+                    } else {
+                        const err = await res.json();
+                        alert("Hata: " + (err.message || "Silme işlemi başarısız."));
+                    }
+                } catch (err) {
+                    console.error("Silme hatası:", err);
+                    alert("Bağlantı hatası oluştu.");
+                }
             }
         }
     });

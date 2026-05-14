@@ -42,10 +42,6 @@ export class BeachService extends BaseService<Beach> {
         return beachIds;
     }
 
-    async upload(id: number, files: any): Promise<any> {
-        return await this.handleFileUpload(id, files, "beach");
-    }
-
     async update(id: number, payload: Partial<Beach>): Promise<void> {
         await this.repo.update(id, payload);
     }
