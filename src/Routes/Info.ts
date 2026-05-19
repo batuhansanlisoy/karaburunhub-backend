@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { showPrivacy } from "../Controller/Info";
+import { showPrivacy } from "~/Controller/Info";
 
 const router = Router();
 

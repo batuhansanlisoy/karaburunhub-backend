@@ -1,6 +1,7 @@
 /* 🎨 KaraburunGO Global Renk Paleti */
 :root {
     --red-color: #d84242;
+    --red-color2: #f85145;
     --red-dark: #b53535;
     --red-light: #ff5e5e;
 
@@ -142,6 +143,7 @@ main {
 
 /* --- Global Helpers --- */
 .text-red    { color: var(--red-color) !important; }
+.text-red2   { color: var(--red-color2) !important; }
 .text-orange { color: var(--orange-color) !important; }
 .text-green  { color: var(--green-color) !important; }
 .text-blue   { color: var(--blue-color) !important; }

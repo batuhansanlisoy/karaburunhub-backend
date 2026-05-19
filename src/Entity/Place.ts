@@ -5,6 +5,7 @@ export interface Place {
     content?: Content,
     cover?: Cover,
     gallery?: string[],
+    video_urls?: string[],
     address: string,
     latitude?: number | null;
     longitude?: number | null;

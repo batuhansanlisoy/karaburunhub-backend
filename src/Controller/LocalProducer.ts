@@ -13,6 +13,32 @@ export const show = async (req: Request, res: Response) => {
     });
 };
 
+export const detail = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        if (!id) return res.status(400).send("Geçersiz Yerel Üretici ID'si moruk");
+
+        const local_producer = await service.single(id);
+
+        if (!local_producer) {
+            return res.status(404).send("Yerel Üretici Bulunamadı!");
+        }
+
+        const response = LocalProducerConverter.toResponse(local_producer);
+
+        res.render("local_producer/detail", {
+            title: `${response.name} Detayı`,
+            activePage: "local_producer",
+            page: "local_producer_detail",
+            localProducer: response
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Yerel Üretici detay sayfası yüklenirken hata oluştu");
+    }
+};
+
 export const list = async (req: Request, res: Response) => {
     const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
     const highlight = req.query.highlight !== undefined ? req.query.highlight === 'true' : undefined;
@@ -106,6 +132,58 @@ export const uploadPhoto = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const uploadVideo = async (req: Request, res: Response) => {
+    try {
+        const localProducerId = Number(req.params.id);
+        if (!localProducerId) return res.status(400).send("Geçersiz yerel üretici id'si");
+        
+        if (!req.file) {
+            return res.status(400).json({ message: "Video yüklenemedi." });
+        }
+    
+        await service.handleVideoUpload(localProducerId, req.file);
+
+        return res.status(200).json({
+            success: true,
+            message: "Video başarıyla R2'ye yüklendi ve kaydedildi!"
+        });
+
+    } catch (error: any) {
+        console.error("Video DB Save Controller Error:", error);
+
+        return res.status(500).json({
+            message: "Video kaydedilirken hata oluştu",
+            error: error.message
+        });
+    }
+};
+
+export const deleteVideo = async (req: Request, res: Response) => {
+    try {
+        const localProducerId = Number(req.params.id);
+        const { videoPath } = req.body;
+
+        if (!localProducerId || !videoPath) {
+            return res.status(400).json({ message: "Eksik parametre!" });
+        }
+
+        await service.deleteVideo(localProducerId, videoPath);
+
+        return res.status(200).json({
+            success: true,
+            message: "Video bulut depolama alanı ve veritabanından silindi!"
+        });
+
+    } catch (error: any) {
+        console.error("Video Delete Controller Error:", error);
+        
+        return res.status(500).json({ 
+            message: "Silme işlemi başarısız.", 
+            error: error.message 
+        });
+    }
+};
 
 export const deletePhoto = async (req: Request, res: Response) => {
     const id = Number(req.params.id);

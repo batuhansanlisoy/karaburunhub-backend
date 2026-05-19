@@ -1,0 +1,270 @@
+<div class="container px-2 px-md-3 my-4">
+    <div class="d-flex align-items-center justify-content-between pb-3 px-1">
+        <div class="d-flex align-items-center gap-2">
+            <span class="mb-0 text-dark-emphasis fs-5 fs-md-3 fw-semibold"><%= organization.name %></span>
+            <% if(organization.highlight === 1) { %>
+                <div class="d-inline-flex align-items-center bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded-5 px-2 py-1 shadow-sm animated-pulse">
+                    <i class="bi bi-lightning-fill text-warning me-1 small" style="filter: drop-shadow(0 0 4px rgba(255, 193, 7, 0.6));"></i>
+                    <span class="text-warning-emphasis fw-semibold tracking-wide" style="font-size: 11px;">ÖNE ÇIKAN</span>
+                </div>
+            <% } %>
+        </div>
+        <a href="/organization" class="btn bg-dark-subtle text-dark-emphasis rounded-5 px-2 px-md-3 py-1.5 d-inline-flex align-items-center justify-content-center" style="min-width: 32px; min-height: 32px;">
+            <i class="bi bi-arrow-left me-0 me-md-2" style="line-height: 1;"></i>
+            <span class="d-none d-md-inline fw-semibold">Geri</span>
+        </a>
+    </div>
+
+    <div class="row g-3 g-md-4">
+        <div class="col-12 col-md-8 order-2 order-md-1">
+            
+            <div class="card border-2 border-light-subtle rounded-4 mb-3 mb-md-4">
+                <div class="py-2 px-3 d-flex align-items-center bg-dark bg-opacity-25 rounded-top-4" style="min-height: 48px;">
+                    <span class="text-dark-emphasis fw-semibold">Genel Bilgiler</span>
+                </div>
+                <div class="p-3 d-flex flex-column gap-2 small">
+                    <span class="text-dark-emphasis fw-semibold">Adres:
+                        <span class="text-dark fw-normal text-opacity-75">
+                            <%= organization.address %>
+                        </span>
+                    </span>
+                    <span class="text-dark-emphasis fw-semibold">Açıklama:
+                        <span class="text-dark fw-normal text-opacity-75">
+                            <%= organization.content?.description || 'Hakkımızda eklenmemiş' %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="card border-2 border-light-subtle rounded-4 mb-3 mb-md-4">
+                <div class="py-2 px-3 d-flex align-items-center bg-dark bg-opacity-25 rounded-top-4" style="min-height: 48px;">
+                    <span class="text-dark-emphasis fw-semibold">İşletme Özellikleri</span>
+                </div>
+                <div class="p-3 d-flex flex-column gap-3 small">
+                    
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-dark-emphasis fw-semibold">İnternet:</span>
+                        <% if(organization.content?.has_wifi === "1" || organization.content?.has_wifi === true) { %>
+                            <span class="badge bg-success bg-opacity-10 border border-success border-opacity-25 text-success rounded-5 px-2.5 py-1 fw-semibold">
+                                <i class="bi bi-wifi me-1"></i> Kablosuz İnternet Var
+                            </span>
+                        <% } else { %>
+                            <span class="badge bg-secondary bg-opacity-10 border border-secondary border-opacity-25 text-secondary rounded-5 px-2.5 py-1 fw-semibold">
+                                <i class="bi bi-wifi-off me-1"></i> İnternet Yok / Belirtilmemiş
+                            </span>
+                        <% } %>
+                    </div>
+
+                    <div class="d-flex flex-column gap-1.5">
+                        <span class="text-dark-emphasis fw-semibold">Kabul Edilen Ödeme Yöntemleri:</span>
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                            <% if(organization.content?.payment_methods && Array.isArray(organization.content.payment_methods) && organization.content.payment_methods.length > 0) { %>
+                                <% organization.content.payment_methods.forEach(method => { %>
+                                    <span class="badge bg-light text-dark-emphasis border border-light-subtle rounded-5 px-2.5 py-1.5 fw-medium text-capitalize shadow-sm">
+                                        <i class="bi bi-cash-coin text-muted me-1"></i><%= method %>
+                                    </span>
+                                <% }) %>
+                            <% } else { %>
+                                <span class="text-muted fst-italic">Ödeme yöntemi girilmemiş.</span>
+                            <% } %>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card border-2 border-light-subtle rounded-4 overflow-hidden">
+                <div class="py-2 px-3 d-flex align-items-center justify-content-between bg-dark bg-opacity-25" style="min-height: 48px;">
+                    <span class="text-dark-emphasis fw-semibold">Videolar</span>
+                    <span class="badge bg-dark-subtle rounded-5 text-dark-emphasis fst-italic p-2">Toplam: <%= organization.video_urls ? organization.video_urls.length : 0 %></span>
+                </div>
+                
+                <div class="card-body p-0">
+                    <% if (organization.video_urls && Array.isArray(organization.video_urls) && organization.video_urls.length > 0) { %>
+                        <div class="row g-0">
+                            <% organization.video_urls.forEach((url, index) => { %>
+                                <div class="col-12 border-bottom last-border-0">
+                                    <div class="position-relative">
+                                        <div class="position-relative">
+                                            <div class="d-flex justify-content-between align-items-center p-3">
+                                                <div class="d-flex align-items-center">
+                                                    <small class="text-muted truncate-link lh-1" style="max-width: 340px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                        <%= url.split('/').pop() %>
+                                                    </small>
+                                                </div>
+                                                
+                                                <button type="button" class="btn bg-red text-white btn-sm rounded-5 px-3 delete-video-btn d-inline-flex align-items-center" data-video-url="<%= url %>">
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                    <span class="d-none d-md-inline ms-1">Sil</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="video-preview text-center bg-black">
+                                            <video class="w-100 d-block" style="max-height: 420px;" controls referrerpolicy="same-origin">
+                                                <source src="<%= url %>" type="video/mp4">
+                                                Tarayıcınız video etiketini desteklemiyor.
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="p-3">
+                            <div class="alert alert-warning fw-semibold small border-0 rounded-5 mb-0" role="alert">
+                                <i class="bi bi-exclamation-circle-fill me-2"></i>Herhangi bir video kaydı bulunmamaktadır.
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 order-1 order-md-2 mb-3 mb-md-0">
+            <div class="card border-2 border-light-subtle rounded-4 sticky-md-top" style="top: 20px;">
+                <div class="py-2 px-3 d-flex align-items-center bg-dark bg-opacity-25 rounded-top-4" style="min-height: 48px;">
+                    <span class="text-dark-emphasis fw-semibold">Yeni Video Ekle</span>
+                </div>
+                
+                <div class="p-3">
+                    <form id="videoUploadForm" data-organization-id="<%= organization.id %>">
+                        <div class="mb-3">
+                            <label for="videoFile" class="form-label small text-muted">Bir MP4 videosu seçin (Önerilen: Max 20MB)</label>
+                            <input class="form-control rounded-3" type="file" id="videoFile" name="video" accept="video/mp4" required>
+                        </div>
+
+                        <div class="progress d-none mb-3" id="uploadProgressContainer" style="height: 25px;">
+                            <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 rounded-5" id="submitBtn">
+                            <i class="bi bi-cloud-upload-fill me-2"></i>Videoyu R2'ye Yükle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .last-border-0:last-child {
+        border-bottom: 0 !important;
+    }
+</style>
+
+<script>
+document.querySelectorAll('.delete-video-btn').forEach(btn => {
+    btn.addEventListener('click', async function () {
+        const fullUrl = this.dataset.videoUrl;
+        const form = document.getElementById('videoUploadForm');
+        const organizationId = form.dataset.organizationId;
+        
+        if (!confirm('Bu videoyu hem buluttan hem sistemden kalıcı olarak silmek istediğine emin misin?')) return;
+
+        this.disabled = true;
+        this.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+
+        try {
+            const urlObj = new URL(fullUrl);
+            const videoPath = urlObj.pathname.substring(1);
+
+            const response = await fetch(`/organization/${organizationId}/delete-video`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ videoPath })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                alert('Video başarıyla silindi edildi!');
+                window.location.reload();
+            } else {
+                alert('Hata: ' + (data.message || 'Video silinemedi.'));
+                window.location.reload();
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Ağ hatası veya sunucu hatası oluştu!');
+            window.location.reload();
+        }
+    });
+});
+
+document.getElementById('videoUploadForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const organizationId = form.dataset.organizationId;
+    const fileInput = document.getElementById('videoFile');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressContainer = document.getElementById('uploadProgressContainer');
+    const progressBar = document.getElementById('uploadProgressBar');
+
+    if (!fileInput.files.length) return alert('Lütfen önce bir video dosyası seçin!');
+
+    const formData = new FormData();
+    formData.append('video', fileInput.files[0]);
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Yükleniyor...`;
+    progressContainer.classList.remove('d-none');
+    progressBar.style.width = '0%';
+    progressBar.innerText = '%0';
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener('progress', function (event) {
+        if (event.lengthComputable) {
+            const percentComplete = Math.round((event.loaded / event.total) * 100);
+            progressBar.style.width = percentComplete + '%';
+            progressBar.innerText = '%' + percentComplete;
+            
+            if (percentComplete === 100) {
+                progressBar.innerText = 'Bulutuna İşleniyor...';
+                progressBar.classList.add('bg-blue');
+            }
+        }
+    });
+
+    xhr.addEventListener('load', function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            progressBar.style.width = '100%';
+            progressBar.innerText = '%100 Tamamlandı!';
+
+            setTimeout(() => {
+                alert('Video başarıyla listeye eklendi ve R2 üzerinde güncellendi!');
+                window.location.reload();
+            }, 750);
+        } else {
+            let errMsg = 'Video yükleme başarısız oldu.';
+            try {
+                const errData = JSON.parse(xhr.responseText);
+                errMsg = errData.message || errMsg;
+            } catch (e) {}
+            alert('Hata: ' + errMsg);
+            resetForm();
+        }
+    });
+
+    xhr.addEventListener('error', function () {
+        alert('Sunucuyla bağlantı kurulamadı veya ağ hatası oluştu!');
+        resetForm();
+    });
+
+    xhr.open('PUT', `/organization/upload-video/${organizationId}`);
+    xhr.send(formData);
+
+    function resetForm() {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="bi bi-cloud-upload-fill me-2"></i>Videoyu R2'ye Yükle`;
+        progressContainer.classList.add('d-none');
+        progressBar.style.width = '0%';
+        progressBar.innerText = '%0';
+        progressBar.classList.remove('bg-info');
+    }
+});
+</script>

@@ -6,6 +6,7 @@ export interface Activity {
     content?: Content | string,
     cover?: Cover,
     gallery?: string[],
+    video_urls?: string[],
     address: string,
     latitude?: number | null,
     longitude?: number | null,

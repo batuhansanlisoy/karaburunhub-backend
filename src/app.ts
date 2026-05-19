@@ -22,7 +22,9 @@ import infoRoutes from "./Routes/Info";
 import { apiKeyAuth } from "./Middleware/ApiKeyAuth";
 import { requireAuth } from "./Middleware/Auth";
 import { setLocals } from "./Middleware/Locals";
+
 dotenv.config();
+
 const app = express();
 
 app.use(session({

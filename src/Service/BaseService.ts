@@ -1,5 +1,6 @@
 import path from 'path';
 import { FileService } from './File';
+import { R2Service } from './R2';
 
 export abstract class BaseService<T> {
     protected repo: any;
@@ -106,5 +107,62 @@ export abstract class BaseService<T> {
         if (fileUrlToDelete) {
             FileService.delete(fileUrlToDelete);
         }
+    }
+
+    /**
+     * Ortak Video Yükleme ve R2 Veritabanı Güncelleme Mantığı
+     * @param id Güncellenecek kaydın ID'si
+     * @param videoFile Multer'dan gelen req.file nesnesi
+     */
+    async handleVideoUpload(id: number, videoFile: any): Promise<any> {
+        if (!videoFile) throw new Error("Video dosyası yüklenemedi.");
+
+        const currentItem = await this.repo.getById(id);
+        if (!currentItem) throw new Error("Kayıt bulunamadı");
+
+        const videoPath = videoFile.key; 
+
+        let currentVideos: string[] = [];
+        if (currentItem.video_urls) {
+            currentVideos = typeof currentItem.video_urls === 'string' 
+                ? JSON.parse(currentItem.video_urls) 
+                : currentItem.video_urls;
+        }
+
+        currentVideos.push(videoPath);
+
+        await this.repo.update(id, {
+            video_urls: JSON.stringify(currentVideos)
+        });
+
+        return currentVideos;
+    }
+
+    /**
+     * Ortak R2 Bulutundan ve DB'den Video Silme Mantığı
+     * @param id Kaydın ID'si
+     * @param videoPath Silinmek istenen ham R2 key yolu (örn: beach/videos/1/xyz.mp4)
+     */
+    async deleteVideo(id: number, videoPath: string): Promise<void> {
+        const item = await this.repo.getById(id);
+        if (!item) throw new Error("Kayıt bulunamadı");
+
+        let currentVideos: string[] = [];
+        if (item.video_urls) {
+            currentVideos = typeof item.video_urls === 'string' 
+                ? JSON.parse(item.video_urls) 
+                : item.video_urls;
+        }
+
+        if (!currentVideos.includes(videoPath)) {
+            throw new Error("Bu video zaten bu öğeye ait değil.");
+        }
+
+        await R2Service.deleteVideoFromR2(videoPath);
+
+        const updatedVideos = currentVideos.filter(path => path !== videoPath);
+        await this.repo.update(id, {
+            video_urls: JSON.stringify(updatedVideos)
+        });
     }
 }

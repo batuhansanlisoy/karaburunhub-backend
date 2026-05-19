@@ -66,9 +66,10 @@ async function refreshTable() {
             return {
                 actions: `
                     <div class="d-flex">
-                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3-fill"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger detail-btn" data-id="${item.id}"><i class="bi bi-search"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil-fill"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-cloud-upload-fill"></i></button>
                         <button class="btn btn-dark btn-sm rounded-circle ms-2 day-calender" data-id="${item.id}"><i class="bi bi-calendar-plus"></i></button>
                     </div>
                 `,
@@ -92,10 +93,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Tıklama Yakalayıcı (Event Delegation)
     document.addEventListener("click", async (e) => {
+        const detailBtn    = e.target.closest(".detail-btn");
         const editBtn      = e.target.closest(".edit-btn");
         const uploadBtn    = e.target.closest(".upload-btn");
         const calendarBtn  = e.target.closest(".day-calender");
         const deleteImgBtn = e.target.closest(".delete-image");
+
+        if (detailBtn) {
+            window.location.href = `/activity/detail/${detailBtn.dataset.id}`;
+        }
 
         if (editBtn) Slideover.show(`/activity/form/edit/${editBtn.dataset.id}`, "Etkinliği Düzenle");
         if (uploadBtn) Slideover.show(`/activity/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");

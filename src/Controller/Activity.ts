@@ -13,10 +13,36 @@ const serviceOrganizationDistance = new DistanceActivityOrganizationService();
 
 export const show = async (req: Request, res: Response) => {
     res.render("activity/index", {
-    title: "Etkinlikler",
-    activePage: "activity",
-    page: "activity"
+        title: "Etkinlikler",
+        activePage: "activity",
+        page: "activity"
     });
+};
+
+export const detail = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        if (!id) return res.status(400).send("Geçersiz etkinlik ID'si");
+
+        const activity = await service.single(id);
+
+        if (!activity) {
+            return res.status(404).send("Etkinlik Bulunamadı!");
+        }
+
+        const response = ActivityConverter.toResponse(activity);
+
+        res.render("activity/detail", {
+            title: `${response.name} Detayı`,
+            activePage: "activity",
+            page: "activity_detail",
+            activity: response
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Etkinlik detay sayfası yüklenirken hata oluştu");
+    }
 };
 
 export const list = async (req: Request, res: Response) => {
@@ -129,6 +155,58 @@ export const uploadPhoto = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const uploadVideo = async (req: Request, res: Response) => {
+    try {
+        const activityId = Number(req.params.id);
+        if (!activityId) return res.status(400).send("Geçersiz Etkinlik ID'si");
+        
+        if (!req.file) {
+            return res.status(400).json({ message: "Video yüklenemedi." });
+        }
+    
+        await service.handleVideoUpload(activityId, req.file);
+
+        return res.status(200).json({
+            success: true,
+            message: "Video başarıyla R2'ye yüklendi ve kaydedildi!"
+        });
+
+    } catch (error: any) {
+        console.error("Video DB Save Controller Error:", error);
+
+        return res.status(500).json({
+            message: "Video kaydedilirken hata oluştu",
+            error: error.message
+        });
+    }
+};
+
+export const deleteVideo = async (req: Request, res: Response) => {
+    try {
+        const activityId = Number(req.params.id);
+        const { videoPath } = req.body;
+
+        if (!activityId || !videoPath) {
+            return res.status(400).json({ message: "Eksik parametre!" });
+        }
+
+        await service.deleteVideo(activityId, videoPath);
+
+        return res.status(200).json({
+            success: true,
+            message: "Video bulut depolama alanı ve veritabanından silindi!"
+        });
+
+    } catch (error: any) {
+        console.error("Video Delete Controller Error:", error);
+        
+        return res.status(500).json({ 
+            message: "Silme işlemi başarısız.", 
+            error: error.message 
+        });
+    }
+};
 
 export const deletePhoto = async (req: Request, res: Response) => {
     const id = Number(req.params.id);

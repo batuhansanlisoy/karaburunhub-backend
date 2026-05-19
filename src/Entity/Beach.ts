@@ -5,6 +5,7 @@ export interface Beach {
     extra?: Extra,
     cover?: Cover,
     gallery?: string[],
+    video_urls?: string|string[],
     highlight: boolean,
     address: string,
     latitude?: number | null,

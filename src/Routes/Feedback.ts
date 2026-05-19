@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { show, list, showForm, create } from "../Controller/Feedback";
-import { requireAuth } from "../Middleware/Auth";
+import { requireAuth } from "~/Middleware/Auth";
+import * as FeedbackController from "~/Controller/Feedback";
 
 const router = Router();
 
-router.get("/", requireAuth, show);
-router.get("/form", showForm);
-router.get("/list", requireAuth, list);
-router.post("/create", create);
+router.get("/", requireAuth, FeedbackController.show);
+router.get("/form", FeedbackController.showForm);
+router.get("/list", requireAuth, FeedbackController.list);
+router.post("/create", FeedbackController.create);
 
 export default router;

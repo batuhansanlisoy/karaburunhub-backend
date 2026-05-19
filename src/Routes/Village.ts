@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { show, list, create, del, map } from "../Controller/Village";
+import * as VillageController from "~/Controller/Village";
 import { createForm } from "../Controller/Village/Form";
 
 const router = Router();
 
-router.get("", show)
+router.get("", VillageController.show);
 router.get("/form/create", createForm);
-router.get("/map", map)
-router.get("/list", list);
-router.post("/create", create);
-router.delete("/:id", del);
+router.get("/map", VillageController.map);
+router.get("/list", VillageController.list);
+router.post("/create", VillageController.create);
+router.delete("/:id", VillageController.del);
 
 export default router;

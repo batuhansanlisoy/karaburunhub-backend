@@ -11,6 +11,7 @@ export interface Organization{
     website?: string,
     cover?: Cover,
     gallery?: string[];
+    video_urls?: string[],
     higlight: boolean,
     is_active: boolean,
     address: string,

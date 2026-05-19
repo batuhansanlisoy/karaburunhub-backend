@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { createForm, editForm } from "~/Controller/Notification/Form";
-import { show, create, list, update, del } from "~/Controller/Notification";
+import * as NotificationController from "~/Controller/Notification";
+import * as NotificationFormController from "~/Controller/Notification/Form";
 
 const router = Router();
 
-router.get("/", show);
-router.get("/form/create", createForm);
-router.get("/form/edit/:id", editForm);
-router.get("/list", list);
-router.post("/create",create);
-router.put("/:id", update);
-router.delete("/:id", del);
+router.get("/", NotificationController.show);
+router.get("/form/create", NotificationFormController.createForm);
+router.get("/form/edit/:id", NotificationFormController.editForm);
+router.get("/list", NotificationController.list);
+router.post("/create", NotificationController.create);
+router.put("/:id", NotificationController.update);
+router.delete("/:id", NotificationController.del);
 
 export default router;

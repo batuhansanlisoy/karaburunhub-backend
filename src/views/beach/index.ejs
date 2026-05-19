@@ -38,7 +38,7 @@ async function refreshTable() {
         });
 
         const columns = [
-            { label: '', key: 'actions', type:"html", width: '200px'},
+            { label: '', key: 'actions', type:"html", width: '220px'},
             { label: 'Konum', key: 'village_name', width: '150px'},
             { label: 'Plaj Adı', key: 'name', width: '150px' },
             { label: 'Adres', key: 'address', width: '250px' },
@@ -56,11 +56,12 @@ async function refreshTable() {
             return {
                 actions: `
                     <div class="d-flex">
-                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-upload"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle delete-btn" data-id="${item.id}"><i class="bi bi-trash3-fill"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger detail-btn" data-id="${item.id}"><i class="bi bi-search"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger edit-btn" data-id="${item.id}"><i class="bi bi-pencil-fill"></i></button>
+                        <button class="btn btn-dark btn-sm rounded-circle ms-2 so-trigger upload-btn" data-id="${item.id}"><i class="bi bi-cloud-upload-fill"></i></button>
                         <button class="btn btn-dark btn-sm rounded-circle ms-2 highlight-btn ${highlightClass}" 
-                                data-id="${item.id}" 
+                                data-id="${item.id}"
                                 data-status="${item.highlight}"
                                 title="${highlightTitle}">
                             <i class="bi bi-lightning-fill"></i>
@@ -82,15 +83,14 @@ async function refreshTable() {
 
 async function highlight(beachId, isHighlighted) {
     try {
-        const res = await fetch(`/beach/${beachId}/highlight`, { // Başındaki slash'a dikkat /beach...
+        const res = await fetch(`/beach/${beachId}/highlight`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ value: isHighlighted })
         });
 
         if (res.ok) {
-            // alert('Güncellendi!'); // Her seferinde alert yormasın dersen kaldırabilirsin
-            refreshTable(); // Listeyi yeniden çek ki renk değişsin
+            refreshTable();
         } else {
             alert('Bir hata oluştu!');
         }
@@ -103,10 +103,15 @@ document.addEventListener("DOMContentLoaded", () => {
     refreshTable();
 
     document.addEventListener("click", async (e) => {
+        const detailBtn    = e.target.closest(".detail-btn");
         const editBtn      = e.target.closest(".edit-btn");
         const uploadBtn    = e.target.closest(".upload-btn");
         const highlightBtn = e.target.closest(".highlight-btn");
         const deleteImgBtn = e.target.closest(".delete-image");
+
+        if (detailBtn) {
+            window.location.href = `/beach/detail/${detailBtn.dataset.id}`;
+        }
 
         if (editBtn) Slideover.show(`/beach/form/edit/${editBtn.dataset.id}`, "Koyu Düzenle");
         if (uploadBtn) Slideover.show(`/beach/form/upload/${uploadBtn.dataset.id}`, "Fotoğraf Yükle");

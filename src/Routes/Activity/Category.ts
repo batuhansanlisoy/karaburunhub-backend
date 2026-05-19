@@ -1,12 +1,13 @@
 import { Router } from "express";
-import { show, list, create, del } from "../../Controller/Activity/Category";
-import { createForm } from "../../Controller/Activity/Category/Form";
+import * as ActivityCategoryController from "~/Controller/Activity/Category";
+import { createForm } from "~/Controller/Activity/Category/Form";
+
 const router = Router();
 
-router.get("/", show);
+router.get("/", ActivityCategoryController.show);
 router.get("/form/create", createForm);
-router.get("/list", list);
-router.post("/create", create);
-router.delete("/:id", del);
+router.get("/list", ActivityCategoryController.list);
+router.post("/create", ActivityCategoryController.create);
+router.delete("/:id", ActivityCategoryController.del);
 
 export default router;

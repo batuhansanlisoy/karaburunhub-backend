@@ -5,6 +5,7 @@ import { BeachConverter } from "../Converter/Beach";
 import { DistanceActivityBeachService } from "../Service/Distance/ActivityBeach";
 import { DistanceBeachOrganizationService } from "../Service/Distance/BeachOrganization";
 import { DistanceBeachPlaceService } from "../Service/Distance/BeachPlace";
+import { R2Service } from "~/Service/R2";
 
 const service = new BeachService();
 const serviceActivityDistance = new DistanceActivityBeachService();
@@ -17,6 +18,33 @@ export const show = async (req: Request, res: Response) => {
     activePage: "beach",
     page: "beach"
     });
+};
+
+export const detail = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        if (!id) return res.status(400).send("Geçersiz Plaj ID'si");
+
+        const beach = await service.single(id);
+
+        if (!beach) {
+            return res.status(404).send("Plaj Bulunamadı!");
+        }
+
+        const response = BeachConverter.toResponse(beach);
+
+        res.render("beach/detail", {
+            title: `${response.name} Detayı`,
+            activePage: "beach",
+            page: "beach_detail",
+            beach: response,
+            r2PublicUrl: process.env.R2_PUBLIC_URL
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Plaj detay sayfası yüklenirken hata oluştu");
+    }
 };
 
 export const single = async (req: Request, res: Response) => {
@@ -118,6 +146,58 @@ export const uploadPhoto = async (req: Request, res: Response) => {
         });
     }
 }
+
+export const uploadVideo = async (req: Request, res: Response) => {
+    try {
+        const beachId = Number(req.params.id);
+        if (!beachId) return res.status(400).send("Geçersiz Plaj ID'si");
+        
+        if (!req.file) {
+            return res.status(400).json({ message: "Video yüklenemedi." });
+        }
+    
+        await service.handleVideoUpload(beachId, req.file);
+
+        return res.status(200).json({
+            success: true,
+            message: "Video başarıyla R2'ye yüklendi ve kaydedildi!"
+        });
+
+    } catch (error: any) {
+        console.error("Video DB Save Controller Error:", error);
+
+        return res.status(500).json({
+            message: "Video kaydedilirken hata oluştu",
+            error: error.message
+        });
+    }
+};
+
+export const deleteVideo = async (req: Request, res: Response) => {
+    try {
+        const beachId = Number(req.params.id);
+        const { videoPath } = req.body;
+
+        if (!beachId || !videoPath) {
+            return res.status(400).json({ message: "Eksik parametre!" });
+        }
+
+        await service.deleteVideo(beachId, videoPath);
+
+        return res.status(200).json({
+            success: true,
+            message: "Video bulut depolama alanı ve veritabanından silindi!"
+        });
+
+    } catch (error: any) {
+        console.error("Video Delete Controller Error:", error);
+        
+        return res.status(500).json({ 
+            message: "Silme işlemi başarısız.", 
+            error: error.message 
+        });
+    }
+};
 
 export const deletePhoto = async (req: Request, res: Response) => {
     const id = Number(req.params.id);

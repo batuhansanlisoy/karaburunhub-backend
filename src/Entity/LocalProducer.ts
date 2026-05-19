@@ -11,6 +11,7 @@ export interface LocalProducer{
     highlight: boolean,
     cover?: Cover,
     gallery?: string[];
+    video_urls?: string[],
     created_at: string,
     updated_at?: string,
 }
