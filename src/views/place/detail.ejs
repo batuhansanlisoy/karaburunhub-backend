@@ -101,6 +101,32 @@
                             <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%"></div>
                         </div>
 
+                        <div class="form-check mb-3">
+                            <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="shareToExplore">
+
+                            <label class="form-check-label" for="shareToExplore">
+                                Keşfette Göster
+                            </label>
+                        </div>
+
+                        <div class="mb-3 d-none" id="description-container">
+                            <label for="video_description" class="form-label small text-muted">
+                                Keşfet açıklaması
+                            </label>
+
+                            <textarea
+                            class="form-control rounded-3"
+                            id="videoDescription"
+                            name="video_description"
+                            rows="3"
+                            maxlength="300"
+                            placeholder="Video için kısa bir açıklama girin...">
+                            </textarea>
+                        </div>
+
                         <button type="submit" class="btn btn-dark w-100 rounded-5" id="submitBtn">
                             <i class="bi bi-cloud-upload-fill me-2"></i>Videoyu R2'ye Yükle
                         </button>
@@ -118,117 +144,140 @@
 </style>
 
 <script>
-document.querySelectorAll('.delete-video-btn').forEach(btn => {
-    btn.addEventListener('click', async function () {
-        const fullUrl = this.dataset.videoUrl;
-        const form = document.getElementById('videoUploadForm');
-        const placeId = form.dataset.placeId;
-        
-        if (!confirm('Bu videoyu hem buluttan hem sistemden kalıcı olarak silmek istediğine emin misin?')) return;
+    const shareCheckbox = document.getElementById("shareToExplore");
+    const descriptionContainer = document.getElementById("description-container");
+    const videoDescriptionInput = document.getElementById("videoDescription");
 
-        this.disabled = true;
-        this.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
-
-        try {
-            const urlObj = new URL(fullUrl);
-            const videoPath = urlObj.pathname.substring(1);
-
-            const response = await fetch(`/place/${placeId}/delete-video`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ videoPath })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                alert('Video başarıyla silindi edildi!');
-                window.location.reload();
-            } else {
-                alert('Hata: ' + (data.message || 'Video silinemedi.'));
-                window.location.reload();
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Ağ hatası veya sunucu hatası oluştu!');
-            window.location.reload();
-        }
-    });
-});
-
-document.getElementById('videoUploadForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const placeId = form.dataset.placeId;
-    const fileInput = document.getElementById('videoFile');
-    const submitBtn = document.getElementById('submitBtn');
-    const progressContainer = document.getElementById('uploadProgressContainer');
-    const progressBar = document.getElementById('uploadProgressBar');
-
-    if (!fileInput.files.length) return alert('Lütfen önce bir video dosyası seçin!');
-
-    const formData = new FormData();
-    formData.append('video', fileInput.files[0]);
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Yükleniyor...`;
-    progressContainer.classList.remove('d-none');
-    progressBar.style.width = '0%';
-    progressBar.innerText = '%0';
-
-    const xhr = new XMLHttpRequest();
-
-    xhr.upload.addEventListener('progress', function (event) {
-        if (event.lengthComputable) {
-            const percentComplete = Math.round((event.loaded / event.total) * 100);
-            progressBar.style.width = percentComplete + '%';
-            progressBar.innerText = '%' + percentComplete;
-            
-            if (percentComplete === 100) {
-                progressBar.innerText = 'Bulutuna İşleniyor...';
-                progressBar.classList.add('bg-blue');
-            }
-        }
-    });
-
-    xhr.addEventListener('load', function () {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            progressBar.style.width = '100%';
-            progressBar.innerText = '%100 Tamamlandı!';
-
-            setTimeout(() => {
-                alert('Video başarıyla listeye eklendi ve R2 üzerinde güncellendi!');
-                window.location.reload();
-            }, 750);
+    function syncDescriptionVisibility() {
+        if (shareCheckbox.checked) {
+            descriptionContainer.classList.remove('d-none');
         } else {
-            let errMsg = 'Video yükleme başarısız oldu.';
-            try {
-                const errData = JSON.parse(xhr.responseText);
-                errMsg = errData.message || errMsg;
-            } catch (e) {}
-            alert('Hata: ' + errMsg);
-            resetForm();
+            descriptionContainer.classList.add('d-none');
+            videoDescriptionInput.value = "";
         }
+    };
+
+    shareCheckbox.addEventListener("change", syncDescriptionVisibility);
+    syncDescriptionVisibility();
+
+    document.querySelectorAll('.delete-video-btn').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const fullUrl = this.dataset.videoUrl;
+            const form = document.getElementById('videoUploadForm');
+            const placeId = form.dataset.placeId;
+            
+            if (!confirm('Bu videoyu hem buluttan hem sistemden kalıcı olarak silmek istediğine emin misin?')) return;
+
+            this.disabled = true;
+            this.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+
+            try {
+                const urlObj = new URL(fullUrl);
+                const videoPath = urlObj.pathname.substring(1);
+
+                const response = await fetch(`/place/${placeId}/delete-video`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ videoPath })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert('Video başarıyla silindi edildi!');
+                    window.location.reload();
+                } else {
+                    alert('Hata: ' + (data.message || 'Video silinemedi.'));
+                    window.location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Ağ hatası veya sunucu hatası oluştu!');
+                window.location.reload();
+            }
+        });
     });
 
-    xhr.addEventListener('error', function () {
-        alert('Sunucuyla bağlantı kurulamadı veya ağ hatası oluştu!');
-        resetForm();
-    });
+    document.getElementById('videoUploadForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        
+        const form              = e.target;
+        const placeId           = form.dataset.placeId;
+        const fileInput         = document.getElementById('videoFile');
+        const submitBtn         = document.getElementById('submitBtn');
+        const progressContainer = document.getElementById('uploadProgressContainer');
+        const progressBar       = document.getElementById('uploadProgressBar');
+        const description       = videoDescriptionInput.value;
 
-    xhr.open('PUT', `/place/upload-video/${placeId}`);
-    xhr.send(formData);
+        if (!fileInput.files.length) return alert('Lütfen önce bir video dosyası seçin!');
 
-    function resetForm() {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `<i class="bi bi-cloud-upload-fill me-2"></i>Videoyu R2'ye Yükle`;
-        progressContainer.classList.add('d-none');
+        const formData = new FormData();
+        formData.append('video', fileInput.files[0]);
+
+        formData.append('share_to_explore', shareCheckbox.checked ? 'true' : 'false');
+
+        if (shareCheckbox.checked && description.trim()) {
+            formData.append('video_description', description);
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Yükleniyor...`;
+        progressContainer.classList.remove('d-none');
         progressBar.style.width = '0%';
         progressBar.innerText = '%0';
-        progressBar.classList.remove('bg-info');
-    }
-});
+
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener('progress', function (event) {
+            if (event.lengthComputable) {
+                const percentComplete = Math.round((event.loaded / event.total) * 100);
+                progressBar.style.width = percentComplete + '%';
+                progressBar.innerText = '%' + percentComplete;
+                
+                if (percentComplete === 100) {
+                    progressBar.innerText = 'Bulutuna İşleniyor...';
+                    progressBar.classList.add('bg-blue');
+                }
+            }
+        });
+
+        xhr.addEventListener('load', function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                progressBar.style.width = '100%';
+                progressBar.innerText = '%100 Tamamlandı!';
+
+                setTimeout(() => {
+                    alert('Video başarıyla listeye eklendi ve R2 üzerinde güncellendi!');
+                    window.location.reload();
+                }, 750);
+            } else {
+                let errMsg = 'Video yükleme başarısız oldu.';
+                try {
+                    const errData = JSON.parse(xhr.responseText);
+                    errMsg = errData.message || errMsg;
+                } catch (e) {}
+                alert('Hata: ' + errMsg);
+                resetForm();
+            }
+        });
+
+        xhr.addEventListener('error', function () {
+            alert('Sunucuyla bağlantı kurulamadı veya ağ hatası oluştu!');
+            resetForm();
+        });
+
+        xhr.open('PUT', `/place/upload-video/${placeId}`);
+        xhr.send(formData);
+
+        function resetForm() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i class="bi bi-cloud-upload-fill me-2"></i>Videoyu R2'ye Yükle`;
+            progressContainer.classList.add('d-none');
+            progressBar.style.width = '0%';
+            progressBar.innerText = '%0';
+            progressBar.classList.remove('bg-info');
+        }
+    });
 </script>

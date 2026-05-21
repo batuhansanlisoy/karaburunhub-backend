@@ -22,12 +22,15 @@ export const show = async (req: Request, res: Response) => {
 export const detail = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
-        if (!id) return res.status(400).send("Geçersiz Turistik ID'si moruk");
+        
+        if (!id) {
+            return res.status(400).send("Invalid place id");
+        }
 
         const place = await service.single(id);
 
         if (!place) {
-            return res.status(404).send("Turistik Bulunamadı!");
+            return res.status(404).send("Place not found");
         }
 
         const response = PlaceConverter.toResponse(place);
@@ -38,10 +41,12 @@ export const detail = async (req: Request, res: Response) => {
             page: "place_detail",
             place: response
         });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Turistik detay sayfası yüklenirken hata oluştu");
+    } catch (err: any) {
+        console.error("Controller//Place detail method error", err);
+        res.status(500).json({
+            message: "An error occurred while preaparing place detail page",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -52,10 +57,12 @@ export const list = async (req: Request, res: Response) => {
     try {
         const places: Place[] = await service.list(village_id, ids);
         const response = PlaceConverter.toListResponse(places);
-
         res.json(response);
-    } catch (err) {
-        res.status(500).json({ error: err });
+    } catch (err: any) {
+        res.status(500).json({
+            message: "An error occurred while fetching the place list",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -69,7 +76,7 @@ export const create = async (req: Request, res: Response) => {
     const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
     if (!village_id || !name || !address) {
-        return res.status(400).send("Village, Title ve Adress Alanları zorunludur");
+        return res.status(400).send("Required fields are missing");
     }
 
     const place: Partial<Place> = {
@@ -79,10 +86,18 @@ export const create = async (req: Request, res: Response) => {
 
     try {
         const result = await service.create(place);
-        res.status(201).json({ success: true, message: "Place Created", result });
+        res.status(201).json({
+            success: true,
+            message: "Place created",
+            result
+        });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ success: false, message: err.message || "Place could not be created" });
+        console.error("Controller//Place crate method error", err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while creating place",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -112,8 +127,11 @@ export const update = async (req: Request, res: Response) => {
         const result = await service.update(id, place);
         return res.json({ result });
     } catch(err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+        console.error("Place update error", err);
+        res.status(500).json({
+            message: "An error occurred while updating place",
+            error: err?.message || ""
+        });
     }
 }
 
@@ -125,15 +143,14 @@ export const uploadPhoto = async (req: Request, res: Response) => {
 
         return res.json({ 
             success: true, 
-            message: "Fotoğraflar başarıyla yüklendi", 
+            message: "Photos were saved successfully", 
             data: result 
         });
-
     } catch (err: any) {
         console.error("Upload Error:", err);
         return res.status(500).json({ 
-            message: "Fotoğraflar işlenirken hata oluştu", 
-            error: err.message 
+            message: "An error occurred while saving the photos", 
+            error: err?.message || ""
         });
     }
 }
@@ -141,25 +158,34 @@ export const uploadPhoto = async (req: Request, res: Response) => {
 export const uploadVideo = async (req: Request, res: Response) => {
     try {
         const placeId = Number(req.params.id);
-        if (!placeId) return res.status(400).send("Geçersiz ID");
+        const description = req.body.video_description;
+        const shareToExplore = req.body.share_to_explore === 'true';
+
+        if (!placeId) {
+            return res.status(400).send("Invalid ID");
+        } 
         
         if (!req.file) {
-            return res.status(400).json({ message: "Video yüklenemedi." });
+            return res.status(400).json({
+                message: "Video not uploaded"
+            });
         }
     
-        await service.handleVideoUpload(placeId, req.file);
+        await service.uploadPlaceVideo(placeId, req.file, shareToExplore, description);
+
+        const resMessage = shareToExplore
+            ? "Video successfully uploaded to cloud storage and added to explore feed"
+            : "Video successfully uploaded to cloud storage";
 
         return res.status(200).json({
             success: true,
-            message: "Video başarıyla R2'ye yüklendi ve kaydedildi!"
+            message: resMessage
         });
-
     } catch (error: any) {
-        console.error("Video DB Save Controller Error:", error);
-
+        console.error("Controller//Place uploadVideo method fail", error);
         return res.status(500).json({
-            message: "Video kaydedilirken hata oluştu",
-            error: error.message
+            message: "An occurred error while uploading video",
+            error: error?.message
         });
     }
 };
@@ -170,22 +196,20 @@ export const deleteVideo = async (req: Request, res: Response) => {
         const { videoPath } = req.body;
 
         if (!placeId || !videoPath) {
-            return res.status(400).json({ message: "Eksik parametre!" });
+            return res.status(400).json({ message: "Missing Parameter!" });
         }
 
-        await service.deleteVideo(placeId, videoPath);
+        await service.deletePlaceVideo(placeId, videoPath);
 
         return res.status(200).json({
             success: true,
-            message: "Video bulut depolama alanı ve veritabanından silindi!"
+            message: "The video has been deleted from the cloud and the database has been updated."
         });
-
     } catch (error: any) {
-        console.error("Video Delete Controller Error:", error);
-        
+        console.error("Controller//Place deleteVideo method fail", error);
         return res.status(500).json({ 
-            message: "Silme işlemi başarısız.", 
-            error: error.message 
+            message: "Delete video operation failed", 
+            error: error?.message 
         });
     }
 };
@@ -197,10 +221,16 @@ export const deletePhoto = async (req: Request, res: Response) => {
     try {
         await service.deleteImage(id, type, index);
 
-        return res.json({ success: true, message: "Başarıyla silindi" });
+        return res.json({
+            success: true,
+            message: "Photo deleted successfully"
+        });
     } catch (err: any) {
         console.error(err);
-        res.status(500).json({ message: "Hata", error: err.message });
+        res.status(500).json({
+            message: "Error while deleting photo",
+            error: err?.message
+        });
     }
 };
 
@@ -211,8 +241,11 @@ export const del = async (req: Request, res: Response) => {
         const status = await service.del(id);
         return res.json({ deletedRows: status });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
+        console.error("Conroller//Place delete method error", err);
+        res.status(500).json({
+            message: "Couldn't delete record",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -223,8 +256,10 @@ export const nearestActivity = async (req: Request, res: Response) => {
         const distances = await serviceActivityDistance.list(undefined, placeId);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Place nearestActivity method error", err);
+        res.status(500).json({
+            error: err?.message || ""
+        });
     }
 }
 
@@ -235,8 +270,10 @@ export const nearestBeaches = async (req: Request, res: Response) => {
         const distances = await serviceBeachDistance.list(undefined, placeId);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Place nearestBeaches method error", err);
+        res.status(500).json({
+            error: err?.message || ""
+        });
     }
 }
 
@@ -247,7 +284,9 @@ export const nearestOrganizations = async (req: Request, res: Response) => {
         const distances = await serviceOrganizationDistance.list(undefined, placeId);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Place nearestOrganizations method error", err);
+        res.status(500).json({
+            error: err?.message || ""
+        });
     }
 }

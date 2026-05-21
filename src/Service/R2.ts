@@ -1,4 +1,4 @@
-import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, DeleteObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { Request } from "express";
@@ -55,6 +55,41 @@ export class R2Service {
         } catch (error: any) {
             console.error("[R2 ERROR] Video R2'den silinirken hata:", error);
             throw new Error(`Video buluttan silinemedi: ${error.message}`);
+        }
+    }
+
+    static async deleteFolder(prefix: string): Promise<void> {
+        try {
+            // GÜVENLİK DUVARI: Eksik veya hatalı prefix gelirse tüm bucket'ın uçmasını engeller
+            if (!prefix || prefix.trim() === "" || prefix.includes("//") || prefix.length < 10) {
+                return;
+            }
+
+            // 1. Sadece o ID'ye ait klasörün içindeki nesneleri listele
+            const listCommand = new ListObjectsV2Command({
+                Bucket: process.env.R2_BUCKET_NAME!,
+                Prefix: prefix
+            });
+
+            const listedObjects = await r2Client.send(listCommand);
+
+            // Klasör zaten boşsa veya R2'de yoksa işlem yapmadan çık
+            if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+                return;
+            }
+
+            const deleteParams = {
+                Bucket: process.env.R2_BUCKET_NAME!,
+                Delete: { 
+                    Objects: listedObjects.Contents.map(({ Key }) => ({ Key: Key! })),
+                    Quiet: true
+                }
+            };
+
+            await r2Client.send(new DeleteObjectsCommand(deleteParams));
+        } catch (error: any) {
+            console.error("[R2 ERROR] Klasör silinirken hata oluştu:", error);
+            throw new Error(`R2 klasör silme başarısız: ${error.message}`);
         }
     }
 }

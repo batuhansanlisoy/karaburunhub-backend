@@ -44,7 +44,6 @@ export const markAsRead = async (req: Request, res: Response) => {
             success: true, 
             message: "Okundu Olarak İşaretlendi"
         });
-
     } catch (err: any) {
         console.error(err);
         res.status(500).json({ error: err.message || "Mark as Read Error"})
@@ -63,7 +62,6 @@ export const changeStatus = async (req: Request, res: Response) => {
             success: true,
             message: "Durum Değiştirildi"
         });
-
     } catch (err: any) {
         console.error(err);
         res.status(500).json({ error: err.message || "Status Change Error"});

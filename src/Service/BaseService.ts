@@ -161,6 +161,7 @@ export abstract class BaseService<T> {
         await R2Service.deleteVideoFromR2(videoPath);
 
         const updatedVideos = currentVideos.filter(path => path !== videoPath);
+
         await this.repo.update(id, {
             video_urls: JSON.stringify(updatedVideos)
         });

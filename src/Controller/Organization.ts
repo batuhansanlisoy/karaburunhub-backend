@@ -22,7 +22,10 @@ export const show = async (req: Request, res: Response) => {
 export const detail = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
-        if (!id) return res.status(400).send("Geçersiz İşletme ID'si moruk");
+
+        if (!id) {
+            return res.status(400).send("Invalid Organization ID");
+        }
 
         const organization = await service.single(id);
 
@@ -38,15 +41,21 @@ export const detail = async (req: Request, res: Response) => {
             page: "organization",
             organization: response
         });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("İşletme detay sayfası yüklenirken hata oluştu");
+    } catch (err: any) {
+        console.error("Organization detail error", err);
+        res.status(500).send({
+            message: "An error occurred while preparing organization detail page",
+            error: err?.message || ""
+        });
     }
 };
 
 export const single = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
+
+    if (!id) {
+        return res.status(400).send("Invalid Organization ID");
+    }
 
     try {
         const organization = await service.single(id);
@@ -54,16 +63,19 @@ export const single = async (req: Request, res: Response) => {
         if (!organization) {
             return res.status(404).json({ 
                 success: false, 
-                message: "İşletme bulunamadı" 
+                message: "Organization not found" 
             });
         }
 
         const response = Converter.toResponse(organization); 
 
         res.json(response);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "İşletme detayları alınamadı" });
+    } catch (err: any) {
+        console.error("Organization single error", err);
+        res.status(500).json({
+            message: "An error occurred while fethcing the organization",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -81,11 +93,13 @@ export const list = async (req: Request, res: Response) => {
         );
 
         const responce = Converter.toListResponse(organizations);
-
         res.json(responce);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Organizasyon listesi alınamadı");
+    } catch (err: any) {
+        console.error("Organization list error", err);
+        res.status(500).json({
+            message: "An error occurred while fetching the organization list",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -106,7 +120,7 @@ export const create = async (req: Request, res: Response) => {
     const items           = req.body.item_ids;
 
     if (!name || !address) {
-        return res.status(400).send("Boş Alanlar var");
+        return res.status(400).send("Required fields are missing");
     }
 
     const organization: Partial<Organization> = {
@@ -129,10 +143,18 @@ export const create = async (req: Request, res: Response) => {
 
     try {
         const result = await service.create(organization, items);
-        res.status(201).json({ success: true, message: "Organization Created", result });
+        res.status(201).json({
+            success: true,
+            message: "Organization Created",
+            result
+        });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ success: false, message: err.message || "Organization could not be created" });
+        console.error("Organization create error", err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while creating organization",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -148,6 +170,10 @@ export const update = async (req: Request, res: Response) => {
     const latitude    = req.body.latitude ? parseFloat(req.body.latitude) : null;
     const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
 
+    if (!id) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     const organization: Partial<Organization> = { 
         category_id, village_id, name, email,
         phone, address, website, latitude, longitude
@@ -157,8 +183,11 @@ export const update = async (req: Request, res: Response) => {
         const result = await service.update(id, organization);
         return res.json({ result });
     } catch(err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+        console.error("Organization update error", err);
+        res.status(500).json({
+            message: "An error occurred while updating organization",
+            error: err?.message || ""
+        });
     }
 }
 
@@ -166,13 +195,17 @@ export const highligt = async (req: Request, res: Response) => {
     const organization_id = Number(req.params.id);
     const value = req.body.value;
 
+    if (!organization_id) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     try {
         const result = await service.patch(organization_id, "highlight", value);
 
         if (result === 0) {
             return res.status(404).json({ 
                 success: false, 
-                message: "İşletme Bulunamadı." 
+                message: "Organization not found" 
             });
         }
 
@@ -180,13 +213,14 @@ export const highligt = async (req: Request, res: Response) => {
 
         return res.status(200).json({ 
             success: true, 
-            message: "Öne çıkarma durumu güncellendi.",
+            message: "Highlight status updated",
             data: organization
         });
-
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || "Highlight error"})
+        console.error("Controller//Organizaiton highlight error", err);
+        res.status(500).json({
+            error: err?.message || ""
+        });
     }
 }
 
@@ -194,19 +228,22 @@ export const uploadPhoto = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
 
+        if (!id) {
+            return res.status(400).send("Invalid Organization ID");
+        }
+
         const result = await service.handleFileUpload(id, req.files, "organization");
 
         return res.json({ 
             success: true, 
-            message: "Fotoğraflar başarıyla yüklendi", 
+            message: "Photos were saved successfully",
             data: result 
         });
-
     } catch (err: any) {
-        console.error("Upload Error:", err);
+        console.error("Controller//Organization uploadPhoto error:", err);
         return res.status(500).json({ 
-            message: "Fotoğraflar işlenirken hata oluştu", 
-            error: err.message 
+            message: "An error occurred while saving the photos",
+            error: err?.message || ""
         });
     }
 }
@@ -214,25 +251,34 @@ export const uploadPhoto = async (req: Request, res: Response) => {
 export const uploadVideo = async (req: Request, res: Response) => {
     try {
         const organizationId = Number(req.params.id);
-        if (!organizationId) return res.status(400).send("Geçersiz işletme id'si");
+        const description    = req.body.video_description;
+        const shareToExplore = req.body.share_to_explore === 'true';
+
+        if (!organizationId) {
+            return res.status(400).send("Invalid Organization ID");
+        }
         
         if (!req.file) {
-            return res.status(400).json({ message: "Video yüklenemedi." });
+            return res.status(400).json({
+                message: "Video not uploaded"
+            });
         }
     
-        await service.handleVideoUpload(organizationId, req.file);
+        await service.uploadOrganizationVideo(organizationId, req.file, shareToExplore, description);
+
+        const resMessage = shareToExplore
+            ? "Video successfully uploaded to cloud storage and added to explore feed"
+            : "Video successfully uploaded to cloud storage";
 
         return res.status(200).json({
             success: true,
-            message: "Video başarıyla R2'ye yüklendi ve kaydedildi!"
+            message: resMessage
         });
-
     } catch (error: any) {
-        console.error("Video DB Save Controller Error:", error);
-
+        console.error("Controller//Organization uploadVideo method fail", error);
         return res.status(500).json({
-            message: "Video kaydedilirken hata oluştu",
-            error: error.message
+            message: "An error occurred while uploading video",
+            error: error?.message || ""
         });
     }
 };
@@ -246,19 +292,17 @@ export const deleteVideo = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Eksik parametre!" });
         }
 
-        await service.deleteVideo(organizationId, videoPath);
+        await service.deleteOrganizationVideo(organizationId, videoPath);
 
         return res.status(200).json({
             success: true,
-            message: "Video bulut depolama alanı ve veritabanından silindi!"
+            message: "The video has been deleted from the cloud and the database has been updated."
         });
-
     } catch (error: any) {
-        console.error("Video Delete Controller Error:", error);
-        
+        console.error("Controller//Organization deleteVideo method fail", error);
         return res.status(500).json({ 
-            message: "Silme işlemi başarısız.", 
-            error: error.message 
+            message: "Delete video operation failed", 
+            error: error?.message || ""
         });
     }
 };
@@ -267,60 +311,96 @@ export const deletePhoto = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const { type, index } = req.body;
 
+    if (!id) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     try {
         await service.deleteImage(id, type, index);
 
-        return res.json({ success: true, message: "Başarıyla silindi" });
+        return res.json({
+            success: true,
+            message: "Photo deleted successfully"
+        });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Hata", error: err.message });
+        console.error("Organization deletePhoto method error", err);
+        res.status(500).json({
+            message: "Error while deleting photo",
+            error: err?.message || ""
+        });
     }
 };
 
 export const del = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
+
+    if (!id) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     try {
         const status = await service.del(id);
         return res.json({ deletedRows: status });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
+        console.error("Organization delete method error", err);
+        res.status(500).json({
+            message: "Couldn't delete organization",
+            error: err?.message || ""
+        });
     }
 };
 
 export const nearestActivity = async (req: Request, res: Response) => {
     const organizationId = Number(req.params.id);
 
+    if (!organizationId) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     try {
         const distances = await serviceActivityDistance.list(undefined, organizationId);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Organization nearestActivity method error", err);
+        res.status(500).json({
+            error: err?.message || ""
+        });
     }
 }
 
 export const nearestBeaches = async (req: Request, res: Response) => {
     const organizationId = Number(req.params.id);
 
+    if (!organizationId) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     try {
         const distances = await serviceBeachDistance.list(undefined, organizationId);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Organization nearestBeaches method error", err);
+        res.status(500).json({
+            error: err?.message || ""
+        });
     }
 }
 
 export const nearestPlaces = async (req: Request, res: Response) => {
     const organizationId = Number(req.params.id);
 
+    if (!organizationId) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     try {
         const distances = await servicePlaceDistance.list(organizationId, undefined);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Organization nearestPlaces method error", err);
+        res.status(500).json({
+            error: err?.message || ""
+        });
     }
 }
 
@@ -328,13 +408,17 @@ export const activation = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const value = req.body.value;
 
+    if (!id) {
+        return res.status(400).send("Invalid Organization ID");
+    }
+
     try {
         const result = await service.patch(id, "is_active", value);
 
         if (result === 0) {
             return res.status(404).json({ 
                 success: false, 
-                message: "İşletme Bulunamadı" 
+                message: "Organization not found" 
             });
         }
 
@@ -342,12 +426,13 @@ export const activation = async (req: Request, res: Response) => {
 
         return res.status(200).json({ 
             success: true, 
-            message: "Aktiflik Durumu güncellendi.",
+            message: "Active state updated",
             data: organization
         });
-
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || "Activation error"})
+        console.error("Controller//Organization activation error", err);
+        res.status(500).json({
+            error: err?.message || "Activation error"
+        });
     }
 }

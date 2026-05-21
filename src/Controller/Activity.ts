@@ -22,12 +22,15 @@ export const show = async (req: Request, res: Response) => {
 export const detail = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
-        if (!id) return res.status(400).send("Geçersiz etkinlik ID'si");
+
+        if (!id) {
+            return res.status(400).send("Invalid Activity ID");
+        }
 
         const activity = await service.single(id);
 
         if (!activity) {
-            return res.status(404).send("Etkinlik Bulunamadı!");
+            return res.status(404).send("Activity not found");
         }
 
         const response = ActivityConverter.toResponse(activity);
@@ -38,10 +41,13 @@ export const detail = async (req: Request, res: Response) => {
             page: "activity_detail",
             activity: response
         });
+    } catch (err: any) {
+        console.error("Activity detail error", err);
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Etkinlik detay sayfası yüklenirken hata oluştu");
+        res.status(500).send({
+            message: "An error occurred while preparing activity detail page",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -55,8 +61,12 @@ export const list = async (req: Request, res: Response) => {
         const response = ActivityConverter.toListResponse(activities);
 
         res.json(response);
-    } catch (err) {
-        res.status(500).json({ error: err });
+    } catch (err: any) {
+        console.error("Activity list error", err);
+        res.status(500).json({
+            message: "An error occurred while fetching the activity list",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -72,7 +82,10 @@ export const create = async (req: Request, res: Response) => {
     const longitude   = req.body.longitude ? parseFloat(req.body.longitude) : null;
         
     if (!village_id || !name || !address) {
-        return res.status(400).json({ success: false, message: "Zorunlu alanları doldurunuz" });
+        return res.status(400).json({
+            success: false,
+            message: "Required fileds are missing"
+        });
     }
 
     const activity: Partial<Activity> = {
@@ -82,10 +95,19 @@ export const create = async (req: Request, res: Response) => {
 
     try {
         const result = await service.create(activity);
-        res.status(201).json({ success: true, message: "Activity Created", result });
+
+        res.status(201).json({
+            success: true,
+            message: "Activity Created",
+            result
+        });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ success: false, message: err.message || "Activity could not be created" });
+        console.error("Activity create error", err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while creating activity",
+            error: err?.message || ""
+        });
     }
 };
 
@@ -117,8 +139,11 @@ export const update = async (req: Request, res: Response) => {
         const result = await service.update(id, activity);
         return res.json({ result });
     } catch(err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err});
+        console.error("Activity update error", err);
+        res.status(500).json({
+            message: "An error occurred while updating activity",
+            error: err?.message || ""
+        });
     }
 }
 
@@ -126,12 +151,19 @@ export const timeline = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const timeline = Array.isArray(req.body.timeline) ? req.body.timeline : [];
 
+    if (!id) {
+        return res.status(400).send("Invalid Activity ID");
+    }
+
     try {
         const result = await service.update(id, { content: { timeline } });
         return res.json({ result });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Güncellenemedi", error: err.message || err });
+        console.error("Controller//Activity timeline method error", err);
+        res.status(500).json({
+            message: "Activity timeline not updated",
+            error: err.message || ""
+        });
     }
 };
 
@@ -139,19 +171,22 @@ export const uploadPhoto = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
 
+        if (!id) {
+            return res.status(400).send("Invalid Activity ID");
+        }
+
         const result = await service.handleFileUpload(id, req.files, "activity");
 
         return res.json({ 
             success: true, 
-            message: "Fotoğraflar başarıyla yüklendi", 
-            data: result 
+            message: "Photos were saved successfully",
+            data: result
         });
-
     } catch (err: any) {
-        console.error("Upload Error:", err);
+        console.error("Controller//Activity uploadPhoto error:", err);
         return res.status(500).json({ 
-            message: "Fotoğraflar işlenirken hata oluştu", 
-            error: err.message 
+            message: "An error occurred while saving the photos",
+            error: err?.message || "" 
         });
     }
 }
@@ -159,25 +194,34 @@ export const uploadPhoto = async (req: Request, res: Response) => {
 export const uploadVideo = async (req: Request, res: Response) => {
     try {
         const activityId = Number(req.params.id);
-        if (!activityId) return res.status(400).send("Geçersiz Etkinlik ID'si");
+        const description = req.body.video_description;
+        const shareToExplore = req.body.share_to_explore === 'true';
+
+        if (!activityId) {
+            return res.status(400).send("Geçersiz Etkinlik ID'si");
+        }
         
         if (!req.file) {
-            return res.status(400).json({ message: "Video yüklenemedi." });
+            return res.status(400).json({
+                message: "Video yüklenemedi."
+            });
         }
-    
-        await service.handleVideoUpload(activityId, req.file);
+        
+        await service.uploadActivityVideo(activityId, req.file, shareToExplore, description);
+
+        const resMessage = shareToExplore
+            ? "Video successfully uploaded to cloud storage and added to explore feed"
+            : "Video successfully uploaded to cloud storage";
 
         return res.status(200).json({
             success: true,
-            message: "Video başarıyla R2'ye yüklendi ve kaydedildi!"
+            message: resMessage
         });
-
     } catch (error: any) {
-        console.error("Video DB Save Controller Error:", error);
-
+        console.error("Controller//Activity uploadVideo method fail", error);
         return res.status(500).json({
-            message: "Video kaydedilirken hata oluştu",
-            error: error.message
+            message: "An error occurred while uploading video",
+            error: error?.message || ""
         });
     }
 };
@@ -188,22 +232,20 @@ export const deleteVideo = async (req: Request, res: Response) => {
         const { videoPath } = req.body;
 
         if (!activityId || !videoPath) {
-            return res.status(400).json({ message: "Eksik parametre!" });
+            return res.status(400).json({ message: "Missing parameter" });
         }
 
-        await service.deleteVideo(activityId, videoPath);
+        await service.deleteActivityVideo(activityId, videoPath);
 
         return res.status(200).json({
             success: true,
-            message: "Video bulut depolama alanı ve veritabanından silindi!"
+            message: "The video has been deleted from the cloud and the database has been updated."
         });
-
     } catch (error: any) {
-        console.error("Video Delete Controller Error:", error);
-        
+        console.error("Controller//Activity deleteVideo method fail", error);
         return res.status(500).json({ 
-            message: "Silme işlemi başarısız.", 
-            error: error.message 
+            message: "Delete video operation failed", 
+            error: error?.message || ""
         });
     }
 };
@@ -212,60 +254,95 @@ export const deletePhoto = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const { type, index } = req.body;
 
+    if (!id) {
+        return res.status(400).send("Invalid Activity ID");
+    }
+
     try {
         await service.deleteImage(id, type, index);
 
-        return res.json({ success: true, message: "Başarıyla silindi" });
+        return res.json({
+            success: true,
+            message: "Photo deleted successfully"
+        });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Hata", error: err.message });
+        console.error("Activity deletePhoto method error", err);
+        res.status(500).json({
+            message: "Error while deleting photo",
+            error: err?.message || ""
+        });
     }
 };
 
 export const del = async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    
+
+    if (!id) {
+        return res.status(400).send("Invalid Activity ID");
+    }
+
     try {
         const status = await service.del(id);
         return res.json({ deletedRows: status });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ message: "Kayıt Silinemedi", error: err.message || err });
+        console.error("Activity delete method error", err);
+        res.status(500).json({
+            message: "Couldn't delete activity",
+            error: err?.message || ""
+        });
     }
 };
 
 export const nearestBeaches = async (req: Request, res: Response) => {
     const activityId = Number(req.params.id);
 
+    if (!activityId) {
+        return res.status(400).send("Invalid Activity ID");
+    }
+
     try {
         const distances = await serviceBeachDistance.list(activityId, undefined);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Activity nearestBeaches method error", err);
+        res.status(500).json({
+            error: err.message || ""
+        });
     }
 }
 
 export const nearestPlaces = async (req: Request, res: Response) => {
     const activityId = Number(req.params.id);
 
+    if (!activityId) {
+        return res.status(400).send("Invalid Activity ID");
+    }
+
     try {
         const distances = await servicePlaceDistance.list(activityId, undefined);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Activity nearestPlaces method error", err);
+        res.status(500).json({
+            error: err.message || ""
+        });
     }
 }
 
 export const nearestOrganizations = async (req: Request, res: Response) => {
     const activityId = Number(req.params.id);
 
+    if (!activityId) {
+        return res.status(400).send("Invalid Activity ID");
+    }
+
     try {
         const distances = await serviceOrganizationDistance.list(activityId, undefined);
         res.status(200).json({ distances });
     } catch (err: any) {
-        console.error(err);
-        res.status(500).json({ error: err.message || err });
+        console.error("Controller//Activity nearestOrganizations method error", err);
+        res.status(500).json({
+            error: err.message || ""
+        });
     }
 }
