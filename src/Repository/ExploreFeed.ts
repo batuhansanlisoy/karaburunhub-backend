@@ -41,6 +41,11 @@ export class ExploreFeedRepository {
             .first();
     }
 
+    async findAllByTarget(item_type: string, item_id: number): Promise<ExploreFeed[]> {
+        return db(this.tableName)
+            .where({ item_type, item_id });
+    }
+
     async del(id: number, trx?: any): Promise<number[]> {
         if (trx) {
             return trx(this.tableName).where({ id }).del();

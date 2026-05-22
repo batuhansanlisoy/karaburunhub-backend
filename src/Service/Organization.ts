@@ -144,7 +144,7 @@ export class OrganizationService extends BaseService<Organization>{
             item_id: organization.id,
             title: description ?? organization.name,
             video_url: videoUrl,
-            score: 0
+            score: 100 // organizasyon standart paket olarak 100 puan veriyorum.
         }
 
         await this.exploreRepository.create(payload);
