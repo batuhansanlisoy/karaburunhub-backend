@@ -62,7 +62,7 @@ export const single = async (req: Request, res: Response) => {
 
         if (!organization) {
             return res.status(404).json({ 
-                success: false, 
+                success: false,
                 message: "Organization not found" 
             });
         }

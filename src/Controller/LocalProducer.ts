@@ -44,6 +44,32 @@ export const detail = async (req: Request, res: Response) => {
     }
 };
 
+export const single = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+
+        if (!id) {
+            return res.status(400).send("Invalid Local Producer ID");
+        }
+
+        const localProducer = await service.single(id);
+
+        if (!localProducer) {
+            return res.status(404).send("Beach not found");
+        }
+
+        const response = LocalProducerConverter.toResponse(localProducer);
+
+        res.json(response);
+    } catch (err: any) {
+        console.error("Local Producer single error", err);
+        res.status(500).json({
+            message: "An error occurred while fethcing the local producer",
+            error: err?.message || ""
+        });
+    }
+};
+
 export const list = async (req: Request, res: Response) => {
     const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
     const highlight = req.query.highlight !== undefined ? req.query.highlight === 'true' : undefined;

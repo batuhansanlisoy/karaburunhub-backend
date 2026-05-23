@@ -17,6 +17,7 @@ router.get("/list", BeachController.list);
 router.get("/:id/nearest-activity", BeachController.nearestActivity);
 router.get("/:id/nearest-places", BeachController.nearestPlaces);
 router.get("/:id/nearest-organizations", BeachController.nearestOrganizations);
+router.get("/:id/single", BeachController.single);
 
 router.patch("/:id/highlight", BeachController.highligt);
 

@@ -50,6 +50,32 @@ export const detail = async (req: Request, res: Response) => {
     }
 };
 
+export const single = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+
+        if (!id) {
+            return res.status(400).send("Invalid Place ID");
+        }
+
+        const place = await service.single(id);
+
+        if (!place) {
+            return res.status(404).send("Place not found");
+        }
+
+        const response = PlaceConverter.toResponse(place);
+
+        res.json(response);
+    } catch (err: any) {
+        console.error("Place single error", err);
+        res.status(500).json({
+            message: "An error occurred while fethcing the place",
+            error: err?.message || ""
+        });
+    }
+};
+
 export const list = async (req: Request, res: Response) => {
     const village_id = req.query.village_id ? Number(req.query.village_id) : undefined;
     const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : undefined;

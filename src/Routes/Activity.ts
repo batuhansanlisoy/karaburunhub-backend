@@ -18,6 +18,7 @@ router.get("/list", ActivityController.list);
 router.get("/:id/nearest-beaches", ActivityController.nearestBeaches);
 router.get("/:id/nearest-places", ActivityController.nearestPlaces);
 router.get("/:id/nearest-organizations", ActivityController.nearestOrganizations);
+router.get("/:id/single", ActivityController.single);
 
 router.post("/create", ActivityController.create);
 router.put("/:id", ActivityController.update);

@@ -18,6 +18,7 @@ router.get("/list", PlaceController.list);
 router.get("/:id/nearest-activity", PlaceController.nearestActivity);
 router.get("/:id/nearest-beaches", PlaceController.nearestBeaches);
 router.get("/:id/nearest-organizations", PlaceController.nearestOrganizations);
+router.get("/:id/single", PlaceController.single);
 
 router.post("/create", PlaceController.create);
 router.put("/:id", PlaceController.update);

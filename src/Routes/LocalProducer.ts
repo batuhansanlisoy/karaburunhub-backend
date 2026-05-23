@@ -15,6 +15,7 @@ router.get("/form/create", LocalProducerFormController.createForm);
 router.get("/form/edit/:id", LocalProducerFormController.editForm);
 router.get("/form/upload/:id", LocalProducerFormController.uploadForm);
 router.get("/list", LocalProducerController.list);
+router.get("/:id/single", LocalProducerController.single);
 
 router.post("/create", LocalProducerController.create);
 
