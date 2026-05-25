@@ -282,13 +282,14 @@ export const del = async (req: Request, res: Response) => {
 
 export const nearestActivity = async (req: Request, res: Response) => {
     const beachId = Number(req.params.id);
+    const onlyUpcoming = req.query.onlyUpcoming !== undefined ? req.query.onlyUpcoming === 'true' : undefined;
 
     if (!beachId) {
         return res.status(400).send("Invalid Beach ID");
     }
 
     try {
-        const distances = await serviceActivityDistance.list(undefined, beachId);
+        const distances = await serviceActivityDistance.list(undefined, beachId, onlyUpcoming);
         res.status(200).json({ distances });
     } catch (err: any) {
         console.error("Controller//Beach nearestActivity method error", err);

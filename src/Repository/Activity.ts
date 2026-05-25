@@ -13,7 +13,8 @@ export class ActivityRepository {
     async getAll(
         village_id?: number,
         category_id?: number,
-        ids?: number[]
+        ids?: number[],
+        onlyUpcoming?: boolean
     ): Promise<Activity[]> {
         let query = db(this.tableName).select("*");
 
@@ -28,6 +29,14 @@ export class ActivityRepository {
         if (category_id != null) {
             query = query.where("category_id", category_id);
         }
+
+        if (onlyUpcoming) {
+            const today = new Date().toISOString().split('T')[0];
+
+            query = query.where("end", ">=", today);
+        }
+
+        query = query.orderBy("end", "desc");
 
         return query;
     }

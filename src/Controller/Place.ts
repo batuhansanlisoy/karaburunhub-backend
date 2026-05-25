@@ -277,9 +277,10 @@ export const del = async (req: Request, res: Response) => {
 
 export const nearestActivity = async (req: Request, res: Response) => {
     const placeId = Number(req.params.id);
+    const onlyUpcoming = req.query.onlyUpcoming !== undefined ? req.query.onlyUpcoming === 'true' : undefined;
 
     try {
-        const distances = await serviceActivityDistance.list(undefined, placeId);
+        const distances = await serviceActivityDistance.list(undefined, placeId, onlyUpcoming);
         res.status(200).json({ distances });
     } catch (err: any) {
         console.error("Controller//Place nearestActivity method error", err);

@@ -4,7 +4,11 @@ import { DistanceActivityBeach } from "../../Entity/Distance/ActivityBeach";
 export class DistanceActivityBeachRepo {
     private tableName = "distance_activity_beach";
 
-    async list(activity_id?: number, beach_id?: number): Promise<DistanceActivityBeach[]> {
+    async list(
+        activity_id?: number,
+        beach_id?: number,
+        activityIds?: number[]
+    ): Promise<DistanceActivityBeach[]> {
         
         let query = db(this.tableName).select("*");
 
@@ -14,6 +18,10 @@ export class DistanceActivityBeachRepo {
 
         if (beach_id != null) {
             query.where("beach_id", beach_id);
+        }
+
+        if (activityIds !== undefined && activityIds.length > 0) {
+            query.whereIn("activity_id", activityIds);
         }
 
         query.orderBy("distance_meter", "asc");

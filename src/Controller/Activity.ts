@@ -79,11 +79,12 @@ export const single = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
     try {
-        const village_id  = req.query.village_id ? Number(req.query.village_id) : undefined;
-        const category_id = req.query.category_id ? Number(req.query.category_id) : undefined;
-        const ids = req.query.ids ? String(req.query.ids).split(',').map(Number) : undefined;
+        const ids          = req.query.ids ? String(req.query.ids).split(',').map(Number) : undefined;
+        const village_id   = req.query.village_id ? Number(req.query.village_id) : undefined;
+        const category_id  = req.query.category_id ? Number(req.query.category_id) : undefined;
+        const onlyUpcoming = req.query.onlyUpcoming !== undefined ? req.query.onlyUpcoming === 'true' : undefined;
 
-        const activities: Activity[] = await service.list(village_id, category_id, ids);
+        const activities: Activity[] = await service.list(village_id, category_id, ids, onlyUpcoming);
         const response = ActivityConverter.toListResponse(activities);
 
         res.json(response);

@@ -23,13 +23,15 @@ export class ActivityService extends BaseService<Activity>{
     async list(
         village_id?: number,
         category_id?: number,
-        ids?: number[]
+        ids?: number[],
+        onlyUpcoming?: boolean
     ): Promise<Activity[]> {
         
         return this.repo.getAll(
             village_id,
             category_id,
-            ids
+            ids,
+            onlyUpcoming
         );
     }
 
