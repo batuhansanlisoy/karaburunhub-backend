@@ -3,6 +3,8 @@ export interface ExploreFeed{
     item_type: string,
     item_id: number,
     title: string,
+    explanation?: string,
+    target: string,
     video_url: string,
     score: number,
     is_active: boolean

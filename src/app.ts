@@ -18,6 +18,7 @@ import localProducerRoutes from "./Routes/LocalProducer";
 import organizationCategoryRoutes from "./Routes/Organization/Category";
 import organizationCategoryItemRoutes from "./Routes/Organization/Category/Item";
 import activityCategoryRoutes from "./Routes/Activity/Category";
+import exploreFeedRoutes from "./Routes/ExploreFeed";
 import infoRoutes from "./Routes/Info";
 import { apiKeyAuth } from "./Middleware/ApiKeyAuth";
 import { requireAuth } from "./Middleware/Auth";
@@ -78,5 +79,6 @@ app.use("/activity/category", requireAuth, activityCategoryRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use("/request/business", requestBusinessRoutes);
 app.use("/local_producer", requireAuth, localProducerRoutes);
+app.use("/explore_feed", requireAuth, exploreFeedRoutes);
 app.use("/info", infoRoutes)
 export default app;

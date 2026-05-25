@@ -7,9 +7,11 @@ export async function up(knex: Knex): Promise<void> {
         table.string("item_type").notNullable();
         table.integer("item_id").notNullable();
         table.string("title").notNullable();
+        table.string("explanation").nullable();
+        table.string("target").notNullable();
         table.string("video_url").notNullable();
-        table.decimal("score", 10, 2).defaultTo(0.00);
-        table.boolean("is_active").defaultTo(true);
+        table.integer("score").notNullable().defaultTo(0);
+        table.boolean("is_active").notNullable().defaultTo(true);
         table.timestamps(true, true);
 
         table.index(["video_url"], "idx_explore_video_url");

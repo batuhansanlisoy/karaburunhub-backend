@@ -4,23 +4,47 @@ import { ExploreFeed } from "~/Entity/ExploreFeed";
 export class ExploreFeedRepository {
     private tableName = "explore_feeds";
 
-    async getById(id: number): Promise<ExploreFeed> {
-        const explore_feed = await db(this.tableName).where({ id }).first();
-
-        return explore_feed;
+    getById(id: number): Promise<ExploreFeed> {
+        return db(this.tableName).where({ id }).first();
     }
 
-    async getAll(): Promise<ExploreFeed[]> {
+    getAll(
+        shuffle?: boolean,
+        active?: boolean,
+        itemType?: string,
+        itemId?: number
+    ): Promise<ExploreFeed[]> {
         let query = db(this.tableName).select("*");
+
+        if (active !== undefined) {
+            query.where("is_active", active);
+        }
+
+        if (itemType !== undefined) {
+            query.where("item_type", itemType);
+        }
+
+        if (itemId !== undefined && itemType !== undefined) {
+            query.where({
+                "item_id": itemId,
+                "item_type": itemType
+            });
+        }
+
+        if (shuffle === true) {
+            query.orderBy("score", "desc").orderByRaw("RAND()");
+        } else {
+            query.orderBy("score", "desc").orderBy("id", "desc");
+        }
 
         return query;
     }
 
-    async create(payload: Partial<ExploreFeed>): Promise<number[]> {
+    create(payload: Partial<ExploreFeed>): Promise<number[]> {
         return db(this.tableName).insert(payload);
     }
 
-    async patch(id: number, field: string, value: any): Promise<number> {
+    patch(id: number, field: string, value: any): Promise<number> {
         return db(this.tableName)
             .where({ id: id })
             .update({
@@ -28,25 +52,25 @@ export class ExploreFeedRepository {
             });
     }
 
-    async findByVideoUrl(fullVideoUrl: string): Promise<ExploreFeed | undefined> {
+    findByVideoUrl(fullVideoUrl: string): Promise<ExploreFeed | undefined> {
         return db(this.tableName)
             .where("video_url", fullVideoUrl)
             .first();
     }
 
-    async findByTarget(item_type: string, item_id: number): Promise<ExploreFeed | undefined> {
+    findByTarget(item_type: string, item_id: number): Promise<ExploreFeed | undefined> {
         return db(this.tableName)
             .where("item_type", item_type)
             .where("item_id", item_id)
             .first();
     }
 
-    async findAllByTarget(item_type: string, item_id: number): Promise<ExploreFeed[]> {
+    findAllByTarget(item_type: string, item_id: number): Promise<ExploreFeed[]> {
         return db(this.tableName)
             .where({ item_type, item_id });
     }
 
-    async del(id: number, trx?: any): Promise<number[]> {
+    del(id: number, trx?: any): Promise<number[]> {
         if (trx) {
             return trx(this.tableName).where({ id }).del();
         }
