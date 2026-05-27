@@ -30,6 +30,20 @@
             overflow: hidden;
         }
 
+        /* MOBİL DÜZELTMELERİ */
+        @media (max-width: 576px) {
+            body {
+                padding: 10px 0; /* Mobilde tepedeki boşluğu azalttık */
+            }
+            .container {
+                padding-left: 10px !important;  /* Bootstrap container yan boşlukları azaltıldı */
+                padding-right: 10px !important;
+            }
+            .form-card {
+                border-radius: 12px;
+            }
+        }
+
         .section-line {
             display: flex;
             align-items: center;
@@ -103,12 +117,12 @@
 
 <div class="container d-flex justify-content-center">
     <div class="form-card">
-        <div class="p-5 text-center border-bottom bg-white">
+        <div class="px-3 py-4 p-sm-5 text-center border-bottom bg-white">
             <h2 class="fw-bold m-0">Karaburun<span class="text-red">GO</span> Partnerlik</h2>
             <p class="text-muted text-mmd mt-2">İşletmenizi dijital dünyaya taşıyın</p>
         </div>
         
-        <div class="p-5" id="main-content">
+        <div class="px-3 py-4 p-sm-5" id="main-content">
             <form id="partner-form">
                 
                 <div class="section-line text-red text-sm fw-bold text-uppercase">Yetkili Bilgileri</div>
@@ -153,15 +167,6 @@
                     </div>
                 </div>
 
-                <!-- <div class="package-box d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h4 class="fs-6 fw-bold m-0 text-dark">Standart Paket</h4>
-                        <p class="text-sm text-muted m-0">Mobil rehberde listelenme aktif edilir.</p>
-                    </div>
-                    <div class="badge-custom bg-red">Aktif</div>
-                    <input type="hidden" name="package" value="standart">
-                </div> -->
-
                 <button type="submit" id="submitBtn" class="submit-btn text-white bg-red text-uppercase shadow-sm">
                     Talebi Gönder
                 </button>
@@ -197,7 +202,6 @@
         const mainContent = document.getElementById('main-content');
         const formData = Object.fromEntries(new FormData(e.target));
 
-        // API'ye giderken telefonları birleştiriyoruz (boşlukları silerek)
         const payload = {
             sender: {
                 name: formData.name,

@@ -30,6 +30,20 @@
             overflow: hidden;
         }
 
+        /* MOBİL DÜZELTMELERİ BURADA */
+        @media (max-width: 576px) {
+            body {
+                padding: 10px 0; /* Mobilde tepedeki boşluğu azalttık */
+            }
+            .container {
+                padding-left: 10px !important;  /* Bootstrap'in kendi container padding'ini kıstık */
+                padding-right: 10px !important;
+            }
+            .form-card {
+                border-radius: 12px; /* Küçük ekranda kibar dursun */
+            }
+        }
+
         .section-line {
             display: flex;
             align-items: center;
@@ -99,12 +113,12 @@
 
 <div class="container d-flex justify-content-center">
     <div class="form-card">
-        <div class="p-5 text-center border-bottom bg-white">
+        <div class="px-3 py-4 p-sm-5 text-center border-bottom bg-white">
             <h2 class="fw-bold m-0">Karaburun<span class="text-red">GO</span></h2>
             <p class="text-muted text-mmd mt-2">Deneyiminizi paylaşın, kendimizi geliştirelim.</p>
         </div>
         
-        <div class="p-5" id="main-content">
+        <div class="px-3 py-4 p-sm-5" id="main-content">
             <form id="feedback-form">
                 
                 <div class="section-line text-red text-sm fw-bold text-uppercase">Kişisel Bilgiler</div>
@@ -170,7 +184,6 @@
         const mainContent = document.getElementById('main-content');
         const formData = Object.fromEntries(new FormData(e.target));
 
-        // Controller yapısına uygun payload
         const payload = {
             name: formData.name,
             last_name: formData.last_name,
@@ -183,7 +196,6 @@
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> GÖNDERİLİYOR...';
 
         try {
-            // Controller'ın "create" metoduna istek atıyoruz
             const response = await fetch('/feedback/create', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
