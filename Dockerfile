@@ -27,6 +27,8 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/src/knexfile.ts ./src/knexfile.ts
 COPY --from=build /app/src/db/migrations ./src/db/migrations
 COPY --from=build /app/src/db/seeds ./src/db/seeds
+COPY .env.prod ./.env
+
 # Sadece prod paketlerini kur
 RUN npm install --omit=dev
 
