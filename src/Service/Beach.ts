@@ -138,7 +138,9 @@ export class BeachService extends BaseService<Beach> {
         const payload: Partial<ExploreFeed> = {
             item_type: "beach",
             item_id: beach.id,
-            title: description ?? beach.name,
+            title: beach.name,
+            explanation: description ?? "",
+            target: `beach/detail/${beach.id}`,
             video_url: videoUrl,
             score: 0
         }

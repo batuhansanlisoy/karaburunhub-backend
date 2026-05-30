@@ -94,7 +94,9 @@ export class LocalProducerService extends BaseService<LocalProducer> {
         const payload: Partial<ExploreFeed> = {
             item_type: "local_producer",
             item_id: localProducer.id,
-            title: description ?? localProducer.name,
+            title: localProducer.name,
+            explanation: description ?? "",
+            target: `local_producer/detail/${localProducer.id}`,
             video_url: videoUrl,
             score: 0
         }

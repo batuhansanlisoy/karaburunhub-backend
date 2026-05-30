@@ -142,7 +142,9 @@ export class OrganizationService extends BaseService<Organization>{
         const payload: Partial<ExploreFeed> = {
             item_type: "organization",
             item_id: organization.id,
-            title: description ?? organization.name,
+            title: organization.name,
+            explanation: description ?? "",
+            target: `organization/detail/${organization.id}`,
             video_url: videoUrl,
             score: 100 // organizasyon standart paket olarak 100 puan veriyorum.
         }

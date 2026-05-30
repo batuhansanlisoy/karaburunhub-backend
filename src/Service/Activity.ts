@@ -125,7 +125,9 @@ export class ActivityService extends BaseService<Activity>{
         const payload: Partial<ExploreFeed> = {
             item_type: "activity",
             item_id: activity.id,
-            title: description ?? activity.name,
+            title: activity.name,
+            explanation: description ?? "",
+            target: `activity/detail/${activity.id}`,
             video_url: videoUrl,
             score: 0
         }

@@ -150,7 +150,9 @@ export class PlaceService extends BaseService<Place> {
         const payload: Partial<ExploreFeed> = {
             item_type: "place",
             item_id: place.id,
-            title: description ?? place.name,
+            title: place.name,
+            explanation: description ?? "",
+            target: `place/detail/${place.id}`,
             video_url: videoUrl,
             score: 0
         }
