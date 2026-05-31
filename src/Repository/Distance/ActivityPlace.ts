@@ -20,7 +20,7 @@ export class DistanceActivityPlaceRepo {
             query.where("place_id", place_id);
         }
 
-        if (activityIds !== undefined && activityIds.length > 0) {
+        if (activityIds !== undefined) {
             query.whereIn("activity_id", activityIds);
         }
 
