@@ -16,6 +16,10 @@ export class DistanceActivityPlaceService {
         if (onlyUpcoming) {
             const upcomingActivities = await this.activityRepo.getAll(undefined, undefined, undefined, true);
 
+            if (!upcomingActivities || upcomingActivities.length === 0) {
+                return [];
+            }
+
             upcomingActivityIds = upcomingActivities.map(act => act.id);
         }
 
